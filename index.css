@@ -474,3 +474,337 @@ body {
         padding: 2rem;
     }
 }
+
+/* NEW STYLES FOR HERBS & ABOUT SECTIONS */
+html {
+    scroll-behavior: smooth;
+}
+
+.section-subtitle {
+    font-size: 1.3rem;
+    color: #2e7d32;
+    text-align: center;
+    margin-bottom: 4rem;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    font-weight: 400;
+}
+
+.herbs-section {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.herbs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.herb-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(46, 125, 50, 0.15);
+    transition: all 0.3s;
+    border-top: 4px solid #a5d6a7;
+}
+
+.herb-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 60px rgba(46, 125, 50, 0.25);
+}
+
+.herb-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.herb-info {
+    padding: 1.5rem;
+}
+
+.herb-info h3 {
+    font-size: 1.4rem;
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.herb-scientific {
+    font-size: 0.9rem;
+    color: #66bb6a;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.herb-use {
+    color: #555;
+    margin-bottom: 1rem;
+    line-height: 1.5;
+}
+
+.herb-status {
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.herb-status.mastered {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+}
+
+.herb-status.progress {
+    background: linear-gradient(45deg, #ff9800, #ffb74d);
+    color: white;
+}
+
+.herb-status.locked {
+    background: #f1f8e9;
+    color: #2e7d32;
+    border: 2px solid #a5d6a7;
+}
+
+.section-cta {
+    text-align: center;
+}
+
+.about-section {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.about-features {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.about-feature {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.feature-number {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    flex-shrink: 0;
+    margin-top: 0.2rem;
+}
+
+.about-feature h3 {
+    color: #2e7d32;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.about-feature p {
+    color: #555;
+    line-height: 1.6;
+}
+
+.about-visual {
+    position: relative;
+}
+
+.about-illustration {
+    width: 100%;
+    height: 400px;
+    background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 10rem;
+    box-shadow: 0 20px 60px rgba(46, 125, 50, 0.2);
+    position: relative;
+}
+
+.thesis-badge {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    background: linear-gradient(45deg, #ff9800, #ffb74d);
+    color: white;
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 8px 25px rgba(255, 152, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .about-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 3rem;
+    }
+    
+    .about-feature {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .herbs-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    nav a[href^="#"] {
+        scroll-margin-top: 80px;
+    }
+}
+
+.logo-link {
+    text-decoration: none;
+    display: block;
+}
+
+.logo-link h2 {
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+.logo-link:hover h2 {
+    transform: scale(1.05);
+    text-shadow: 0 2px 10px rgba(46, 125, 50, 0.3);
+}
+
+.herb-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+}
+
+.bawang-bg { background: linear-gradient(135deg, #f3e5f5, #e1bee7); }
+.lagundi-bg { background: linear-gradient(135deg, #c8e6c9, #a5d6a7); }
+.sambong-bg { background: linear-gradient(135deg, #e1f5fe, #b3e5fc); }
+.yerba-bg { background: linear-gradient(135deg, #fff3e0, #ffe0b2); }
+.bayabas-bg { background: linear-gradient(135deg, #e8f5e9, #c8e6c9); }
+.ampalaya-bg { background: linear-gradient(135deg, #f1f8e9, #dcedc8); }
+.akapulko-bg { background: linear-gradient(135deg, #fff3e0, #ffcc80); }
+.tsaang-bg { background: linear-gradient(135deg, #e0f2f1, #b2dfdb); }
+.ulasimang-bg { background: linear-gradient(135deg, #fce4ec, #f8bbd9); }
+.niyog-bg { background: linear-gradient(135deg, #e3f2fd, #bbdefb); }
+.generic-bg { 
+    background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+}
+
+.hamburger {
+    display: none;
+    flex-direction: column;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 5px;
+    gap: 4px;
+    z-index: 1001;
+}
+
+.hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #2e7d32;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(6px, 6px);
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(6px, -6px);
+}
+
+@media (max-width: 768px) {
+    .hamburger {
+        display: flex;
+    }
+    
+    .nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 280px;
+        height: 100vh;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(20px);
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 5rem 2rem 2rem;
+        gap: 2rem;
+        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: -10px 0 30px rgba(46, 125, 50, 0.2);
+    }
+    
+    .nav-menu.active {
+        right: 0;
+    }
+    
+    .nav-menu li {
+        opacity: 0;
+        transform: translateX(30px);
+        animation: slideIn 0.4s ease forwards;
+    }
+    
+    .nav-menu li:nth-child(1) { animation-delay: 0.1s; }
+    .nav-menu li:nth-child(2) { animation-delay: 0.2s; }
+    .nav-menu li:nth-child(3) { animation-delay: 0.3s; }
+    .nav-menu li:nth-child(4) { animation-delay: 0.4s; }
+    .nav-menu li:nth-child(5) { animation-delay: 0.5s; }
+    
+    .nav-container {
+        position: relative;
+    }
+    
+    body.menu-open {
+        overflow: hidden;
+    }
+    
+    .nav-menu::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: -1;
+    }
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

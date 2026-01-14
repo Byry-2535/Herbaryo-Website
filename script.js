@@ -100,3 +100,28 @@ document.addEventListener('keydown', (e) => {
         closeLoginModal();
     }
 });
+
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navMenu = document.getElementById('navMenu');
+
+hamburgerBtn.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+    hamburgerBtn.classList.toggle('active');
+    document.body.classList.toggle('menu-open');
+});
+
+document.querySelectorAll('.nav-menu a[href^="#"]').forEach(link => {
+    link.addEventListener('click', () => {
+        navMenu.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    });
+});
+
+navMenu.addEventListener('click', (e) => {
+    if (e.target === navMenu) {
+        navMenu.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    }
+});
