@@ -47,7 +47,7 @@ googleLogin.addEventListener('click', async () => {
 
     try {
         await auth.signInWithPopup(provider);
-        window.location.href = 'dashboard.html';
+        window.location.href = 'dashboard/dashboard.html';
     } catch (error) {
         console.error('Login failed:', error);
         showError('Sign-in failed. Please try again.');

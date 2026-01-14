@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Herbaryo Dashboard</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./dashboard.css">
+    </head>
+    <body>
+        <header class="dashboard-header">
+            <div class="container">
+                <nav class="dashboard-nav">
+                    <div class="logo">
+                        <h2>🌿 HERBARYO</h2>
+                    </div>
+                    <div class="user-profile">
+                        <div class="user-avatar" id="userAvatar">JD</div>
+                        <div class="user-info">
+                            <div class="welcome-text" id="welcomeText">Welcome back!</div>
+                            <div class="user-email" id="userEmail"></div>
+                        </div>
+                        <button class="logout-btn" id="logoutBtn">Logout</button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+        <main class="container">
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">🌿 12/20</div>
+                    <div class="stat-label">Herbs Mastered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">🏆 245</div>
+                    <div class="stat-label">Points Earned</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">📚 Level 3</div>
+                    <div class="stat-label">Herbalist</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">#47</div>
+                    <div class="stat-label">Leaderboard</div>
+                </div>
+            </section>
+            <section class="quick-actions">
+                <a href="#" class="action-btn action-game">
+                    🎮 Play Herbaryo Game
+                </a>
+                <a href="#" class="action-btn action-herbs">
+                    🌿 My Herb Collection
+                </a>
+                <a href="#" class="action-btn action-game">
+                    🏆 Daily Challenge
+                </a>
+                <a href="#" class="action-btn action-herbs">
+                    📊 Progress Report
+                </a>
+            </section>
+            <section class="recent-activity">
+                <h2>Recent Activity</h2>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <span class="activity-icon">🌱</span>
+                        <div class="activity-content">
+                            <div class="activity-title">Mastered Lagundi</div>
+                            <div class="activity-meta">2 hours ago • +50 points</div>
+                        </div>
+                    </div>
+                    <div class="activity-item">
+                        <span class="activity-icon">⭐</span>
+                        <div class="activity-content">
+                            <div class="activity-title">Daily Quiz Completed</div>
+                            <div class="activity-meta">Yesterday • +25 points</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+        <script src="./dashboard.js"></script>
+    </body>
+</html>
