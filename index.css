@@ -475,7 +475,6 @@ body {
     }
 }
 
-/* NEW STYLES FOR HERBS & ABOUT SECTIONS */
 html {
     scroll-behavior: smooth;
 }
@@ -747,6 +746,7 @@ html {
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
+        z-index: 1002;
     }
     
     .nav-menu {
@@ -764,10 +764,34 @@ html {
         gap: 2rem;
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: -10px 0 30px rgba(46, 125, 50, 0.2);
+        pointer-events: none; /* FIXED: No interaction when closed */
     }
     
     .nav-menu.active {
         right: 0;
+        pointer-events: all;  /* FIXED: Enable interaction when open */
+    }
+    
+    /* FIXED: Proper backdrop overlay */
+    .nav-menu::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: -1;
+        pointer-events: none;
+    }
+    
+    .nav-menu.active::before {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;  /* FIXED: Backdrop clickable */
     }
     
     .nav-menu li {
@@ -789,17 +813,6 @@ html {
     body.menu-open {
         overflow: hidden;
     }
-    
-    .nav-menu::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: -1;
-    }
 }
 
 @keyframes slideIn {
@@ -807,4 +820,9 @@ html {
         opacity: 1;
         transform: translateX(0);
     }
+}
+
+.about-hero {
+    min-height: 60vh;
+    padding-top: 80px;
 }

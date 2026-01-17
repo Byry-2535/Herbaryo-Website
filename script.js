@@ -110,6 +110,7 @@ hamburgerBtn.addEventListener('click', () => {
     document.body.classList.toggle('menu-open');
 });
 
+// Close menu when clicking nav links
 document.querySelectorAll('.nav-menu a[href^="#"]').forEach(link => {
     link.addEventListener('click', () => {
         navMenu.classList.remove('active');
@@ -118,8 +119,18 @@ document.querySelectorAll('.nav-menu a[href^="#"]').forEach(link => {
     });
 });
 
+// Close menu when clicking backdrop
 navMenu.addEventListener('click', (e) => {
-    if (e.target === navMenu) {
+    if (e.target === navMenu || e.target.matches('::before')) {
+        navMenu.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    }
+});
+
+// Close menu on Escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.classList.contains('active')) {
         navMenu.classList.remove('active');
         hamburgerBtn.classList.remove('active');
         document.body.classList.remove('menu-open');
