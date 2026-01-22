@@ -12,25 +12,31 @@ const auth = firebase.auth();
 
 auth.onAuthStateChanged((user) => {
     if (!user) {
-        window.location.href = '../index.html';
+        window.close();
         return;
     }
     
-    const avatar = document.getElementById('userAvatar');
-    const welcomeText = document.getElementById('welcomeText');
-    const userEmail = document.getElementById('userEmail');
+    document.getElementById('userAvatar').textContent = user.displayName ? 
+        user.displayName.charAt(0).toUpperCase() : 
+        user.email.charAt(0).toUpperCase();
     
-    avatar.textContent = user.displayName ? user.displayName.charAt(0).toUpperCase() : user.email.charAt(0).toUpperCase();
-    welcomeText.textContent = `Welcome back, ${user.displayName || 'Herbalist'}!`;
-    userEmail.textContent = user.email;
+    document.getElementById('welcomeText').textContent = `Welcome, ${user.displayName || 'Herbalist'}`;
+    document.getElementById('userEmail').textContent = user.email;
+});
+
+window.addEventListener('beforeunload', async () => {
+    try {
+        await auth.signOut();
+    } catch (error) {
+        console.log('Auto-logout failed:', error);
+    }
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
     try {
         await auth.signOut();
-        window.location.href = '../index.html';
+        window.close();
     } catch (error) {
         console.error('Logout failed:', error);
-        alert('Logout failed. Please try again.');
     }
 });
