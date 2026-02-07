@@ -65,12 +65,22 @@ async function checkUserProfile(user) {
         const userRef = db.ref(`herbaryo-users/${user.uid}`);
         const snapshot = await userRef.once('value');
         const data = snapshot.val();
-        
         console.log('Database check result:', data);
         
-        if (data && data.username) {
-            console.log('Existing user - opening dashboard');
-            window.location.replace('./dashboard/dashboard.html');
+        if (data && data.displayName) {
+            console.log('Existing user - checking admin status');
+            
+            const ADMIN_EMAILS = [
+                "byry2535@gmail.com"
+            ];
+            
+            if (ADMIN_EMAILS.includes(user.email)) {
+                console.log('Admin detected - redirecting to admin panel');
+                window.location.replace('./admin/admin.html');
+            } else {
+                console.log('Regular user - opening dashboard');
+                window.location.replace('./dashboard/dashboard.html');
+            }
             closeLoginModal();
         } else {
             console.log('New user - showing username modal');
@@ -113,10 +123,10 @@ function showUsernameModal(user) {
 }
 
 async function createProfile(user) {
-    const username = document.getElementById('usernameInput').value.trim();
+    const usernameInput = document.getElementById('usernameInput').value.trim();
     
-    if (!username || username.length < 3) {
-        showError('Username must be 3+ characters!');
+    if (!usernameInput || usernameInput.length < 3) {
+        showError('Display name must be 3+ characters!');
         return;
     }
     
@@ -124,7 +134,7 @@ async function createProfile(user) {
     loginContent.style.display = 'none';
     
     try {
-        await saveNewUserProfile(user, username);
+        await saveNewUserProfile(user, usernameInput);
         window.location.replace('./dashboard/dashboard.html');
         closeLoginModal();
     } catch (error) {
@@ -147,13 +157,13 @@ async function skipProfile(user) {
     }
 }
 
-async function saveNewUserProfile(user, username) {
+async function saveNewUserProfile(user, displayNameInput) {
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
+    const displayName = displayNameInput || user.displayName || 'Herbalist';
     
     await userRef.set({
         email: user.email,
-        displayName: username || user.displayName || 'Herbalist',
-        username: username || null,
+        displayName: displayName,
         photoURL: user.photoURL || '',
         herbsMastered: 0,
         points: 0,

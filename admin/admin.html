@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Herbaryo | Admin</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="./admin.css">
+    </head>
+    <body>
+        <header class="admin-header">
+            <div class="container">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <h1>🌿 Herbaryo Admin</h1>
+                    <a href="../dashboard/dashboard.html" class="dashboard-btn">📊 Dashboard</a>
+                </div>
+                <div class="admin-user">
+                    <span id="adminUser">Admin</span>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </header>
+        <main class="container">
+            <section class="admin-stats">
+                <h2>Total Players</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalUsers">0</div>
+                        <div class="stat-label">Registered</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="topPlayer">0</div>
+                        <div class="stat-label">Top Score</div>
+                    </div>
+                </div>
+            </section>
+            <section class="users-section">
+                <h2>👥 Manage Players</h2>
+                <div class="table-container">
+                    <table id="usersTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Herbs Mastered</th>
+                                <th>Points</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td colspan="5">Loading players...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+        <script src="./admin.js"></script>
+    </body>
+</html>

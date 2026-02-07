@@ -30,7 +30,7 @@ profileModal.className = 'profile-modal';
 profileModal.innerHTML = `
     <div class="edit-form">
         <h2>🌿 Edit Profile</h2>
-        <input type="text" class="edit-input" id="editUsername" placeholder="Enter new username">
+        <input type="text" class="edit-input" id="editUsername" placeholder="Enter new display name">
         <div class="edit-buttons">
             <button class="btn-save" id="saveBtn">Save</button>
             <button class="btn-cancel" id="cancelBtn">Cancel</button>
@@ -45,18 +45,17 @@ function closeEditModal() {
 }
 
 async function saveProfile() {
-    const newUsername = document.getElementById('editUsername').value.trim();
+    const newDisplayName = document.getElementById('editUsername').value.trim();
     
-    if (newUsername.length < 3) {
-        alert('Username must be 3+ characters!');
+    if (newDisplayName.length < 3) {
+        alert('Display name must be 3+ characters!');
         return;
     }
     
     try {
         const userRef = db.ref(`herbaryo-users/${auth.currentUser.uid}`);
         await userRef.update({
-            displayName: newUsername,
-            username: newUsername
+            displayName: newDisplayName
         });
         closeEditModal();
     } catch (error) {
@@ -92,6 +91,15 @@ auth.onAuthStateChanged((user) => {
             updateUserUI({ displayName, email });
             updateStats(userData.herbsMastered || 0, userData.points || 0);
             currentUserData = { displayName, email };
+            
+            const ADMIN_EMAILS = ["byry2535@gmail.com"];
+            const adminBtn = document.getElementById('adminBtn');
+            if (ADMIN_EMAILS.includes(email)) {
+                adminBtn.style.display = 'inline-block';
+                adminBtn.onclick = () => window.location.href = '../admin/admin.html';
+            } else {
+                adminBtn.style.display = 'none';
+            }
         } else {
             updateUserUI({
                 displayName: user.displayName || 'Herbalist',
@@ -102,6 +110,15 @@ auth.onAuthStateChanged((user) => {
                 displayName: user.displayName || 'Herbalist', 
                 email: user.email 
             };
+            
+            const ADMIN_EMAILS = ["byry2535@gmail.com"];
+            const adminBtn = document.getElementById('adminBtn');
+            if (ADMIN_EMAILS.includes(user.email)) {
+                adminBtn.style.display = 'inline-block';
+                adminBtn.onclick = () => window.location.href = '../admin/admin.html';
+            } else {
+                adminBtn.style.display = 'none';
+            }
         }
     });
 });

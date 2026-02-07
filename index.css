@@ -918,3 +918,15 @@ html {
     margin-top: 3rem;
     padding: 2rem 0;
 }
+
+.herb-info h3 a {
+    color: #2e7d32;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.herb-info h3 a:hover {
+    color: #4caf50;
+    text-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
+}
