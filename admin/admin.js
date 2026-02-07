@@ -8,6 +8,7 @@ const firebaseConfig = {
     appId: "1:874293361860:web:65808ac513134660fcdd91"
 };
 
+const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
@@ -51,7 +52,10 @@ function updateStats(users) {
     document.getElementById('topPlayer').textContent = topPlayer.points || 0;
 }
 
+let allUsers = [];
+
 function displayUsers(users) {
+    allUsers = users;
     const tbody = document.querySelector('#usersTable tbody');
     
     if (users.length === 0) {
@@ -59,7 +63,18 @@ function displayUsers(users) {
         return;
     }
     
-    tbody.innerHTML = users.map(user => `
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filteredUsers = users.filter(user => 
+        user.displayName.toLowerCase().includes(searchTerm) || 
+        user.email.toLowerCase().includes(searchTerm)
+    );
+    
+    if (filteredUsers.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5">No players found</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = filteredUsers.map(user => `
         <tr>
             <td>${user.displayName}</td>
             <td>${user.email}</td>
@@ -88,6 +103,10 @@ function deleteUser(uid) {
         db.ref(`herbaryo-users/${uid}`).remove();
     }
 }
+
+document.getElementById('searchInput').addEventListener('input', () => {
+    displayUsers(allUsers);
+});
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
     await auth.signOut();

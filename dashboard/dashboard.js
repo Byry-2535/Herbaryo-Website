@@ -87,12 +87,10 @@ auth.onAuthStateChanged((user) => {
         if (userData) {
             const displayName = userData.displayName || user.displayName || 'Herbalist';
             const email = userData.email || user.email;
-            
             updateUserUI({ displayName, email });
             updateStats(userData.herbsMastered || 0, userData.points || 0);
             currentUserData = { displayName, email };
-            
-            const ADMIN_EMAILS = ["byry2535@gmail.com"];
+            const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
             const adminBtn = document.getElementById('adminBtn');
             if (ADMIN_EMAILS.includes(email)) {
                 adminBtn.style.display = 'inline-block';
@@ -110,8 +108,7 @@ auth.onAuthStateChanged((user) => {
                 displayName: user.displayName || 'Herbalist', 
                 email: user.email 
             };
-            
-            const ADMIN_EMAILS = ["byry2535@gmail.com"];
+            const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
             const adminBtn = document.getElementById('adminBtn');
             if (ADMIN_EMAILS.includes(user.email)) {
                 adminBtn.style.display = 'inline-block';

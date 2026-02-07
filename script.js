@@ -69,10 +69,7 @@ async function checkUserProfile(user) {
         
         if (data && data.displayName) {
             console.log('Existing user - checking admin status');
-            
-            const ADMIN_EMAILS = [
-                "byry2535@gmail.com"
-            ];
+            const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
             
             if (ADMIN_EMAILS.includes(user.email)) {
                 console.log('Admin detected - redirecting to admin panel');

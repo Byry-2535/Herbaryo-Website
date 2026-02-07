@@ -178,3 +178,23 @@ h2 {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
 }
+
+.search-section {
+    margin: 2rem 0;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 1.2rem;
+    border: 2px solid #a5d6a7;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-family: inherit;
+    background: white;
+}
+
+#searchInput:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
