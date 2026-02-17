@@ -930,3 +930,25 @@ html {
     color: #4caf50;
     text-shadow: 0 2px 8px rgba(46, 125, 50, 0.3);
 }
+
+.doh-reference {
+    text-align: center;
+    margin-top: 4rem;
+    padding: 2.5rem;
+    background: rgba(255,255,255,0.9);
+    border-radius: 20px;
+    border-left: 6px solid #4caf50;
+    box-shadow: 0 10px 40px rgba(46,125,50,0.15);
+}
+
+.doh-reference p {
+    margin: 0 0 1rem 0;
+    font-size: 1.15rem;
+    line-height: 1.5;
+}
+
+.doh-reference p:last-child {
+    color: #666;
+    font-size: 0.98rem;
+    font-weight: 400;
+}
