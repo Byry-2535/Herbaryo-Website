@@ -764,16 +764,13 @@ html {
         gap: 2rem;
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: -10px 0 30px rgba(46, 125, 50, 0.2);
-        pointer-events: none; /* FIXED: No interaction when closed */
     }
     
     .nav-menu.active {
         right: 0;
-        pointer-events: all;  /* FIXED: Enable interaction when open */
     }
     
-    /* FIXED: Proper backdrop overlay */
-    .nav-menu::before {
+    body.menu-open::before {
         content: '';
         position: fixed;
         top: 0;
@@ -781,33 +778,7 @@ html {
         width: 100vw;
         height: 100vh;
         background: rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: -1;
-        pointer-events: none;
-    }
-    
-    .nav-menu.active::before {
-        opacity: 1;
-        visibility: visible;
-        pointer-events: auto;  /* FIXED: Backdrop clickable */
-    }
-    
-    .nav-menu li {
-        opacity: 0;
-        transform: translateX(30px);
-        animation: slideIn 0.4s ease forwards;
-    }
-    
-    .nav-menu li:nth-child(1) { animation-delay: 0.1s; }
-    .nav-menu li:nth-child(2) { animation-delay: 0.2s; }
-    .nav-menu li:nth-child(3) { animation-delay: 0.3s; }
-    .nav-menu li:nth-child(4) { animation-delay: 0.4s; }
-    .nav-menu li:nth-child(5) { animation-delay: 0.5s; }
-    
-    .nav-container {
-        position: relative;
+        z-index: 1001;
     }
     
     body.menu-open {
@@ -952,3 +923,14 @@ html {
     font-size: 0.98rem;
     font-weight: 400;
 }
+
+.bawang-bg { background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important; }
+.sambong-bg { background: linear-gradient(135deg, #e1f5fe, #b3e5fc) !important; }
+.tsaang-bg { background: linear-gradient(135deg, #e0f2f1, #b2dfdb) !important; }
+.ampalaya-bg { background: linear-gradient(135deg, #f1f8e9, #dcedc8) !important; }
+.yerba-bg { background: linear-gradient(135deg, #fff3e0, #ffe0b2) !important; }
+.ulasimang-bg { background: linear-gradient(135deg, #fce4ec, #f8bbd9) !important; }
+.bayabas-bg { background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important; }
+.akapulko-bg { background: linear-gradient(135deg, #fff3e0, #ffcc80) !important; }
+.lagundi-bg { background: linear-gradient(135deg, #c8e6c9, #a5d6a7) !important; }
+.niyog-bg { background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important; }

@@ -73,6 +73,11 @@ body {
     border-top: 4px solid #4caf50;
 }
 
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(46, 125, 50, 0.25);
+}
+
 .stat-number {
     font-size: 3rem;
     font-weight: 700;
@@ -197,4 +202,16 @@ h2 {
     outline: none;
     border-color: #4caf50;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.admin-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }

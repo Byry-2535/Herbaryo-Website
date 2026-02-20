@@ -14,14 +14,26 @@ const db = firebase.database();
 let currentUserData = {};
 
 function updateUserUI(userData) {
-    document.getElementById('userAvatar').textContent = userData.displayName.charAt(0).toUpperCase();
-    document.getElementById('welcomeText').textContent = `Welcome back, ${userData.displayName}!`;
-    document.getElementById('userEmail').textContent = userData.email;
+    const avatar = document.getElementById('userAvatar');
+    const displayName = userData.displayName || 'Herbalist';
+    const email = userData.email;
+    
+    avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
+    
+    if (userData.photoURL) {
+        avatar.style.backgroundImage = `url(${userData.photoURL})`;
+        avatar.classList.add('has-photo'); 
+    } else {
+        avatar.style.backgroundImage = '';
+        avatar.classList.remove('has-photo');
+    }
+    
+    document.getElementById('welcomeText').textContent = `Welcome back, ${displayName}!`;
+    document.getElementById('userEmail').textContent = email;
 }
 
-function updateStats(herbsMastered, points) {
-    document.querySelectorAll('.stat-card .stat-number')[0].textContent = `🌿 ${herbsMastered}/10`;
-    document.querySelectorAll('.stat-card .stat-number')[1].textContent = `🏆 ${points}`;
+function updateStats(herbsMastered) {
+    document.querySelector('.stat-card .stat-number').textContent = `🌿 ${herbsMastered}/10`;
 }
 
 const editBtn = document.getElementById('editBtn');
@@ -84,38 +96,18 @@ auth.onAuthStateChanged((user) => {
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
     userRef.on('value', (snapshot) => {
         const userData = snapshot.val();
-        if (userData) {
-            const displayName = userData.displayName || user.displayName || 'Herbalist';
-            const email = userData.email || user.email;
-            updateUserUI({ displayName, email });
-            updateStats(userData.herbsMastered || 0, userData.points || 0);
-            currentUserData = { displayName, email };
-            const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
-            const adminBtn = document.getElementById('adminBtn');
-            if (ADMIN_EMAILS.includes(email)) {
-                adminBtn.style.display = 'inline-block';
-                adminBtn.onclick = () => window.location.href = '../admin/admin.html';
-            } else {
-                adminBtn.style.display = 'none';
-            }
-        } else {
-            updateUserUI({
-                displayName: user.displayName || 'Herbalist',
-                email: user.email
-            });
-            updateStats(0, 0);
-            currentUserData = { 
-                displayName: user.displayName || 'Herbalist', 
-                email: user.email 
-            };
-            const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
-            const adminBtn = document.getElementById('adminBtn');
-            if (ADMIN_EMAILS.includes(user.email)) {
-                adminBtn.style.display = 'inline-block';
-                adminBtn.onclick = () => window.location.href = '../admin/admin.html';
-            } else {
-                adminBtn.style.display = 'none';
-            }
+        const displayName = userData?.displayName || user.displayName || 'Herbalist';
+        const email = userData?.email || user.email;
+        
+        updateUserUI({ displayName, email });
+        updateStats(userData?.herbsMastered || 0);
+        currentUserData = { displayName, email };
+        
+        const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
+        const adminBtn = document.getElementById('adminBtn');
+        adminBtn.style.display = ADMIN_EMAILS.includes(email) ? 'inline-block' : 'none';
+        if (ADMIN_EMAILS.includes(email)) {
+            adminBtn.onclick = () => window.location.href = '../admin/admin.html';
         }
     });
 });

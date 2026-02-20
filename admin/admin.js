@@ -14,7 +14,7 @@ const auth = firebase.auth();
 const db = firebase.database();
 
 auth.onAuthStateChanged((user) => {
-    if (!user) {
+    if (!user || !ADMIN_EMAILS.includes(user.email)) {
         window.location.replace('../index.html');
         return;
     }

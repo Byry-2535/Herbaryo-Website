@@ -163,13 +163,8 @@ async function saveNewUserProfile(user, displayNameInput) {
         displayName: displayName,
         photoURL: user.photoURL || '',
         herbsMastered: 0,
-        points: 0,
-        progress: {},
-        createdAt: firebase.database.ServerValue.TIMESTAMP,
-        lastPlayed: firebase.database.ServerValue.TIMESTAMP
+        progress: {}
     });
-    
-    console.log('Profile saved successfully');
 }
 
 function resetLoginButton() {
@@ -222,4 +217,13 @@ document.querySelectorAll('.nav-menu a[href^="#"]').forEach(link => {
         hamburgerBtn.classList.remove('active');
         document.body.classList.remove('menu-open');
     });
+});
+
+document.addEventListener('click', (e) => {
+    if (navMenu.classList.contains('active') && 
+        !document.querySelector('.nav-container').contains(e.target)) {
+        navMenu.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.classList.remove('menu-open');
+    }
 });
