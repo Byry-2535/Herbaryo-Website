@@ -81,21 +81,10 @@ function displayUsers(users) {
             <td>🌿 ${user.herbsMastered}/10</td>
             <td>🏆 ${user.points}</td>
             <td>
-                <button class="action-btn btn-reset" onclick="resetProgress('${user.uid}')">Reset</button>
                 <button class="action-btn btn-delete" onclick="deleteUser('${user.uid}')">Delete</button>
             </td>
         </tr>
     `).join('');
-}
-
-function resetProgress(uid) {
-    if (confirm('Reset this player\'s progress?')) {
-        db.ref(`herbaryo-users/${uid}`).update({
-            herbsMastered: 0,
-            points: 0,
-            progress: {}
-        });
-    }
 }
 
 function deleteUser(uid) {

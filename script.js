@@ -90,7 +90,7 @@ async function checkUserProfile(user) {
 }
 
 function showUsernameModal(user) {
-    console.log('Showing username modal for:', user.email);
+    console.log('Showing registration modal for:', user.email);
     loading.style.display = 'none';
     
     loginContent.style.display = 'block';
@@ -98,10 +98,25 @@ function showUsernameModal(user) {
         <div style="text-align: center; padding: 2rem;">
             <h2 style="color: #2e7d32; margin-bottom: 1rem; font-size: 1.8rem;">🌿 Welcome ${user.displayName || 'Herbalist'}!</h2>
             <p style="color: #666; margin-bottom: 2rem; font-size: 1.1rem;">
-                Create your Herbalist username:
+                Complete your Herbalist profile:
             </p>
+            
+            <!-- Username -->
             <input type="text" id="usernameInput" placeholder="HerbalistJuan" maxlength="20" value=""
                    style="width: 100%; padding: 1.2rem; border: 2px solid #a5d6a7; border-radius: 12px; font-size: 1.1rem; margin-bottom: 1.5rem; font-family: inherit; box-sizing: border-box;">
+            
+            <!-- Gender Selection -->
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-bottom: 1.5rem;">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 1.1rem;">
+                    <input type="radio" name="gender" value="male" id="maleRadio" checked style="width: 20px; height: 20px;">
+                    <span>♂ Male</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 1.1rem;">
+                    <input type="radio" name="gender" value="female" id="femaleRadio" style="width: 20px; height: 20px;">
+                    <span>♀ Female</span>
+                </label>
+            </div>
+            
             <div style="display: flex; gap: 1rem; justify-content: center;">
                 <button id="createProfileBtn" style="flex: 1; max-width: 150px; padding: 1rem 1.5rem; background: linear-gradient(45deg, #4caf50, #66bb6a); color: white; border: none; border-radius: 25px; font-weight: 600; font-size: 1rem; cursor: pointer;">
                     Create Profile
@@ -121,6 +136,7 @@ function showUsernameModal(user) {
 
 async function createProfile(user) {
     const usernameInput = document.getElementById('usernameInput').value.trim();
+    const gender = document.querySelector('input[name="gender"]:checked').value;
     
     if (!usernameInput || usernameInput.length < 3) {
         showError('Display name must be 3+ characters!');
@@ -131,9 +147,8 @@ async function createProfile(user) {
     loginContent.style.display = 'none';
     
     try {
-        await saveNewUserProfile(user, usernameInput);
+        await saveNewUserProfile(user, usernameInput, gender);
         window.location.replace('./dashboard/dashboard.html');
-        closeLoginModal();
     } catch (error) {
         console.error('Create profile error:', error);
         showError('Failed to save profile.');
@@ -141,20 +156,21 @@ async function createProfile(user) {
 }
 
 async function skipProfile(user) {
+    const gender = document.querySelector('input[name="gender"]:checked').value;
+    
     loading.style.display = 'flex';
     loginContent.style.display = 'none';
     
     try {
-        await saveNewUserProfile(user, null);
+        await saveNewUserProfile(user, null, gender);
         window.location.replace('./dashboard/dashboard.html');
-        closeLoginModal();
     } catch (error) {
         console.error('Skip profile error:', error);
         showError('Failed to save profile.');
     }
 }
 
-async function saveNewUserProfile(user, displayNameInput) {
+async function saveNewUserProfile(user, displayNameInput, gender) {
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
     const displayName = displayNameInput || user.displayName || 'Herbalist';
     
@@ -163,7 +179,10 @@ async function saveNewUserProfile(user, displayNameInput) {
         displayName: displayName,
         photoURL: user.photoURL || '',
         herbsMastered: 0,
-        progress: {}
+        progress: {},
+        gender: gender,
+        aurels: 0,
+        aetherion: 0
     });
 }
 

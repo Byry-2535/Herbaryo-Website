@@ -924,6 +924,24 @@ html {
     font-weight: 400;
 }
 
+input[type="radio"] {
+    accent-color: #4caf50;
+    cursor: pointer;
+}
+
+input[type="radio"]:hover {
+    transform: scale(1.1);
+}
+
+@media (max-width: 480px) {
+    .spinner { width: 24px; height: 24px; }
+}
+
+.login-btn:focus, .google-btn:focus {
+    outline: 3px solid #4caf50;
+    outline-offset: 2px;
+}
+
 .bawang-bg { background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important; }
 .sambong-bg { background: linear-gradient(135deg, #e1f5fe, #b3e5fc) !important; }
 .tsaang-bg { background: linear-gradient(135deg, #e0f2f1, #b2dfdb) !important; }

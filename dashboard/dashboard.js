@@ -30,6 +30,9 @@ function updateUserUI(userData) {
     
     document.getElementById('welcomeText').textContent = `Welcome back, ${displayName}!`;
     document.getElementById('userEmail').textContent = email;
+    document.getElementById('aurelsCount').textContent = userData.aurels || 0;
+    document.getElementById('aetherionCount').textContent = userData.aetherion || 0;
+    document.getElementById('genderIcon').textContent = userData.gender === 'male' ? '♂' : '♀';
 }
 
 function updateStats(herbsMastered) {
@@ -96,17 +99,14 @@ auth.onAuthStateChanged((user) => {
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
     userRef.on('value', (snapshot) => {
         const userData = snapshot.val();
-        const displayName = userData?.displayName || user.displayName || 'Herbalist';
-        const email = userData?.email || user.email;
-        
-        updateUserUI({ displayName, email });
+        updateUserUI(userData);
         updateStats(userData?.herbsMastered || 0);
-        currentUserData = { displayName, email };
-        
+        currentUserData = userData || {};
         const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
         const adminBtn = document.getElementById('adminBtn');
-        adminBtn.style.display = ADMIN_EMAILS.includes(email) ? 'inline-block' : 'none';
-        if (ADMIN_EMAILS.includes(email)) {
+        adminBtn.style.display = ADMIN_EMAILS.includes(userData?.email) ? 'inline-block' : 'none';
+        document.getElementById('genderText').textContent = userData.gender === 'male' ? 'Male' : 'Female';
+        if (ADMIN_EMAILS.includes(userData?.email)) {
             adminBtn.onclick = () => window.location.href = '../admin/admin.html';
         }
     });

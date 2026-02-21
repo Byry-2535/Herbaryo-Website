@@ -127,17 +127,12 @@ th {
     transition: all 0.3s;
 }
 
-.btn-reset {
-    background: #ff9800;
-    color: white;
-}
-
 .btn-delete {
     background: #f44336;
     color: white;
 }
 
-.btn-reset:hover, .btn-delete:hover {
+.btn-delete:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
