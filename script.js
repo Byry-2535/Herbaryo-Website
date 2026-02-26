@@ -224,10 +224,23 @@ auth.onAuthStateChanged((user) => {
 
 const hamburgerBtn = document.getElementById('hamburgerBtn');
 const navMenu = document.getElementById('navMenu');
+
 hamburgerBtn.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
+    const isActive = navMenu.classList.toggle('active');
     hamburgerBtn.classList.toggle('active');
     document.body.classList.toggle('menu-open');
+    
+    hamburgerBtn.setAttribute('aria-expanded', isActive);
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+        navMenu.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.classList.remove('menu-open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+        hamburgerBtn.focus();
+    }
 });
 
 document.querySelectorAll('.nav-menu a[href^="#"]').forEach(link => {

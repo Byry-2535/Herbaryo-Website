@@ -106,5 +106,12 @@
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
         <script src="../script.js"></script>
+        <script>
+        document.getElementById('hamburgerBtn').onclick = function() {
+            document.getElementById('navMenu').classList.toggle('active');
+            document.querySelector('.hamburger').classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+        }
+        </script>
     </body>
 </html>

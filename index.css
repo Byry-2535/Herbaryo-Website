@@ -2,6 +2,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
@@ -441,6 +443,7 @@ body {
     
     .nav-menu {
         gap: 1rem;
+        -webkit-overflow-scrolling: touch;
     }
     
     .hero-buttons {
@@ -717,9 +720,20 @@ html {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 12px;
     gap: 4px;
-    z-index: 1001;
+    z-index: 1003;
+    position: relative;
+    width: 44px;
+    height: 44px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.hamburger:hover {
+    background: rgba(255,255,255,0.2);
 }
 
 .hamburger span {
@@ -727,7 +741,7 @@ html {
     height: 3px;
     background: #2e7d32;
     border-radius: 3px;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     transform-origin: center;
 }
 
@@ -746,7 +760,7 @@ html {
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
-        z-index: 1002;
+        z-index: 1004 !important;
     }
     
     .nav-menu {
@@ -764,6 +778,7 @@ html {
         gap: 2rem;
         transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         box-shadow: -10px 0 30px rgba(46, 125, 50, 0.2);
+        z-index: 1003;
     }
     
     .nav-menu.active {
@@ -778,7 +793,7 @@ html {
         width: 100vw;
         height: 100vh;
         background: rgba(0, 0, 0, 0.5);
-        z-index: 1001;
+        z-index: 1000;
     }
     
     body.menu-open {
@@ -940,6 +955,28 @@ input[type="radio"]:hover {
 .login-btn:focus, .google-btn:focus {
     outline: 3px solid #4caf50;
     outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+    .nav-container {
+        position: relative;
+    }
+    
+    .hamburger {
+        order: 3;
+        margin-left: auto;
+        z-index: 1004 !important;
+    }
+    
+    .logo {
+        order: 1;
+        z-index: 1004;
+    }
+    
+    .nav-menu {
+        order: 2;
+        z-index: 1003;
+    }
 }
 
 .bawang-bg { background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important; }
