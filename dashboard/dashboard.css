@@ -393,3 +393,33 @@ html {
     transform: translateY(-3px);
     box-shadow: 0 15px 50px rgba(46,125,50,0.2);
 }
+
+.transactions-table {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(46, 125, 50, 0.15);
+    border-top: 4px solid #ff9800;
+}
+
+.transactions-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.transactions-table th,
+.transactions-table td {
+    padding: 1.2rem;
+    text-align: left;
+    border-bottom: 1px solid #e8f5e9;
+}
+
+.transactions-table th {
+    background: #f1f8e9;
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.transactions-table tbody tr:hover {
+    background: #f8f9fa;
+}

@@ -33,10 +33,30 @@ function updateUserUI(userData) {
     document.getElementById('aurelsCount').textContent = userData.aurels || 0;
     document.getElementById('aetherionCount').textContent = userData.aetherion || 0;
     document.getElementById('genderIcon').textContent = userData.gender === 'male' ? '♂' : '♀';
+
+    displayTransactions(userData);
 }
 
 function updateStats(herbsMastered) {
     document.querySelector('.stat-card .stat-number').textContent = `🌿 ${herbsMastered}/10`;
+}
+
+function displayTransactions(userData) {
+    const tbody = document.getElementById('transactionsBody');
+    const transactions = userData.transactions || {};
+    
+    if (Object.keys(transactions).length === 0) {
+        tbody.innerHTML = `<tr><td>No transactions</td><td>-</td><td>-</td></tr>`;
+        return;
+    }
+    
+    tbody.innerHTML = Object.entries(transactions).map(([id, tx]) => `
+        <tr>
+            <td>${new Date(tx.date).toLocaleDateString()}</td>
+            <td>${tx.aetherion || 0}</td>
+            <td>${tx.aurels || 0}</td>
+        </tr>
+    `).reverse().join('');
 }
 
 const editBtn = document.getElementById('editBtn');
@@ -102,7 +122,7 @@ auth.onAuthStateChanged((user) => {
         updateUserUI(userData);
         updateStats(userData?.herbsMastered || 0);
         currentUserData = userData || {};
-        const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
+        const ADMIN_EMAILS = window.HERBARYO_CONFIG?.ADMIN_EMAILS || [];
         const adminBtn = document.getElementById('adminBtn');
         adminBtn.style.display = ADMIN_EMAILS.includes(userData?.email) ? 'inline-block' : 'none';
         document.getElementById('genderText').textContent = userData.gender === 'male' ? 'Male' : 'Female';

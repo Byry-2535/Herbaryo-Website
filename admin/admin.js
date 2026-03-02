@@ -8,7 +8,7 @@ const firebaseConfig = {
     appId: "1:874293361860:web:65808ac513134660fcdd91"
 };
 
-const ADMIN_EMAILS = window.HERBARYO_CONFIG.ADMIN_EMAILS;
+const ADMIN_EMAILS = window.HERBARYO_CONFIG?.ADMIN_EMAILS || [];
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
@@ -19,7 +19,18 @@ auth.onAuthStateChanged((user) => {
         return;
     }
     
-    document.getElementById('adminUser').textContent = user.displayName || user.email;
+    const avatar = document.getElementById('adminAvatar');
+    const displayName = user.displayName || user.email;
+    avatar.textContent = displayName.charAt(0).toUpperCase();
+    avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
+
+    if (user.photoURL) {
+        avatar.style.backgroundImage = `url(${user.photoURL})`;
+        avatar.classList.add('has-photo');
+    } else {
+        avatar.style.backgroundImage = '';
+        avatar.classList.remove('has-photo');
+    }
     loadUsers();
 });
 
@@ -81,10 +92,48 @@ function displayUsers(users) {
             <td>🌿 ${user.herbsMastered}/10</td>
             <td>🏆 ${user.points}</td>
             <td>
-                <button class="action-btn btn-delete" onclick="deleteUser('${user.uid}')">Delete</button>
+                <button class="action-btn btn-view" data-uid="${user.uid}">View</button>
             </td>
         </tr>
     `).join('');
+
+    tbody.addEventListener('click', (e) => {
+        if (e.target.classList.contains('btn-view')) {
+            const uid = e.target.dataset.uid;
+            viewUserData(uid);
+        }
+    });
+}
+
+function viewUserData(uid) {
+    const userRef = db.ref(`herbaryo-users/${uid}`);
+    userRef.once('value').then((snapshot) => {
+        const userData = snapshot.val();
+        showUserModal(userData);
+    });
+}
+
+function showUserModal(userData) {
+    const modal = document.createElement('div');
+    modal.className = 'user-modal';
+    modal.innerHTML = `
+        <div class="user-modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>${userData.displayName || 'Unknown'}</h2>
+            <div class="user-data-grid">
+                <div><strong>Email:</strong> ${userData.email}</div>
+                <div><strong>Herbs Mastered:</strong> 🌿 ${userData.herbsMastered || 0}/10</div>
+                <div><strong>Aurels:</strong> 💰 ${userData.aurels || 0}</div>
+                <div><strong>Aetherion:</strong> ✨ ${userData.aetherion || 0}</div>
+                <div><strong>Gender:</strong> ${userData.gender === 'male' ? 'Male' : 'Female'}</div>
+                <div><strong>Progress:</strong> ${Object.keys(userData.progress || {}).length} herbs unlocked</div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+    
+    modal.querySelector('.modal-close').onclick = () => modal.remove();
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
 }
 
 function deleteUser(uid) {
