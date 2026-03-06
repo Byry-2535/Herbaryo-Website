@@ -13,10 +13,10 @@ const auth = firebase.auth();
 const db = firebase.database();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-function showError(message) {
+function showError(message, isSuccess = false) {
     clearError();
     const errorEl = document.createElement('div');
-    errorEl.className = 'error-message';
+    errorEl.className = isSuccess ? 'success-message' : 'error-message';
     errorEl.textContent = message;
     errorContainer.appendChild(errorEl);
     setTimeout(() => errorEl.remove(), 5000);
@@ -76,20 +76,12 @@ async function handleEmailLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
     
-    if (!email || !password) return showError('Please fill all fields');
-    
     showLoading();
     try {
         const result = await auth.signInWithEmailAndPassword(email, password);
         const user = result.user;
-
-        if (!user.emailVerified) {
-            await auth.signOut();
-            showError('Please verify your email before logging in.');
-            return;
-        }
-
         await checkUserProfile(user);
+        
     } catch (error) {
         showError(getErrorMessage(error.code));
     } finally {
@@ -109,10 +101,13 @@ async function handleEmailSignup() {
     showLoading();
     try {
         const result = await auth.createUserWithEmailAndPassword(email, password);
-        await result.user.sendEmailVerification();
-        await checkUserProfile(result.user);
+        await checkUserProfile(result.user);  // Go straight to profile
     } catch (error) {
-        showError(getErrorMessage(error.code));
+        if (error.code === 'auth/email-already-in-use') {
+            showError('Email already registered. Try login.');
+        } else {
+            showError(getErrorMessage(error.code));
+        }
     } finally {
         hideLoading();
     }
@@ -122,9 +117,10 @@ function getErrorMessage(code) {
     const errors = {
         'auth/user-not-found': 'No account found',
         'auth/wrong-password': 'Wrong password',
-        'auth/email-already-in-use': 'Email already exists',
-        'auth/weak-password': 'Password too weak',
-        'auth/invalid-email': 'Invalid email'
+        'auth/invalid-email': 'Invalid email format',
+        'auth/user-disabled': 'Account disabled',
+        'auth/too-many-requests': 'Too many attempts. Try later',
+        'auth/network-request-failed': 'No internet connection'
     };
     return errors[code] || 'Login failed. Try again.';
 }
@@ -142,32 +138,16 @@ function clearError() {
 }
 
 async function checkUserProfile(user) {
-    console.log('Checking profile for UID:', user.uid);
+    if (!user) return;
     
-    try {
-        if (!user.emailVerified) {
-            showError('Please verify your email before logging in.');
-            await auth.signOut();
-            return;
-        }
-
-        const userRef = db.ref(`herbaryo-users/${user.uid}`);
-        const snapshot = await userRef.once('value');
-        const data = snapshot.val();
-        
-        if (data && data.displayName) {
-            if (window.HERBARYO_CONFIG?.ADMIN_EMAILS?.includes(user.email)) {
-                window.location.replace('./admin/admin.html');
-            } else {
-                window.location.replace('./dashboard/dashboard.html');
-            }
-            closeLoginModal();
-        } else {
-            showUsernameModal(user);
-        }
-    } catch (error) {
-        console.error('Profile check error:', error);
-        showError('Database error. Please try again.');
+    const userRef = db.ref(`herbaryo-users/${user.uid}`);
+    const snapshot = await userRef.once('value');
+    const data = snapshot.val();
+    
+    if (data && data.displayName) {
+        window.location.replace('./dashboard/dashboard.html');
+    } else {
+        showUsernameModal(user);
     }
 }
 
@@ -177,11 +157,10 @@ function showUsernameModal(user) {
     const activeTab = document.querySelector('.tab-content.active');
     activeTab.innerHTML = `
         <div style="text-align: center; padding: 1rem;">
-            <h2 style="color: #2e7d32; margin-bottom: 1rem;">🌿 Welcome ${user.displayName || 'Herbalist'}!</h2>
-            <p style="color: #666; margin-bottom: 1rem;">Check your email to verify your account.</p>
-            <p style="color: #666; margin-bottom: 1.5rem;">We sent a verification link to ${user.email}.</p>
-            <input type="text" id="usernameInput" placeholder="HerbalistJuan" maxlength="20" style="width: 100%; padding: 1rem; border: 2px solid #a5d6a7; border-radius: 12px; margin-bottom: 1rem;">
-            <div style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem;">
+            <h2 style="color: #2e7d32; margin-bottom: 1.5rem;">🌿 Welcome, Herbalist!</h2>
+            <p style="color: #666; margin-bottom: 2rem;">Choose your username to get started:</p>
+            <input type="text" id="usernameInput" placeholder="HerbalistJuan" maxlength="20" style="width: 100%; padding: 1rem; border: 2px solid #a5d6a7; border-radius: 12px; margin-bottom: 1.5rem;">
+            <div style="display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap;">
                 <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
                     <input type="radio" name="gender" value="male" checked> ♂ Male
                 </label>
@@ -189,22 +168,12 @@ function showUsernameModal(user) {
                     <input type="radio" name="gender" value="female"> ♀ Female
                 </label>
             </div>
-            <button id="emailResendBtn" class="btn-secondary" style="padding: 0.8rem 1.5rem; font-size: 0.95rem;">Resend verification email</button>
-            <div style="margin-top: 1rem;">
-                <button id="createProfileBtn" class="btn-primary" style="padding: 1rem 2rem;">Create Profile</button>
-                <button id="skipBtn" class="btn-secondary" style="margin-left: 0.5rem; padding: 1rem 2rem; background: white; color: #2e7d32; border: 2px solid #a5d6a7;">Skip</button>
+            <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+                <button id="createProfileBtn" class="btn-primary" style="padding: 1rem 2rem; min-width: 140px;">Create Profile</button>
+                <button id="skipBtn" class="btn-secondary" style="padding: 1rem 2rem; min-width: 100px; background: white; color: #2e7d32; border: 2px solid #a5d6a7;">Skip</button>
             </div>
         </div>
     `;
-
-    document.getElementById('emailResendBtn').addEventListener('click', async () => {
-        try {
-            await user.sendEmailVerification();
-            showError('Verification email resent. Check your inbox.');
-        } catch (e) {
-            showError('Failed to resend verification email.');
-        }
-    });
 
     setTimeout(() => {
         document.getElementById('createProfileBtn').addEventListener('click', () => createProfile(user));
@@ -256,7 +225,7 @@ async function saveNewUserProfile(user, displayNameInput, gender) {
     });
 }
 
-auth.onAuthStateChanged((user) => {
+auth.onAuthStateChanged(async (user) => {
     if (user) {
         loginTrigger.classList.add('hidden');
     } else {

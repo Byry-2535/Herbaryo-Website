@@ -1078,3 +1078,14 @@ input[type="radio"]:hover {
 @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.01ms !important; }
 }
+
+.success-message {
+    background: #e8f5e9 !important;
+    color: #2e7d32 !important;
+    padding: 1rem;
+    border-radius: 10px;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    border-left: 4px solid #4caf50 !important;
+    animation: slideDown 0.3s ease;
+}
