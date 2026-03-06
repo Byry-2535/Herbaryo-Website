@@ -480,6 +480,7 @@ body {
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 100px;
 }
 
 .section-subtitle {
@@ -746,7 +747,7 @@ html {
 }
 
 .hamburger.active span:nth-child(1) {
-    transform: rotate(45deg) translate(6px, 6px);
+    transform: rotate(-45deg) translate(-6px, 6px);
 }
 
 .hamburger.active span:nth-child(2) {
@@ -754,7 +755,7 @@ html {
 }
 
 .hamburger.active span:nth-child(3) {
-    transform: rotate(-45deg) translate(6px, -6px);
+    transform: rotate(45deg) translate(-6px, -6px);
 }
 
 @media (max-width: 768px) {
@@ -979,13 +980,101 @@ input[type="radio"]:hover {
     }
 }
 
-.bawang-bg { background: linear-gradient(135deg, #f3e5f5, #e1bee7) !important; }
-.sambong-bg { background: linear-gradient(135deg, #e1f5fe, #b3e5fc) !important; }
-.tsaang-bg { background: linear-gradient(135deg, #e0f2f1, #b2dfdb) !important; }
-.ampalaya-bg { background: linear-gradient(135deg, #f1f8e9, #dcedc8) !important; }
-.yerba-bg { background: linear-gradient(135deg, #fff3e0, #ffe0b2) !important; }
-.ulasimang-bg { background: linear-gradient(135deg, #fce4ec, #f8bbd9) !important; }
-.bayabas-bg { background: linear-gradient(135deg, #e8f5e9, #c8e6c9) !important; }
-.akapulko-bg { background: linear-gradient(135deg, #fff3e0, #ffcc80) !important; }
-.lagundi-bg { background: linear-gradient(135deg, #c8e6c9, #a5d6a7) !important; }
-.niyog-bg { background: linear-gradient(135deg, #e3f2fd, #bbdefb) !important; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.form-group { margin-bottom: 1.5rem; }
+.form-group input { 
+    width: 100%; padding: 1.2rem; border: 2px solid #e0e0e0; 
+    border-radius: 12px; font-size: 1rem; font-family: 'Poppins', sans-serif; 
+    transition: all 0.3s; box-sizing: border-box; 
+}
+
+.form-group input:focus { outline: none; border-color: #4caf50; box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1); }
+.full-width { width: 100%; }
+.divider { position: relative; text-align: center; margin: 2rem 0; color: #999; }
+.divider::before { content: ''; position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: #e0e0e0; }
+.divider span { background: white; padding: 0 1.5rem; font-size: 0.9rem; }
+.auth-text { text-align: center; margin-top: 1.5rem; color: #666; font-size: 0.95rem; }
+.auth-text a { color: #4caf50; font-weight: 500; text-decoration: none; }
+.auth-text a:hover { text-decoration: underline; }
+
+#emailLoginBtn, #emailSignupBtn {
+    width: 100%;
+    padding: 1.2rem;
+    margin-bottom: 1rem;
+    border: none;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+#emailLoginBtn {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+}
+
+#emailLoginBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
+
+#emailSignupBtn {
+    background: linear-gradient(45deg, #66bb6a, #81c784);
+    color: white;
+    box-shadow: 0 4px 15px rgba(102, 187, 106, 0.3);
+}
+
+#emailSignupBtn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 187, 106, 0.4);
+}
+
+#emailLoginBtn:disabled, #emailSignupBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#loginTab, #signupTab {
+    animation: slideDown 0.3s ease;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.forgot-password {
+    color: #4caf50;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+#emailLoginBtn, #emailSignupBtn {
+    position: relative;
+    overflow: hidden;
+}
+#emailLoginBtn:disabled, #emailSignupBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+    .hamburger { padding: 16px; width: 52px; height: 52px; }
+    .nav-menu li { padding: 12px 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; }
+}
