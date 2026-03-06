@@ -466,6 +466,10 @@ body {
         flex-direction: column;
         width: 100%;
     }
+
+    .nav-menu a {
+        padding: 0.8rem 1.2rem;
+    }
     
     .login-btn {
         width: 100%;
@@ -1061,10 +1065,6 @@ input[type="radio"]:hover {
     text-decoration: underline;
 }
 
-#emailLoginBtn, #emailSignupBtn {
-    position: relative;
-    overflow: hidden;
-}
 #emailLoginBtn:disabled, #emailSignupBtn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
