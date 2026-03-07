@@ -51,7 +51,45 @@ function loadUsers() {
         
         updateStats(users);
         displayUsers(users);
+        loadTransactions();
     });
+}
+
+function loadTransactions() {
+    
+    // Simulate global transactions DB structure - Placeholder lng muna
+    const fakeTransactions = {
+        '2026-03-15': { orders: 5, aetherion: 250, revenue: 499.00 },
+        '2026-03-14': { orders: 3, aetherion: 150, revenue: 299.00 },
+        '2026-03-13': { orders: 8, aetherion: 400, revenue: 799.00 },
+        '2026-03-12': { orders: 2, aetherion: 75, revenue: 149.00 },
+        '2026-03-11': { orders: 6, aetherion: 300, revenue: 599.00 }
+    };
+    
+    displayDailyTransactions(fakeTransactions);
+}
+
+function displayDailyTransactions(transactions) {
+    const tbody = document.getElementById('transactionsTbody');
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:#666;">🔄 Loading daily transactions...</td></tr>';
+    
+    setTimeout(() => {
+        if (Object.keys(transactions).length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#666;">No transactions yet</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = Object.entries(transactions)
+            .sort(([a], [b]) => new Date(b) - new Date(a))
+            .map(([date, data]) => `
+                <tr>
+                    <td>${new Date(date).toLocaleDateString('en-PH')}</td>
+                    <td>${data.orders}</td>
+                    <td>+${data.aetherion}</td>
+                    <td>₱${data.revenue.toFixed(2)}</td>
+                </tr>
+            `).join('');
+    }, 800);
 }
 
 function updateStats(users) {

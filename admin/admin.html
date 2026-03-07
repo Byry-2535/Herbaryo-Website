@@ -57,6 +57,24 @@
                     </table>
                 </div>
             </section>
+            <section class="transactions-section">
+                <h2>💳 Daily Transactions</h2>
+                <div class="table-container">
+                    <table id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Total Orders</th>
+                                <th>Total Aetherion</th>
+                                <th>Total Revenue (PHP)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTbody">
+                            <tr><td colspan="4">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
         </main>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
