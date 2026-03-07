@@ -21,7 +21,7 @@ auth.onAuthStateChanged((user) => {
     
     const avatar = document.getElementById('adminAvatar');
     const displayName = user.displayName || user.email;
-    avatar.textContent = displayName.charAt(0).toUpperCase();
+    avatar.innerHTML = '';
     avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
 
     if (user.photoURL) {

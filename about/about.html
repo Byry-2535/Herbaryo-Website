@@ -105,13 +105,45 @@
         </footer>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+        <script src="../config.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
         <script src="../script.js"></script>
         <script>
-        document.getElementById('hamburgerBtn').onclick = function() {
-            document.getElementById('navMenu').classList.toggle('active');
-            document.querySelector('.hamburger').classList.toggle('active');
-            document.body.classList.toggle('menu-open');
-        }
+            document.addEventListener('DOMContentLoaded', () => {
+                const hamburgerBtn = document.getElementById('hamburgerBtn');
+                const navMenu = document.getElementById('navMenu');
+
+                if (!hamburgerBtn || !navMenu) {
+                    console.error('Hamburger or navMenu not found');
+                    return;
+                }
+
+                hamburgerBtn.addEventListener('click', () => {
+                    navMenu.classList.toggle('active');
+                    hamburgerBtn.classList.toggle('active');
+                    document.body.classList.toggle('menu-open');
+                    const expanded = navMenu.classList.contains('active');
+                    hamburgerBtn.setAttribute('aria-expanded', expanded);
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (navMenu.classList.contains('active') &&
+                        !document.querySelector('.nav-container').contains(e.target)) {
+                        navMenu.classList.remove('active');
+                        hamburgerBtn.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                    }
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+                        navMenu.classList.remove('active');
+                        hamburgerBtn.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        hamburgerBtn.focus();
+                    }
+                });
+            });
         </script>
     </body>
 </html>

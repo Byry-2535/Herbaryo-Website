@@ -16,9 +16,8 @@ let currentUserData = {};
 function updateUserUI(userData) {
     const avatar = document.getElementById('userAvatar');
     const displayName = userData.displayName || 'Herbalist';
-    const email = userData.email;
-    
-    avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
+    const email = userData.email;  
+    avatar.innerHTML = '';
     
     if (userData.photoURL) {
         avatar.style.backgroundImage = `url(${userData.photoURL})`;
@@ -43,18 +42,26 @@ function updateStats(herbsMastered) {
 
 function displayTransactions(userData) {
     const tbody = document.getElementById('transactionsBody');
-    const transactions = userData.transactions || {};
+    
+    // SIMULATE Firebase transactions data - Placeholder lng muna to
+    const fakeTransactions = {
+        'tx1': { date: 1739980800000, aetherion: 50, phpAmount: 99.00 },
+        'tx2': { date: 1740124800000, aetherion: 100, phpAmount: 199.00 },
+        'tx3': { date: 1740768000000, aetherion: 25, phpAmount: 49.00 }
+    };
+    
+    const transactions = userData.transactions || fakeTransactions;
     
     if (Object.keys(transactions).length === 0) {
-        tbody.innerHTML = `<tr><td>No transactions</td><td>-</td><td>-</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: #666;">No transactions yet</td></tr>`;
         return;
     }
     
     tbody.innerHTML = Object.entries(transactions).map(([id, tx]) => `
         <tr>
-            <td>${new Date(tx.date).toLocaleDateString()}</td>
-            <td>${tx.aetherion || 0}</td>
-            <td>${tx.aurels || 0}</td>
+            <td>${new Date(tx.date).toLocaleDateString('en-PH')}</td>
+            <td>+${tx.aetherion}</td>
+            <td>₱${(tx.phpAmount || 0).toFixed(2)}</td>
         </tr>
     `).reverse().join('');
 }
@@ -122,6 +129,7 @@ auth.onAuthStateChanged((user) => {
         updateUserUI(userData);
         updateStats(userData?.herbsMastered || 0);
         currentUserData = userData || {};
+        displayTransactions(userData);
         const ADMIN_EMAILS = window.HERBARYO_CONFIG?.ADMIN_EMAILS || [];
         const adminBtn = document.getElementById('adminBtn');
         adminBtn.style.display = ADMIN_EMAILS.includes(userData?.email) ? 'inline-block' : 'none';

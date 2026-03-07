@@ -127,7 +127,10 @@
 
 .photo-fallback {
     position: absolute;
-    font-size: 8rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 6rem;
     opacity: 1;
     z-index: 2;
     transition: opacity 0.3s ease;
@@ -137,15 +140,31 @@
     opacity: 0;
 }
 
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1rem 0;
+    box-shadow: 0 2px 20px rgba(46, 125, 50, 0.1);
+    z-index: 1000;
+}
+
 .hamburger {
     display: none;
     flex-direction: column;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 5px;
+    padding: 16px;
     gap: 4px;
-    z-index: 1001;
+    width: 52px;
+    height: 52px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    z-index: 1004;
 }
 
 .hamburger span {
@@ -170,11 +189,10 @@
 }
 
 @media (max-width: 768px) {
-    .hamburger { 
-        display: flex; 
-        z-index: 1004 !important; 
+    .hamburger {
+        display: flex;
     }
-    
+
     .nav-menu {
         position: fixed;
         top: 0;
@@ -192,11 +210,11 @@
         box-shadow: -10px 0 30px rgba(46, 125, 50, 0.2);
         z-index: 1003;
     }
-    
-    .nav-menu.active { 
-        right: 0; 
+
+    .nav-menu.active {
+        right: 0;
     }
-    
+
     body.menu-open::before {
         content: '';
         position: fixed;
@@ -206,9 +224,10 @@
         height: 100vh;
         background: rgba(0, 0, 0, 0.5);
         z-index: 1000;
+        pointer-events: none;
     }
-    
-    body.menu-open { 
-        overflow: hidden; 
+
+    body.menu-open {
+        overflow: hidden;
     }
 }
