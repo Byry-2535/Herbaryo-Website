@@ -22,7 +22,6 @@ function showError(message, isSuccess = false) {
     setTimeout(() => errorEl.remove(), 5000);
 }
 
-const loginTrigger = document.getElementById('loginTrigger');
 const loginModal = document.getElementById('loginModal');
 const closeModal = document.getElementById('closeModal');
 const loading = document.getElementById('loading');
@@ -53,12 +52,6 @@ document.getElementById('googleLogin').addEventListener('click', async () => {
     } finally {
         hideLoading();
     }
-});
-
-loginTrigger.addEventListener('click', (e) => {
-    e.preventDefault();
-    loginModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
 });
 
 closeModal.addEventListener('click', () => closeLoginModal());
@@ -225,11 +218,27 @@ async function saveNewUserProfile(user, displayNameInput, gender) {
     });
 }
 
-auth.onAuthStateChanged(async (user) => {
+auth.onAuthStateChanged((user) => {
+    const authBtn = document.getElementById('authBtn');
+    
     if (user) {
-        loginTrigger.classList.add('hidden');
+        authBtn.textContent = 'Logout';
+        authBtn.onclick = async (e) => {
+            e.preventDefault();
+            try {
+                await auth.signOut();
+                authBtn.textContent = 'Login →';
+            } catch (error) {
+                console.error('Logout failed:', error);
+            }
+        };
     } else {
-        loginTrigger.classList.remove('hidden');
+        authBtn.textContent = 'Login →';
+        authBtn.onclick = (e) => {
+            e.preventDefault();
+            loginModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        };
     }
 });
 
