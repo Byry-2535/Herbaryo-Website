@@ -412,3 +412,7 @@ html {
 .transactions-table tbody tr:hover {
     background: #f8f9fa;
 }
+
+.admin-btn {
+    display: none;
+}

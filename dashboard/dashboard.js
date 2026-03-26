@@ -123,6 +123,17 @@ auth.onAuthStateChanged((user) => {
         return;
     }
     
+    const adminRef = db.ref('admins/' + user.uid);
+    adminRef.once('value').then((adminSnapshot) => {
+        const adminBtn = document.getElementById('adminBtn');
+        if (adminSnapshot.exists()) {
+            adminBtn.style.display = 'inline-block';
+            adminBtn.onclick = () => window.location.href = '../admin/admin.html';
+        } else {
+            adminBtn.style.display = 'none';
+        }
+    });
+    
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
     userRef.on('value', (snapshot) => {
         const userData = snapshot.val();
@@ -130,13 +141,6 @@ auth.onAuthStateChanged((user) => {
         updateStats(userData?.herbsMastered || 0);
         currentUserData = userData || {};
         displayTransactions(userData);
-        const ADMIN_EMAILS = window.HERBARYO_CONFIG?.ADMIN_EMAILS || [];
-        const adminBtn = document.getElementById('adminBtn');
-        adminBtn.style.display = ADMIN_EMAILS.includes(userData?.email) ? 'inline-block' : 'none';
-        document.getElementById('genderText').textContent = userData.gender === 'male' ? 'Male' : 'Female';
-        if (ADMIN_EMAILS.includes(userData?.email)) {
-            adminBtn.onclick = () => window.location.href = '../admin/admin.html';
-        }
     });
 });
 

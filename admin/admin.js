@@ -8,36 +8,49 @@ const firebaseConfig = {
     appId: "1:874293361860:web:65808ac513134660fcdd91"
 };
 
-const ADMIN_EMAILS = window.HERBARYO_CONFIG?.ADMIN_EMAILS || [];
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
 auth.onAuthStateChanged((user) => {
-    if (!user || !ADMIN_EMAILS.includes(user.email)) {
+    if (!user) {
         window.location.replace('../index.html');
         return;
     }
-    
-    const avatar = document.getElementById('adminAvatar');
-    const displayName = user.displayName || user.email;
-    avatar.innerHTML = '';
-    avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
 
-    if (user.photoURL) {
-        avatar.style.backgroundImage = `url(${user.photoURL})`;
-        avatar.classList.add('has-photo');
-    } else {
-        avatar.style.backgroundImage = '';
-        avatar.classList.remove('has-photo');
-    }
-    loadUsers();
+    const adminRef = db.ref(`admins/${user.uid}`);
+
+    adminRef.once('value').then(snapshot => {
+        if (!snapshot.exists()) {
+            window.location.replace('../index.html');
+            return;
+        }
+
+        const avatar = document.getElementById('adminAvatar');
+        const displayName = user.displayName || user.email;
+
+        avatar.innerHTML = '';
+        avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
+
+        if (user.photoURL) {
+            avatar.style.backgroundImage = `url(${user.photoURL})`;
+            avatar.classList.add('has-photo');
+        } else {
+            avatar.style.backgroundImage = '';
+            avatar.classList.remove('has-photo');
+        }
+
+        loadUsers();
+        displayDailyTransactions();
+    });
 });
 
 function loadUsers() {
     const usersRef = db.ref('herbaryo-users');
+
     usersRef.on('value', (snapshot) => {
         const users = [];
+
         snapshot.forEach((child) => {
             const userData = child.val();
             users.push({
@@ -48,7 +61,7 @@ function loadUsers() {
                 points: userData.points || 0
             });
         });
-        
+
         updateStats(users);
         displayUsers(users);
         loadTransactions();
@@ -56,8 +69,18 @@ function loadUsers() {
 }
 
 function loadTransactions() {
-    
-    // Simulate global transactions DB structure - Placeholder lng muna
+    const fakeTransactions = {
+        '2026-03-15': { orders: 5, aetherion: 250, revenue: 499.00 },
+        '2026-03-14': { orders: 3, aetherion: 150, revenue: 299.00 },
+        '2026-03-13': { orders: 8, aetherion: 400, revenue: 799.00 },
+        '2026-03-12': { orders: 2, aetherion: 75, revenue: 149.00 },
+        '2026-03-11': { orders: 6, aetherion: 300, revenue: 599.00 }
+    };
+
+    displayDailyTransactions(fakeTransactions);
+}
+
+function displayDailyTransactions() {
     const fakeTransactions = {
         '2026-03-15': { orders: 5, aetherion: 250, revenue: 499.00 },
         '2026-03-14': { orders: 3, aetherion: 150, revenue: 299.00 },
@@ -66,30 +89,17 @@ function loadTransactions() {
         '2026-03-11': { orders: 6, aetherion: 300, revenue: 599.00 }
     };
     
-    displayDailyTransactions(fakeTransactions);
-}
-
-function displayDailyTransactions(transactions) {
     const tbody = document.getElementById('transactionsTbody');
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:2rem;color:#666;">🔄 Loading daily transactions...</td></tr>';
-    
-    setTimeout(() => {
-        if (Object.keys(transactions).length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#666;">No transactions yet</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = Object.entries(transactions)
-            .sort(([a], [b]) => new Date(b) - new Date(a))
-            .map(([date, data]) => `
-                <tr>
-                    <td>${new Date(date).toLocaleDateString('en-PH')}</td>
-                    <td>${data.orders}</td>
-                    <td>+${data.aetherion}</td>
-                    <td>₱${data.revenue.toFixed(2)}</td>
-                </tr>
-            `).join('');
-    }, 800);
+    tbody.innerHTML = Object.entries(fakeTransactions)
+        .sort(([a], [b]) => new Date(b) - new Date(a))
+        .map(([date, data]) => `
+            <tr>
+                <td>${new Date(date).toLocaleDateString('en-PH')}</td>
+                <td>${data.orders}</td>
+                <td>+${data.aetherion}</td>
+                <td>₱${data.revenue.toFixed(2)}</td>
+            </tr>
+        `).join('');
 }
 
 function updateStats(users) {
@@ -98,6 +108,7 @@ function updateStats(users) {
     const topPlayer = users.reduce((top, user) => 
         user.points > top.points ? user : top, { points: 0 }
     );
+
     document.getElementById('topPlayer').textContent = topPlayer.points || 0;
 }
 
@@ -113,6 +124,7 @@ function displayUsers(users) {
     }
     
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
     const filteredUsers = users.filter(user => 
         user.displayName.toLowerCase().includes(searchTerm) || 
         user.email.toLowerCase().includes(searchTerm)
@@ -135,12 +147,12 @@ function displayUsers(users) {
         </tr>
     `).join('');
 
-    tbody.addEventListener('click', (e) => {
+    tbody.onclick = (e) => {
         if (e.target.classList.contains('btn-view')) {
             const uid = e.target.dataset.uid;
             viewUserData(uid);
         }
-    });
+    };
 }
 
 function viewUserData(uid) {
@@ -154,6 +166,7 @@ function viewUserData(uid) {
 function showUserModal(userData) {
     const modal = document.createElement('div');
     modal.className = 'user-modal';
+
     modal.innerHTML = `
         <div class="user-modal-content">
             <button class="modal-close">&times;</button>
@@ -168,16 +181,11 @@ function showUserModal(userData) {
             </div>
         </div>
     `;
+
     document.body.appendChild(modal);
     
     modal.querySelector('.modal-close').onclick = () => modal.remove();
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
-}
-
-function deleteUser(uid) {
-    if (confirm('Delete this player permanently?')) {
-        db.ref(`herbaryo-users/${uid}`).remove();
-    }
 }
 
 document.getElementById('searchInput').addEventListener('input', () => {
