@@ -42,6 +42,11 @@ body {
     margin: 0;
 }
 
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
 .user-profile {
     display: flex;
     align-items: center;
