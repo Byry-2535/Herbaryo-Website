@@ -196,3 +196,8 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     await auth.signOut();
     window.location.replace('../index.html');
 });
+
+document.getElementById('scrollTop').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+});
