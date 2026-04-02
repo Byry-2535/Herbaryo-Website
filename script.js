@@ -127,7 +127,7 @@ function hideLoading() {
 }
 
 function clearError() {
-    errorContainer.innerHTML = '';
+    if (errorContainer) errorContainer.innerHTML = '';
 }
 
 async function checkUserProfile(user) {
