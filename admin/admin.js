@@ -52,7 +52,7 @@ function loadUsers() {
         const users = [];
 
         snapshot.forEach((child) => {
-            const userData = child.val();
+            const userData = child.val() || {};
             users.push({
                 uid: child.key,
                 displayName: userData.displayName || 'Unknown',
@@ -63,6 +63,7 @@ function loadUsers() {
         });
 
         updateStats(users);
+        users.sort((a, b) => b.points - a.points);
         displayUsers(users);
         loadTransactions();
     });
@@ -109,7 +110,7 @@ function updateStats(users) {
         user.points > top.points ? user : top, { points: 0 }
     );
 
-    document.getElementById('topPlayer').textContent = topPlayer.points || 0;
+    document.getElementById('topPlayer').textContent = `${topPlayer.displayName || 'N/A'} (${topPlayer.points || 0})`;
 }
 
 let allUsers = [];
@@ -123,8 +124,7 @@ function displayUsers(users) {
         return;
     }
     
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-
+    const searchTerm = (document.getElementById('searchInput').value || '').toLowerCase();
     const filteredUsers = users.filter(user => 
         user.displayName.toLowerCase().includes(searchTerm) || 
         user.email.toLowerCase().includes(searchTerm)
@@ -143,6 +143,7 @@ function displayUsers(users) {
             <td>🏆 ${user.points}</td>
             <td>
                 <button class="action-btn btn-view" data-uid="${user.uid}">View</button>
+                <button class="action-btn btn-delete" data-uid="${user.uid}">Delete</button>
             </td>
         </tr>
     `).join('');
@@ -152,13 +153,20 @@ function displayUsers(users) {
             const uid = e.target.dataset.uid;
             viewUserData(uid);
         }
+
+        if (e.target.classList.contains('btn-delete')) {
+            const uid = e.target.dataset.uid;
+            const confirmDelete = confirm('Delete this user?');
+            if (!confirmDelete) return;
+            db.ref(`herbaryo-users/${uid}`).remove();
+        }
     };
 }
 
 function viewUserData(uid) {
     const userRef = db.ref(`herbaryo-users/${uid}`);
     userRef.once('value').then((snapshot) => {
-        const userData = snapshot.val();
+        const userData = snapshot.val() || {};
         showUserModal(userData);
     });
 }

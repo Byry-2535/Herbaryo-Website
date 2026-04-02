@@ -298,3 +298,13 @@ h2 {
 .header-left a h1 {
     cursor: pointer;
 }
+
+.btn-delete {
+    background: linear-gradient(45deg, #f44336, #ef5350);
+    color: white;
+}
+
+.btn-delete:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}

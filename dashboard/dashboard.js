@@ -27,7 +27,13 @@ function updateUserUI(userData) {
         avatar.classList.remove('has-photo');
     }
     
-    document.getElementById('welcomeText').textContent = `Welcome back, ${displayName}!`;
+    const hour = new Date().getHours();
+    let greeting = 'Welcome';
+    if (hour < 12) greeting = 'Good morning';
+    else if (hour < 18) greeting = 'Good afternoon';
+    else greeting = 'Good evening';
+
+    document.getElementById('welcomeText').textContent = `${greeting}, ${displayName}!`;
     document.getElementById('userEmail').textContent = email;
     document.getElementById('aurelsCount').textContent = userData.aurels || 0;
     document.getElementById('aetherionCount').textContent = userData.aetherion || 0;
@@ -136,7 +142,7 @@ auth.onAuthStateChanged((user) => {
     
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
     userRef.on('value', (snapshot) => {
-        const userData = snapshot.val();
+        const userData = snapshot.val() || {};
         updateUserUI(userData);
         updateStats(userData?.herbsMastered || 0);
         currentUserData = userData || {};
