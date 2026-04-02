@@ -144,6 +144,7 @@ function displayUsers(users) {
             <td>
                 <button class="action-btn btn-view" data-uid="${user.uid}">View</button>
                 <button class="action-btn btn-delete" data-uid="${user.uid}">Delete</button>
+                <button class="action-btn btn-edit" data-uid="${user.uid}">Edit</button>
             </td>
         </tr>
     `).join('');
@@ -160,6 +161,11 @@ function displayUsers(users) {
             if (!confirmDelete) return;
             db.ref(`herbaryo-users/${uid}`).remove();
         }
+
+        if (e.target.classList.contains('btn-edit')) {
+            const uid = e.target.dataset.uid;
+            editUserData(uid);
+        }
     };
 }
 
@@ -168,6 +174,14 @@ function viewUserData(uid) {
     userRef.once('value').then((snapshot) => {
         const userData = snapshot.val() || {};
         showUserModal(userData);
+    });
+}
+
+function editUserData(uid) {
+    const userRef = db.ref(`herbaryo-users/${uid}`);
+    userRef.once('value').then(snapshot => {
+        const userData = snapshot.val() || {};
+        showEditModal(uid, userData);
     });
 }
 
@@ -194,6 +208,59 @@ function showUserModal(userData) {
     
     modal.querySelector('.modal-close').onclick = () => modal.remove();
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+}
+
+function showEditModal(uid, userData) {
+    const modal = document.createElement('div');
+    modal.className = 'user-modal';
+    modal.innerHTML = `
+        <div class="user-modal-content">
+            <button class="modal-close">&times;</button>
+            <h2>Edit Player</h2>
+            <p style="color:#555; margin-bottom: 1.5rem;">Update player information below.</p>
+            <div class="user-data-grid">
+                <label>
+                    Username
+                    <input type="text" id="editName" value="${userData.displayName || ''}" placeholder="Enter username">
+                </label>
+                <label>
+                    Gender
+                    <select id="editGender">
+                        <option value="male" ${userData.gender === 'male' ? 'selected' : ''}>Male</option>
+                        <option value="female" ${userData.gender === 'female' ? 'selected' : ''}>Female</option>
+                    </select>
+                </label>
+                <label>
+                    Herbs Mastered
+                    <input type="number" id="editHerbs" value="${userData.herbsMastered || 0}" min="0" max="10">
+                </label>
+                <div style="display:flex; justify-content:flex-end; gap:1rem;">
+                    <button id="cancelEditBtn" class="action-btn btn-delete">Cancel</button>
+                    <button id="saveEditBtn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.querySelector('.modal-close').onclick = () => modal.remove();
+    modal.querySelector('#cancelEditBtn').onclick = () => modal.remove();
+    modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+    modal.querySelector('#saveEditBtn').onclick = () => {
+        const updatedData = {
+            displayName: modal.querySelector('#editName').value,
+            gender: modal.querySelector('#editGender').value,
+            herbsMastered: Number(modal.querySelector('#editHerbs').value)
+        };
+
+        db.ref(`herbaryo-users/${uid}`).update(updatedData)
+            .then(() => {
+                alert('User updated successfully!');
+                modal.remove();
+                displayUsers(allUsers);
+            })
+            .catch(err => alert('Error updating user: ' + err.message));
+    };
 }
 
 document.getElementById('searchInput').addEventListener('input', () => {

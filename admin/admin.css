@@ -308,3 +308,47 @@ h2 {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
 }
+
+.user-modal-content label {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    font-size: 1rem;
+    color: #2e7d32;
+}
+
+.user-modal-content input,
+.user-modal-content select {
+    margin-top: 0.5rem;
+    padding: 0.8rem 1rem;
+    border: 2px solid #a5d6a7;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: all 0.3s;
+}
+
+.user-modal-content input:focus,
+.user-modal-content select:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+#saveEditBtn {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    padding: 0.8rem 2rem;
+    border-radius: 25px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#saveEditBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+}
