@@ -421,3 +421,16 @@ html {
 .admin-btn {
     display: none;
 }
+
+.footer {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 3rem;
+    box-shadow: 0 -2px 20px rgba(46, 125, 50, 0.1);
+}
+
+.footer p {
+    color: #2e7d32;
+    font-weight: 500;
+}

@@ -336,6 +336,19 @@ h2 {
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
 }
 
+.footer {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 3rem;
+    box-shadow: 0 -2px 20px rgba(46, 125, 50, 0.1);
+}
+
+.footer p {
+    color: #2e7d32;
+    font-weight: 500;
+}
+
 #saveEditBtn {
     background: linear-gradient(45deg, #4caf50, #66bb6a);
     color: white;

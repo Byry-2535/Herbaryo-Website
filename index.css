@@ -1089,3 +1089,32 @@ input[type="radio"]:hover {
     border-left: 4px solid #4caf50 !important;
     animation: slideDown 0.3s ease;
 }
+
+.game-genre {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+.genre-label {
+    font-weight: 600;
+    color: #2e7d32;
+}
+
+.genre-tag {
+    background: linear-gradient(45deg, #4caf50, #66bb6a);
+    color: white;
+    padding: 0.3rem 0.9rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+    transition: 0.3s;
+}
+
+.genre-tag:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
