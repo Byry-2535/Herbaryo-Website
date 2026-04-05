@@ -28,7 +28,6 @@ auth.onAuthStateChanged((user) => {
 
         const avatar = document.getElementById('adminAvatar');
         const displayName = user.displayName || user.email;
-
         avatar.innerHTML = '';
         avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
 
@@ -57,13 +56,12 @@ function loadUsers() {
                 uid: child.key,
                 displayName: userData.displayName || 'Unknown',
                 email: userData.email,
-                herbsMastered: userData.herbsMastered || 0,
-                points: userData.points || 0
+                herbsMastered: userData.herbsMastered || 0
             });
         });
 
         updateStats(users);
-        users.sort((a, b) => b.points - a.points);
+        users.sort((a, b) => b.herbsMastered - a.herbsMastered);
         displayUsers(users);
         loadTransactions();
     });
@@ -105,12 +103,6 @@ function displayDailyTransactions() {
 
 function updateStats(users) {
     document.getElementById('totalUsers').textContent = users.length;
-    
-    const topPlayer = users.reduce((top, user) => 
-        user.points > top.points ? user : top, { points: 0 }
-    );
-
-    document.getElementById('topPlayer').textContent = `${topPlayer.displayName || 'N/A'} (${topPlayer.points || 0})`;
 }
 
 let allUsers = [];
@@ -120,7 +112,7 @@ function displayUsers(users) {
     const tbody = document.querySelector('#usersTable tbody');
     
     if (users.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5">No players yet</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="4">No players yet</td></tr>';
         return;
     }
     
@@ -140,7 +132,6 @@ function displayUsers(users) {
             <td>${user.displayName}</td>
             <td>${user.email}</td>
             <td>🌿 ${user.herbsMastered}/10</td>
-            <td>🏆 ${user.points}</td>
             <td>
                 <button class="action-btn btn-view" data-uid="${user.uid}">View</button>
                 <button class="action-btn btn-delete" data-uid="${user.uid}">Delete</button>
@@ -157,7 +148,7 @@ function displayUsers(users) {
 
         if (e.target.classList.contains('btn-delete')) {
             const uid = e.target.dataset.uid;
-            const confirmDelete = confirm('Delete this user?');
+            const confirmDelete = confirm('⚠️ This will permanently delete the user. Continue?');
             if (!confirmDelete) return;
             db.ref(`herbaryo-users/${uid}`).remove();
         }
