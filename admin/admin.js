@@ -19,52 +19,68 @@ auth.onAuthStateChanged((user) => {
     }
 
     const adminRef = db.ref(`admins/${user.uid}`);
+    adminRef.get().then(snapshot => {
+        if (snapshot.exists()) {
+            console.log('Admin verified ✅');
+            const avatar = document.getElementById('adminAvatar');
+            const displayName = user.displayName || user.email;
+            avatar.innerHTML = '';
+            avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
 
-    adminRef.once('value').then(snapshot => {
-        if (!snapshot.exists()) {
-            window.location.replace('../index.html');
-            return;
-        }
+            if (user.photoURL) {
+                avatar.style.backgroundImage = `url(${user.photoURL})`;
+                avatar.classList.add('has-photo');
+            } else {
+                avatar.style.backgroundImage = '';
+                avatar.classList.remove('has-photo');
+            }
 
-        const avatar = document.getElementById('adminAvatar');
-        const displayName = user.displayName || user.email;
-        avatar.innerHTML = '';
-        avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
-
-        if (user.photoURL) {
-            avatar.style.backgroundImage = `url(${user.photoURL})`;
-            avatar.classList.add('has-photo');
+            loadUsers();
+            displayDailyTransactions();
         } else {
-            avatar.style.backgroundImage = '';
-            avatar.classList.remove('has-photo');
+            console.log('Not admin ❌');
+            window.location.replace('../index.html');
         }
-
-        loadUsers();
-        displayDailyTransactions();
+    }).catch(err => {
+        console.error('Error checking admin status:', err);
+        window.location.replace('../index.html');
     });
 });
 
-function loadUsers() {
+async function loadUsers() {
     const usersRef = db.ref('herbaryo-users');
-
-    usersRef.on('value', (snapshot) => {
+    try {
+        const snapshot = await usersRef.once('value');
         const users = [];
+        const promises = [];
 
         snapshot.forEach((child) => {
             const userData = child.val() || {};
-            users.push({
-                uid: child.key,
-                displayName: userData.displayName || 'Unknown',
-                email: userData.email,
-                herbsMastered: userData.herbsMastered || 0
+            const uid = child.key;
+            const p = db.ref(`progress/${uid}`).once('value').then(progressSnap => {
+                const progress = progressSnap.val() || {};
+                users.push({
+                    uid: uid,
+                    displayName: userData.username || 'Unknown',
+                    email: userData.email || '',
+                    herbsMastered: progress.herbsMastered || 0
+                });
             });
+
+            promises.push(p);
         });
 
-        updateStats(users);
+        await Promise.all(promises);
         users.sort((a, b) => b.herbsMastered - a.herbsMastered);
+        allUsers = users;
+        updateStats(users);
         displayUsers(users);
         loadTransactions();
-    });
+    } catch (err) {
+        console.error('Error loading users:', err);
+        const tbody = document.querySelector('#usersTable tbody');
+        tbody.innerHTML = '<tr><td colspan="4">Failed to load players</td></tr>';
+    }
 }
 
 function loadTransactions() {
@@ -150,7 +166,12 @@ function displayUsers(users) {
             const uid = e.target.dataset.uid;
             const confirmDelete = confirm('⚠️ This will permanently delete the user. Continue?');
             if (!confirmDelete) return;
-            db.ref(`herbaryo-users/${uid}`).remove();
+            const updates = {};
+            updates[`herbaryo-users/${uid}`] = null;
+            updates[`currency/${uid}`] = null;
+            updates[`progress/${uid}`] = null;
+            updates[`transactions/${uid}`] = null;
+            db.ref().update(updates);
         }
 
         if (e.target.classList.contains('btn-edit')) {
@@ -161,18 +182,35 @@ function displayUsers(users) {
 }
 
 function viewUserData(uid) {
-    const userRef = db.ref(`herbaryo-users/${uid}`);
-    userRef.once('value').then((snapshot) => {
-        const userData = snapshot.val() || {};
-        showUserModal(userData);
+    Promise.all([
+    db.ref(`herbaryo-users/${uid}`).once('value'),
+    db.ref(`currency/${uid}`).once('value'),
+    db.ref(`progress/${uid}`).once('value')
+    ]).then(([userSnap, currencySnap, progressSnap]) => {
+        const userData = userSnap.val() || {};
+        const currencyData = currencySnap.val() || {};
+        const progressData = progressSnap.val() || {};
+        const merged = {
+            ...userData,
+            ...currencyData,
+            ...progressData
+        };
+        showUserModal(merged);
     });
 }
 
 function editUserData(uid) {
-    const userRef = db.ref(`herbaryo-users/${uid}`);
-    userRef.once('value').then(snapshot => {
-        const userData = snapshot.val() || {};
-        showEditModal(uid, userData);
+    Promise.all([
+        db.ref(`herbaryo-users/${uid}`).once('value'),
+        db.ref(`progress/${uid}`).once('value')
+    ]).then(([userSnap, progressSnap]) => {
+        const userData = userSnap.val() || {};
+        const progressData = progressSnap.val() || {};
+
+        showEditModal(uid, {
+            ...userData,
+            ...progressData
+        });
     });
 }
 
@@ -183,14 +221,13 @@ function showUserModal(userData) {
     modal.innerHTML = `
         <div class="user-modal-content">
             <button class="modal-close">&times;</button>
-            <h2>${userData.displayName || 'Unknown'}</h2>
+            <h2>${userData.username || 'Unknown'}</h2>
             <div class="user-data-grid">
                 <div><strong>Email:</strong> ${userData.email}</div>
                 <div><strong>Herbs Mastered:</strong> 🌿 ${userData.herbsMastered || 0}/10</div>
                 <div><strong>Aurels:</strong> 💰 ${userData.aurels || 0}</div>
                 <div><strong>Aetherion:</strong> ✨ ${userData.aetherion || 0}</div>
                 <div><strong>Gender:</strong> ${userData.gender === 'male' ? 'Male' : 'Female'}</div>
-                <div><strong>Progress:</strong> ${Object.keys(userData.progress || {}).length} herbs unlocked</div>
             </div>
         </div>
     `;
@@ -212,7 +249,7 @@ function showEditModal(uid, userData) {
             <div class="user-data-grid">
                 <label>
                     Username
-                    <input type="text" id="editName" value="${userData.displayName || ''}" placeholder="Enter username">
+                    <input type="text" id="editName" value="${userData.username || ''}" placeholder="Enter username">
                 </label>
                 <label>
                     Gender
@@ -239,18 +276,22 @@ function showEditModal(uid, userData) {
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
     modal.querySelector('#saveEditBtn').onclick = () => {
         const updatedData = {
-            displayName: modal.querySelector('#editName').value,
+            username: modal.querySelector('#editName').value,
             gender: modal.querySelector('#editGender').value,
             herbsMastered: Number(modal.querySelector('#editHerbs').value)
         };
 
-        db.ref(`herbaryo-users/${uid}`).update(updatedData)
-            .then(() => {
-                alert('User updated successfully!');
-                modal.remove();
-                displayUsers(allUsers);
-            })
-            .catch(err => alert('Error updating user: ' + err.message));
+        const updates = {};
+        updates[`herbaryo-users/${uid}/username`] = modal.querySelector('#editName').value;
+        updates[`herbaryo-users/${uid}/gender`] = modal.querySelector('#editGender').value;
+        updates[`progress/${uid}/herbsMastered`] = Number(modal.querySelector('#editHerbs').value);
+
+        db.ref().update(updates)
+        .then(() => {
+            alert('User updated successfully!');
+            modal.remove();
+        })
+        .catch(err => alert('Error updating user: ' + err.message));
     };
 }
 

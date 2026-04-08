@@ -94,7 +94,7 @@ async function handleEmailSignup() {
     showLoading();
     try {
         const result = await auth.createUserWithEmailAndPassword(email, password);
-        await checkUserProfile(result.user);  // Go straight to profile
+        await checkUserProfile(result.user);
     } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
             showError('Email already registered. Try login.');
@@ -137,7 +137,7 @@ async function checkUserProfile(user) {
     const snapshot = await userRef.once('value');
     const data = snapshot.val();
     
-    if (data && data.displayName) {
+    if (data && data.username) {
         window.location.replace('./dashboard/dashboard.html');
     } else {
         showUsernameModal(user);
@@ -203,19 +203,27 @@ async function skipProfile(user) {
 }
 
 async function saveNewUserProfile(user, displayNameInput, gender) {
-    const userRef = db.ref(`herbaryo-users/${user.uid}`);
+    const uid = user.uid;
     const displayName = displayNameInput || user.displayName || 'Herbalist';
-    
-    await userRef.set({
-        email: user.email,
-        displayName: displayName,
-        photoURL: user.photoURL || '',
-        herbsMastered: 0,
-        progress: {},
-        gender: gender,
-        aurels: 0,
-        aetherion: 0
-    });
+    const userSnap = await db.ref(`herbaryo-users/${uid}`).once('value');
+
+    if (!userSnap.exists()) {
+        await db.ref(`herbaryo-users/${uid}`).set({
+            username: displayName,
+            email: user.email,
+            gender: gender,
+            photoURL: user.photoURL || ''
+        });
+
+        await db.ref(`currency/${uid}`).set({
+            aetherion: 0,
+            aurels: 0
+        });
+
+        await db.ref(`progress/${uid}`).set({
+            herbsMastered: 0
+        });
+    }
 }
 
 auth.onAuthStateChanged((user) => {

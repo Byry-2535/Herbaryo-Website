@@ -15,7 +15,7 @@ let currentUserData = {};
 
 function updateUserUI(userData) {
     const avatar = document.getElementById('userAvatar');
-    const displayName = userData.displayName || 'Herbalist';
+    const displayName = userData.username || 'Herbalist';
     const email = userData.email;  
     avatar.innerHTML = '';
     
@@ -37,9 +37,9 @@ function updateUserUI(userData) {
     document.getElementById('userEmail').textContent = email;
     document.getElementById('aurelsCount').textContent = userData.aurels || 0;
     document.getElementById('aetherionCount').textContent = userData.aetherion || 0;
-    document.getElementById('genderIcon').textContent = userData.gender === 'male' ? '♂' : '♀';
-
-    displayTransactions(userData);
+    const gender = (userData.gender || '').toLowerCase();
+    document.getElementById('genderIcon').textContent = gender === 'male' ? '♂' : gender === 'female' ? '♀' : '❓';
+    document.getElementById('genderText').textContent = gender === 'male' ? 'Male' : gender === 'female' ? 'Female' : 'Unknown';
 }
 
 function updateStats(herbsMastered) {
@@ -103,7 +103,7 @@ async function saveProfile() {
     try {
         const userRef = db.ref(`herbaryo-users/${auth.currentUser.uid}`);
         await userRef.update({
-            displayName: newDisplayName
+            username: newDisplayName
         });
         closeEditModal();
     } catch (error) {
@@ -112,7 +112,7 @@ async function saveProfile() {
 }
 
 editBtn.addEventListener('click', () => {
-    document.getElementById('editUsername').value = currentUserData.displayName || '';
+    document.getElementById('editUsername').value = currentUserData.username || '';
     profileModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 });
@@ -128,25 +128,43 @@ auth.onAuthStateChanged((user) => {
         window.location.replace('../index.html');
         return;
     }
-    
-    const adminRef = db.ref('admins/' + user.uid);
-    adminRef.once('value').then((adminSnapshot) => {
-        const adminBtn = document.getElementById('adminBtn');
-        if (adminSnapshot.exists()) {
-            adminBtn.style.display = 'inline-block';
-            adminBtn.onclick = () => window.location.href = '../admin/admin.html';
-        } else {
-            adminBtn.style.display = 'none';
-        }
-    });
-    
+
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
-    userRef.on('value', (snapshot) => {
-        const userData = snapshot.val() || {};
-        updateUserUI(userData);
-        updateStats(userData?.herbsMastered || 0);
-        currentUserData = userData || {};
-        displayTransactions(userData);
+    const currencyRef = db.ref(`currency/${user.uid}`);
+    const progressRef = db.ref(`progress/${user.uid}`);
+
+    userRef.on('value', (userSnap) => {
+        currencyRef.on('value', (currencySnap) => {
+            progressRef.on('value', (progressSnap) => {
+
+                const userData = userSnap.val() || {};
+                const currencyData = currencySnap.val() || {};
+                const progressData = progressSnap.val() || {};
+
+                const mergedData = {
+                    ...userData,
+                    ...currencyData,
+                    ...progressData
+                };
+
+                currentUserData = mergedData;
+                const adminBtn = document.getElementById('adminBtn');
+                adminBtn.addEventListener('click', () => {
+                    window.location.href = '../admin/admin.html';
+                });
+                db.ref(`admins/${user.uid}`).get().then(snapshot => {
+                    if (snapshot.exists() && snapshot.val() === true) {
+                        adminBtn.style.display = 'inline-block';
+                    } else {
+                        adminBtn.style.display = 'none';
+                    }
+                });
+                updateUserUI(mergedData);
+                updateStats(mergedData.herbsMastered || 0);
+                displayTransactions(mergedData);
+
+            });
+        });
     });
 });
 
