@@ -68,13 +68,16 @@ function closeLoginModal() {
 async function handleEmailLogin() {
     const email = document.getElementById('loginEmail').value.trim();
     const password = document.getElementById('loginPassword').value;
-    
     showLoading();
     try {
         const result = await auth.signInWithEmailAndPassword(email, password);
         const user = result.user;
+
+        if (!user.emailVerified) {
+            await auth.signOut();
+            return showError('Please verify your email before logging in.');
+        }
         await checkUserProfile(user);
-        
     } catch (error) {
         showError(getErrorMessage(error.code));
     } finally {
@@ -86,15 +89,17 @@ async function handleEmailSignup() {
     const email = document.getElementById('signupEmail').value.trim();
     const password = document.getElementById('signupPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
-    
+
     if (!email || !password || !confirmPassword) return showError('Please fill all fields');
     if (password.length < 8) return showError('Password must be 8+ characters');
     if (password !== confirmPassword) return showError('Passwords do not match');
-    
+
     showLoading();
     try {
         const result = await auth.createUserWithEmailAndPassword(email, password);
-        await checkUserProfile(result.user);
+        await result.user.sendEmailVerification();
+        showError('Verification email sent! Please check your inbox before logging in.', true);
+        await auth.signOut();
     } catch (error) {
         if (error.code === 'auth/email-already-in-use') {
             showError('Email already registered. Try login.');
@@ -285,5 +290,27 @@ document.addEventListener('click', (e) => {
         navMenu.classList.remove('active');
         hamburgerBtn.classList.remove('active');
         document.body.classList.remove('menu-open');
+    }
+});
+
+document.getElementById('resendVerification').addEventListener('click', async () => {
+    const email = document.getElementById('signupEmail').value.trim();
+    if (!email) return showError('Enter your email to resend verification');
+    try {
+        const password = prompt('Enter your password to resend verification email:');
+        if (!password) return showError('Password required to resend email.');
+
+        const result = await auth.signInWithEmailAndPassword(email, password);
+        await result.user.sendEmailVerification();
+        await auth.signOut();
+        showError('Verification email resent! Check your inbox.', true);
+    } catch (error) {
+        if (error.code === 'auth/wrong-password') {
+            showError('Incorrect password. Please try again.');
+        } else if (error.code === 'auth/user-not-found') {
+            showError('Email not found. Please sign up first.');
+        } else {
+            showError('Failed to resend verification: ' + error.message);
+        }
     }
 });
