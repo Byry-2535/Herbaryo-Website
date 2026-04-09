@@ -274,6 +274,7 @@ function showEditModal(uid, userData) {
     modal.querySelector('.modal-close').onclick = () => modal.remove();
     modal.querySelector('#cancelEditBtn').onclick = () => modal.remove();
     modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+
     modal.querySelector('#saveEditBtn').onclick = () => {
         const updatedData = {
             username: modal.querySelector('#editName').value,
@@ -281,10 +282,12 @@ function showEditModal(uid, userData) {
             herbsMastered: Number(modal.querySelector('#editHerbs').value)
         };
 
+        const herbsValue = Number(modal.querySelector('#editHerbs').value);
+        const cappedHerbs = Math.max(0, Math.min(10, herbsValue));
         const updates = {};
-        updates[`herbaryo-users/${uid}/username`] = modal.querySelector('#editName').value;
-        updates[`herbaryo-users/${uid}/gender`] = modal.querySelector('#editGender').value;
-        updates[`progress/${uid}/herbsMastered`] = Number(modal.querySelector('#editHerbs').value);
+        updates[`herbaryo-users/${uid}/username`] = updatedData.username;
+        updates[`herbaryo-users/${uid}/gender`] = updatedData.gender;
+        updates[`progress/${uid}/herbsMastered`] = cappedHerbs;
 
         db.ref().update(updates)
         .then(() => {

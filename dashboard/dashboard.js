@@ -43,7 +43,8 @@ function updateUserUI(userData) {
 }
 
 function updateStats(herbsMastered) {
-    document.querySelector('.stat-card .stat-number').textContent = `🌿 ${herbsMastered}/10`;
+    const capped = Math.max(0, Math.min(10, herbsMastered));
+    document.querySelector('.stat-card .stat-number').textContent = `🌿 ${capped}/10`;
 }
 
 function displayTransactions(userData) {
