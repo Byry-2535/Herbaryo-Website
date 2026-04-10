@@ -166,12 +166,21 @@ function displayUsers(users) {
             const uid = e.target.dataset.uid;
             const confirmDelete = confirm('⚠️ This will permanently delete the user. Continue?');
             if (!confirmDelete) return;
-            const updates = {};
-            updates[`herbaryo-users/${uid}`] = null;
-            updates[`currency/${uid}`] = null;
-            updates[`progress/${uid}`] = null;
-            updates[`transactions/${uid}`] = null;
-            db.ref().update(updates);
+
+            Promise.all([
+                db.ref(`herbaryo-users/${uid}`).remove(),
+                db.ref(`currency/${uid}`).remove(),
+                db.ref(`progress/${uid}`).remove(),
+                db.ref(`transactions/${uid}`).remove(),
+                db.ref(`admins/${uid}`).remove()
+            ])
+            .then(() => {
+                alert('User deleted successfully');
+                loadUsers();
+            })
+            .catch(err => {
+                alert('Delete failed: ' + err.message);
+            });
         }
 
         if (e.target.classList.contains('btn-edit')) {
