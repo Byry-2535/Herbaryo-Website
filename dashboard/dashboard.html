@@ -35,11 +35,12 @@
                 <p class="dashboard-subtitle">Your Herbaryo progress will appear here</p>
                 <div class="stats-grid">
                     <div class="stat-card">
-                        <div class="stat-number">🌿 0/10</div>
+                        <div class="stat-number" id="herbsMasteredCount">🌿 0/10</div>
                         <div class="stat-label">Herbs Mastered</div>
                     </div>
                 </div>
             </section>
+
             <section class="currency-stats">
                 <div class="currency-card aurels">
                     <span class="currency-icon">💰</span>
@@ -63,6 +64,7 @@
                     </div>
                 </div>
             </section>
+
             <section class="transactions-section">
                 <h2>💳 Top-up History</h2>
                 <p class="dashboard-subtitle">Coming soon - Track your purchases</p>
@@ -76,7 +78,7 @@
                             </tr>
                         </thead>
                         <tbody id="transactionsBody">
-                            <!-- Will be populated by JS from "fake" Firebase data -->
+                            <tr><td colspan="3" style="text-align:center; color:#666;">No transactions yet</td></tr>
                         </tbody>
                     </table>
                 </div>
