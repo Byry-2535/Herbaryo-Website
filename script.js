@@ -184,3 +184,13 @@ auth.onAuthStateChanged(user => {
         authBtn.onclick = e => { e.preventDefault(); loginModal.classList.add('active'); document.body.style.overflow = 'hidden'; };
     }
 });
+
+document.getElementById('showSignupTab').addEventListener('click', () => {
+    document.getElementById('loginTab').classList.remove('active');
+    document.getElementById('signupTab').classList.add('active');
+});
+
+document.getElementById('showLoginTab').addEventListener('click', () => {
+    document.getElementById('signupTab').classList.remove('active');
+    document.getElementById('loginTab').classList.add('active');
+});

@@ -81,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     uid: child.key,
                     username: u.username || 'Unknown',
                     email: u.email || '',
+                    gender: u.gender || 'Not Specified',
                     herbsMastered: u.herbsMastered || {},
                     herbsMasteredCount: Object.values(u.herbsMastered || {}).filter(v => v).length,
                     aurels: u.aurels || 0,
@@ -156,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div><strong>Aurels:</strong> 💰 ${userData.aurels !== undefined ? userData.aurels : 0}</div>
                 <div><strong>Aetherion:</strong> ✨ ${userData.aetherion !== undefined ? userData.aetherion : 0}</div>
-                <div><strong>Gender:</strong> ${userData.gender === 'male' ? 'Male' : 'Female'}</div>
+                <div><strong>Gender:</strong> ${userData.gender?.toLowerCase() === 'male' ? 'Male' : 'Female'}</div>
             </div>
         </div>`;
         document.body.appendChild(modal);
@@ -185,8 +186,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 <label>Username<input type="text" id="editName" value="${userData.username || ''}"></label>
                 <label>Gender
                     <select id="editGender">
-                        <option value="male" ${userData.gender === 'male' ? 'selected' : ''}>Male</option>
-                        <option value="female" ${userData.gender === 'female' ? 'selected' : ''}>Female</option>
+                        <option value="male" ${userData.gender?.toLowerCase() === 'male' ? 'selected' : ''}>Male</option>
+                        <option value="female" ${userData.gender?.toLowerCase() === 'female' ? 'selected' : ''}>Female</option>
                     </select>
                 </label>
                 <div><strong>Herbs Mastered:</strong><br>${herbsCheckboxes}</div>
@@ -231,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
                 modal.remove();
-                loadUsers(); // Reload users list
+                loadUsers();
             }).catch(err => {
                 console.error('Failed to update player:', err);
                 alert('Failed to save changes');
@@ -278,4 +279,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+    
+    if (scrollToTopBtn) {
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 });
