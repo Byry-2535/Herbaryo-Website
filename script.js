@@ -194,3 +194,13 @@ document.getElementById('showLoginTab').addEventListener('click', () => {
     document.getElementById('signupTab').classList.remove('active');
     document.getElementById('loginTab').classList.add('active');
 });
+
+const hamburger = document.querySelector('.hamburger');
+const navMenu = document.querySelector('.nav-menu');
+const body = document.body;
+
+hamburger.addEventListener('click', () => {
+    navMenu.classList.toggle('active');
+    body.classList.toggle('menu-open');
+    hamburger.classList.toggle('active');
+});
