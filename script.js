@@ -8,8 +8,6 @@ const firebaseConfig = {
     appId: "1:874293361860:web:65808ac513134660fcdd91"
 };
 
-/* Test push */
-
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
