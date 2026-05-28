@@ -230,3 +230,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+document.getElementById('forgotPasswordBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('loginEmail').value.trim();
+
+    if (!email) {
+        return showError('Please enter your email first.');
+    }
+
+    showLoading();
+
+    try {
+        await auth.sendPasswordResetEmail(email);
+
+        showError(
+            'Password reset email sent! Check your inbox.',
+            true
+        );
+
+    } catch (error) {
+
+        switch (error.code) {
+
+            case 'auth/user-not-found':
+                showError('No account found with this email.');
+                break;
+
+            case 'auth/invalid-email':
+                showError('Please enter a valid email.');
+                break;
+
+            default:
+                showError(error.message);
+        }
+
+    } finally {
+        hideLoading();
+    }
+});
