@@ -1,326 +1,340 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Herbaryo</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="index.css">
-    </head>
-    <body>
-        <nav class="navbar">
-            <div class="nav-container">
-                <div class="logo">
-                    <a href="#home" class="logo-link">
-                        <h2>HERBARYO</h2>
-                    </a>
-                </div>
-                <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </button>
-                <ul class="nav-menu" id="navMenu">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#features">Game</a></li>
-                    <li><a href="#herbs">Herbs</a></li>
-                    <li><a href="./about/about.html">About</a></li>
-                    <li><a href="#" class="login-btn" id="authBtn">Login →</a></li>
-                </ul>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbaryo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <a href="#home" class="logo-link">
+                    <h2>HERBARYO</h2>
+                </a>
             </div>
-        </nav>
-        <section id="home" class="hero">
-            <div class="container">
-                <div class="hero-container">
-                    <div class="hero-content">
-                        <h1>Discover & Master Together</h1>
-                        <h1 class="highlight">Philippine Herbs</h1>
-                        <p class="hero-desc">Learn medicinal plants through our immersive thesis game. Identify, harvest, and master up to 10 selected native Philippine herbs.</p>
-                        <div class="hero-buttons">
-                            <div class="game-genre">
-                                <span class="genre-label">Genre:</span>
-                                <span class="genre-tag">Adventure</span>
-                                <span class="genre-tag">Fantasy</span>
-                                <span class="genre-tag">Singleplayer</span>
-                                <span class="genre-tag">Multiplayer</span>
-                                <span class="genre-tag">Educational</span>
-                            </div>
-                            <div class="hero-cta-buttons">
-                                <a href="https://drive.google.com/uc?export=download&id=19Pvvng8L9sr1wPxecplauWkt6EfebSGk" 
+            <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Game</a></li>
+                <li><a href="#herbs">Herbs</a></li>
+                <li><a href="./about/about.html">About</a></li>
+                <li><a href="#" class="login-btn" id="authBtn">Login →</a></li>
+            </ul>
+        </div>
+    </nav>
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-container">
+                <div class="hero-content">
+                    <h1>Discover & Master Together</h1>
+                    <h1 class="highlight">Philippine Herbs</h1>
+                    <p class="hero-desc">Learn medicinal plants through our immersive thesis game. Identify, harvest,
+                        and master up to 10 selected native Philippine herbs.</p>
+                    <div class="hero-buttons">
+                        <div class="game-genre">
+                            <span class="genre-label">Genre:</span>
+                            <span class="genre-tag">Adventure</span>
+                            <span class="genre-tag">Fantasy</span>
+                            <span class="genre-tag">Singleplayer</span>
+                            <span class="genre-tag">Multiplayer</span>
+                            <span class="genre-tag">Educational</span>
+                        </div>
+                        <div class="hero-cta-buttons">
+                            <a href="https://drive.google.com/uc?export=download&id=19Pvvng8L9sr1wPxecplauWkt6EfebSGk"
                                 class="btn-primary" target="_blank">
-                                    📱 Download Game
-                                </a>
-                                <a href="#specs" class="btn-secondary">
-                                    ⚙️ View Requirements
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="hero-visual">
-                        <div class="hero-illustration">🌿</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="features" class="section">
-            <div class="container">
-                <h2 class="section-title">The Herbaryo Experience</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <span class="feature-icon">🎮</span>
-                        <h3>Interactive Gameplay</h3>
-                        <p>Harvest, identify and learn through engaging mechanics designed for effective learning</p>
-                    </div>
-                    <div class="feature-card">
-                        <span class="feature-icon">📚</span>
-                        <h3>10 Native Herbs</h3>
-                        <p>Complete database of DOH approved medicinal plants with traditional and scientific info</p>
-                    </div>
-                    <div class="feature-card">
-                        <span class="feature-icon">🏆</span>
-                        <h3>Learn while Playing</h3>
-                        <p>Progress through levels while mastering real-world herbal knowledge in a fun and engaging way.</p>
-                    </div>
-                </div>
-                <div class="section-cta">
-                    <a href="./about/about.html" class="btn-primary">👥 Meet the Team</a>
-                </div>
-            </div>
-        </section>
-        <section class="stats-section">
-            <div class="container">
-                <div class="stats">
-                    <div class="stat">
-                        <span class="stat-number">10</span>
-                        <span>Native Herbs</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">100%</span>
-                        <span>Filipino Made</span>
-                    </div>
-                    <div class="stat">
-                        <span class="stat-number">2 Player</span>
-                        <span>Co-op</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section id="herbs" class="section herbs-section">
-            <div class="container">
-                <h2 class="section-title">Our DOH-Approved Herbs</h2>
-                <p class="section-subtitle">
-                    These 10 medicinal plants are officially endorsed by the Department of Health (DOH) and the Philippine Institute of Traditional and Alternative Health Care (PITAHC)
-                </p>
-                <div class="herbs-grid">
-                    <div class="herb-card">
-                        <div class="herb-image bawang-bg">🧄</div>
-                        <div class="herb-info">
-                            <h3>Bawang</h3>
-                            <p class="herb-scientific">Allium sativum</p>
-                            <p class="herb-use">Lowers blood pressure & cholesterol</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image sambong-bg">🍃</div>
-                        <div class="herb-info">
-                            <h3>Sambong</h3>
-                            <p class="herb-scientific">Blumea balsamifera</p>
-                            <p class="herb-use">Dissolves kidney stones</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image tsaang-bg">🌿</div>
-                        <div class="herb-info">
-                            <h3>Tsaang Gubat</h3>
-                            <p class="herb-scientific">Ehretia microphylla</p>
-                            <p class="herb-use">Stops diarrhea & stomach ache</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image ampalaya-bg">🥒</div>
-                        <div class="herb-info">
-                            <h3>Ampalaya</h3>
-                            <p class="herb-scientific">Momordica charantia</p>
-                            <p class="herb-use">Lowers blood sugar (diabetes)</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image yerba-bg">🌱</div>
-                        <div class="herb-info">
-                            <h3>Yerba Buena</h3>
-                            <p class="herb-scientific">Mentha arvensis</p>
-                            <p class="herb-use">Stomach pain & muscle pain relief</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image ulasimang-bg">🌿</div>
-                        <div class="herb-info">
-                            <h3>Ulasimang Bato</h3>
-                            <p class="herb-scientific">Peperomia pellucida</p>
-                            <p class="herb-use">Treats gout & rheumatism</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image bayabas-bg">🍈</div>
-                        <div class="herb-info">
-                            <h3>Bayabas</h3>
-                            <p class="herb-scientific">Psidium guajava</p>
-                            <p class="herb-use">Wound healing & diarrhea</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image akapulko-bg">🌸</div>
-                        <div class="herb-info">
-                            <h3>Akapulko</h3>
-                            <p class="herb-scientific">Cassia alata</p>
-                            <p class="herb-use">Anti-fungal treatment (ringworm, scabies)</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image lagundi-bg">🌿</div>
-                        <div class="herb-info">
-                            <h3>Lagundi</h3>
-                            <p class="herb-scientific">Vitex negundo</p>
-                            <p class="herb-use">Relieves cough & asthma</p>
-                        </div>
-                    </div>
-                    <div class="herb-card">
-                        <div class="herb-image niyog-bg">🌰</div>
-                        <div class="herb-info">
-                            <h3>Niyog-niyogan</h3>
-                            <p class="herb-scientific">Quisqualis indica</p>
-                            <p class="herb-use">Expels intestinal worms</p>
+                                📱 Download Game
+                            </a>
+                            <a href="#specs" class="btn-secondary">
+                                ⚙️ View Requirements
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="doh-reference">
-                    <p><strong>✅Official Sources:</strong> 
-                        <a href="https://pitahc.gov.ph/herbs-directory/" target="_blank" rel="noopener">
-                            PITAHC, 
-                        </a>
-                        <a href="https://philippineherbalmedicine.org/doh_herbs.htm" target="_blank" rel="noopener">
-                            DOH Herbs
-                        </a>
-                    </p>
-                    <p>All herbs clinically tested per DOH standards</p>
+                <div class="hero-visual">
+                    <div class="hero-illustration">🌿</div>
                 </div>
-            </div>
-        </section>
-        <section id="specs" class="section specs-section">
-            <div class="container">
-                <h2 class="section-title">Device Requirements</h2>
-                <p class="section-subtitle">Run Herbaryo smoothly on your mobile device</p>
-                <div class="specs-grid">
-                    <div class="spec-card minimum">
-                        <h3>🥉 Minimum</h3>
-                        <div class="spec-list">
-                            <div class="spec-item">
-                                <span class="spec-label">Android</span>
-                                <span class="spec-value">10</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-label">RAM</span>
-                                <span class="spec-value">3 GB</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-label">Storage</span>
-                                <span class="spec-value">200 MB</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-label">Processor</span>
-                                <span class="spec-value">Helio G81</span>
-                            </div>
-                        </div>
-                        <p class="spec-note">Playable at 30 FPS (low graphics)</p>
-                    </div>
-                    <div class="spec-card recommended">
-                        <h3>🥈 Recommended</h3>
-                        <div class="spec-list">
-                            <div class="spec-item">
-                                <span class="spec-label">Android</span>
-                                <span class="spec-value">11</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-label">RAM</span>
-                                <span class="spec-value">6 GB</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-label">Storage</span>
-                                <span class="spec-value">200 MB</span>
-                            </div>
-                            <div class="spec-item">
-                                <span class="spec-label">Processor</span>
-                                <span class="spec-value">Helio G99</span>
-                            </div>
-                        </div>
-                        <p class="spec-note">60 FPS smooth gameplay</p>
-                    </div>
-                </div>
-                <div class="compatibility-note">
-                    <p><strong>✅ Compatible with 90% of Android devices in PH</strong> (most 2018+ phones)</p>
-                </div>
-            </div>
-        </section>
-        <footer class="footer">
-            <div class="container">
-                <p>© 2026 Herbaryo - Thesis Game by Real's Group. Preserving Philippine herbal knowledge through gamification.</p>
-            </div>
-        </footer>
-        <div class="modal-overlay" id="loginModal">
-            <div class="login-modal">
-                <button class="close-btn" id="closeModal">&times;</button>
-                <div class="modal-header">
-                    <h2>🌿 Welcome to Herbaryo</h2>
-                    <p class="modal-subtitle">Sign in to save progress</p>
-                </div>
-                <div class="tab-content active" id="loginTab">
-                    <div class="form-group">
-                        <input type="email" id="loginEmail" placeholder="your@email.com">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="loginPassword" placeholder="Password">
-                    </div>
-                    <div class="form-row">
-                        <a href="#" class="forgot-password" id="forgotPasswordBtn">
-                            Forgot Password?
-                        </a>
-                    </div>
-                    <button class="btn-primary full-width" id="emailLoginBtn">Sign In</button>
-                    <p class="auth-text">New here? <a href="#" id="showSignupTab">Create account</a></p>
-                </div>
-                <div class="tab-content" id="signupTab">
-                    <div class="form-group">
-                        <input type="email" id="signupEmail" placeholder="your@email.com">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="signupPassword" placeholder="Password (8+ chars)">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="confirmPassword" placeholder="Confirm password">
-                    </div>
-                    <button class="btn-primary full-width" id="emailSignupBtn">Create Account</button>
-                    <button id="resendVerification" style="display:none;" class="btn-secondary full-width">Resend Verification Email</button>
-                    <p class="auth-text">Have account? <a href="#" id="showLoginTab">Sign in</a></p>
-                </div>
-                <div class="divider"><span>or</span></div>
-                <button class="google-btn" id="googleLogin">
-                    <svg class="google-icon" viewBox="0 0 18 18" fill="none">
-                        <path d="M17.64 9.2046C17.64 8.5666 17.5824 7.9526 17.464 7.36H9V10.734H13.844C13.6914 11.9156 13.105 12.9676 12.1594 13.7476L12.155 13.8636L14.4946 15.5286C16.5804 13.9206 17.64 11.73 17.64 9.2046Z" fill="#4285F4"/>
-                        <path d="M9 18C11.4352 18 13.5504 17.116 14.9376 15.7606L12.1594 13.7476C11.4536 14.2746 10.468 14.6 9 14.6C6.6796 14.6 4.7412 13.018 4.0788 10.944L3.9776 10.946L1.4464 12.6316C2.8132 15.7946 5.9332 18 9 18Z" fill="#34A853"/>
-                        <path d="M4.0788 10.944C4.0472 10.6726 4.0336 10.3926 4.0336 10.2046C4.0336 9.9946 4.0472 9.7946 4.0788 9.5226L4.0788 9.4886L1.5692 7.8666L1.4464 7.8776C0.7752 8.4876 0.36 9.1986 0.36 9.9986C0.36 10.8146 0.6696 11.5696 1.2664 12.1676L1.2664 12.2856L3.9776 10.946Z" fill="#FBBC05"/>
-                        <path d="M4.0788 9.5226L4.0844 9.4086C4.3872 8.1656 5.2696 7.1416 6.528 6.7196L6.527 6.6056L4.1544 5.0556L4.1508 5.1706C2.8352 6.4266 2.16 8.2086 2.16 10C2.16 10.7916 2.4148 11.5166 2.8928 12.1186L2.8928 12.2366L0.6232 13.7866C0.2616 13.1086 -0.0096001 12.3096 -0.0096001 11.3986C-0.0096001 10.5986 0.4052 9.8876 1.0764 9.2776L1.1992 9.2666L4.0788 9.5226Z" fill="#EA4335"/>
-                    </svg>
-                    Continue with Google
-                </button>
-                <div class="loading" id="loading" style="display: none;">
-                    <div class="spinner"></div> Signing you in...
-                </div>
-                <div id="errorContainer"></div>
             </div>
         </div>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-        <script src="script.js"></script>
-    </body>
+    </section>
+    <section id="features" class="section">
+        <div class="container">
+            <h2 class="section-title">The Herbaryo Experience</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🎮</span>
+                    <h3>Interactive Gameplay</h3>
+                    <p>Harvest, identify and learn through engaging mechanics designed for effective learning</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📚</span>
+                    <h3>10 Native Herbs</h3>
+                    <p>Complete database of DOH approved medicinal plants with traditional and scientific info</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🏆</span>
+                    <h3>Learn while Playing</h3>
+                    <p>Progress through levels while mastering real-world herbal knowledge in a fun and engaging way.
+                    </p>
+                </div>
+            </div>
+            <div class="section-cta">
+                <a href="./about/about.html" class="btn-primary">👥 Meet the Team</a>
+            </div>
+        </div>
+    </section>
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats">
+                <div class="stat">
+                    <span class="stat-number">10</span>
+                    <span>Native Herbs</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">100%</span>
+                    <span>Filipino Made</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number">2 Player</span>
+                    <span>Co-op</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="herbs" class="section herbs-section">
+        <div class="container">
+            <h2 class="section-title">Our DOH-Approved Herbs</h2>
+            <p class="section-subtitle">
+                These 10 medicinal plants are officially endorsed by the Department of Health (DOH) and the Philippine
+                Institute of Traditional and Alternative Health Care (PITAHC)
+            </p>
+            <div class="herbs-grid">
+                <div class="herb-card">
+                    <div class="herb-image bawang-bg">🧄</div>
+                    <div class="herb-info">
+                        <h3>Bawang</h3>
+                        <p class="herb-scientific">Allium sativum</p>
+                        <p class="herb-use">Lowers blood pressure & cholesterol</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image sambong-bg">🍃</div>
+                    <div class="herb-info">
+                        <h3>Sambong</h3>
+                        <p class="herb-scientific">Blumea balsamifera</p>
+                        <p class="herb-use">Dissolves kidney stones</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image tsaang-bg">🌿</div>
+                    <div class="herb-info">
+                        <h3>Tsaang Gubat</h3>
+                        <p class="herb-scientific">Ehretia microphylla</p>
+                        <p class="herb-use">Stops diarrhea & stomach ache</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image ampalaya-bg">🥒</div>
+                    <div class="herb-info">
+                        <h3>Ampalaya</h3>
+                        <p class="herb-scientific">Momordica charantia</p>
+                        <p class="herb-use">Lowers blood sugar (diabetes)</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image yerba-bg">🌱</div>
+                    <div class="herb-info">
+                        <h3>Yerba Buena</h3>
+                        <p class="herb-scientific">Mentha arvensis</p>
+                        <p class="herb-use">Stomach pain & muscle pain relief</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image ulasimang-bg">🌿</div>
+                    <div class="herb-info">
+                        <h3>Ulasimang Bato</h3>
+                        <p class="herb-scientific">Peperomia pellucida</p>
+                        <p class="herb-use">Treats gout & rheumatism</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image bayabas-bg">🍈</div>
+                    <div class="herb-info">
+                        <h3>Bayabas</h3>
+                        <p class="herb-scientific">Psidium guajava</p>
+                        <p class="herb-use">Wound healing & diarrhea</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image akapulko-bg">🌸</div>
+                    <div class="herb-info">
+                        <h3>Akapulko</h3>
+                        <p class="herb-scientific">Cassia alata</p>
+                        <p class="herb-use">Anti-fungal treatment (ringworm, scabies)</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image lagundi-bg">🌿</div>
+                    <div class="herb-info">
+                        <h3>Lagundi</h3>
+                        <p class="herb-scientific">Vitex negundo</p>
+                        <p class="herb-use">Relieves cough & asthma</p>
+                    </div>
+                </div>
+                <div class="herb-card">
+                    <div class="herb-image niyog-bg">🌰</div>
+                    <div class="herb-info">
+                        <h3>Niyog-niyogan</h3>
+                        <p class="herb-scientific">Quisqualis indica</p>
+                        <p class="herb-use">Expels intestinal worms</p>
+                    </div>
+                </div>
+            </div>
+            <div class="doh-reference">
+                <p><strong>✅Official Sources:</strong>
+                    <a href="https://pitahc.gov.ph/herbs-directory/" target="_blank" rel="noopener">
+                        PITAHC
+                    </a>
+                </p>
+                <p>All herbs clinically tested per DOH standards</p>
+            </div>
+        </div>
+    </section>
+    <section id="specs" class="section specs-section">
+        <div class="container">
+            <h2 class="section-title">Device Requirements</h2>
+            <p class="section-subtitle">Run Herbaryo smoothly on your mobile device</p>
+            <div class="specs-grid">
+                <div class="spec-card minimum">
+                    <h3>🥉 Minimum</h3>
+                    <div class="spec-list">
+                        <div class="spec-item">
+                            <span class="spec-label">Android</span>
+                            <span class="spec-value">10</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">RAM</span>
+                            <span class="spec-value">3 GB</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Storage</span>
+                            <span class="spec-value">200 MB</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Processor</span>
+                            <span class="spec-value">Helio G81</span>
+                        </div>
+                    </div>
+                    <p class="spec-note">Playable at 30 FPS (low graphics)</p>
+                </div>
+                <div class="spec-card recommended">
+                    <h3>🥈 Recommended</h3>
+                    <div class="spec-list">
+                        <div class="spec-item">
+                            <span class="spec-label">Android</span>
+                            <span class="spec-value">11</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">RAM</span>
+                            <span class="spec-value">6 GB</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Storage</span>
+                            <span class="spec-value">200 MB</span>
+                        </div>
+                        <div class="spec-item">
+                            <span class="spec-label">Processor</span>
+                            <span class="spec-value">Helio G99</span>
+                        </div>
+                    </div>
+                    <p class="spec-note">60 FPS smooth gameplay</p>
+                </div>
+            </div>
+            <div class="compatibility-note">
+                <p><strong>✅ Compatible with 90% of Android devices in PH</strong> (most 2018+ phones)</p>
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Herbaryo - Thesis Game by Real's Group. Preserving Philippine herbal knowledge through
+                gamification.</p>
+        </div>
+    </footer>
+    <div class="modal-overlay" id="loginModal">
+        <div class="login-modal">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <div class="modal-header">
+                <h2>🌿 Welcome to Herbaryo</h2>
+                <p class="modal-subtitle">Sign in to save progress</p>
+            </div>
+            <div class="tab-content active" id="loginTab">
+                <div class="form-group">
+                    <input type="email" id="loginEmail" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="loginPassword" placeholder="Password">
+                </div>
+                <div class="form-row">
+                    <a href="#" class="forgot-password" id="forgotPasswordBtn">
+                        Forgot Password?
+                    </a>
+                </div>
+                <button class="btn-primary full-width" id="emailLoginBtn">Sign In</button>
+                <p class="auth-text">New here? <a href="#" id="showSignupTab">Create account</a></p>
+            </div>
+            <div class="tab-content" id="signupTab">
+                <div class="form-group">
+                    <input type="email" id="signupEmail" placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signupPassword" placeholder="Password (8+ chars)">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="confirmPassword" placeholder="Confirm password">
+                </div>
+                <button class="btn-primary full-width" id="emailSignupBtn">Create Account</button>
+                <button id="resendVerification" style="display:none;" class="btn-secondary full-width">Resend
+                    Verification Email</button>
+                <p class="auth-text">Have account? <a href="#" id="showLoginTab">Sign in</a></p>
+            </div>
+            <div class="divider"><span>or</span></div>
+            <button class="google-btn" id="googleLogin">
+                <svg class="google-icon" viewBox="0 0 18 18" fill="none">
+                    <path
+                        d="M17.64 9.2046C17.64 8.5666 17.5824 7.9526 17.464 7.36H9V10.734H13.844C13.6914 11.9156 13.105 12.9676 12.1594 13.7476L12.155 13.8636L14.4946 15.5286C16.5804 13.9206 17.64 11.73 17.64 9.2046Z"
+                        fill="#4285F4" />
+                    <path
+                        d="M9 18C11.4352 18 13.5504 17.116 14.9376 15.7606L12.1594 13.7476C11.4536 14.2746 10.468 14.6 9 14.6C6.6796 14.6 4.7412 13.018 4.0788 10.944L3.9776 10.946L1.4464 12.6316C2.8132 15.7946 5.9332 18 9 18Z"
+                        fill="#34A853" />
+                    <path
+                        d="M4.0788 10.944C4.0472 10.6726 4.0336 10.3926 4.0336 10.2046C4.0336 9.9946 4.0472 9.7946 4.0788 9.5226L4.0788 9.4886L1.5692 7.8666L1.4464 7.8776C0.7752 8.4876 0.36 9.1986 0.36 9.9986C0.36 10.8146 0.6696 11.5696 1.2664 12.1676L1.2664 12.2856L3.9776 10.946Z"
+                        fill="#FBBC05" />
+                    <path
+                        d="M4.0788 9.5226L4.0844 9.4086C4.3872 8.1656 5.2696 7.1416 6.528 6.7196L6.527 6.6056L4.1544 5.0556L4.1508 5.1706C2.8352 6.4266 2.16 8.2086 2.16 10C2.16 10.7916 2.4148 11.5166 2.8928 12.1186L2.8928 12.2366L0.6232 13.7866C0.2616 13.1086 -0.0096001 12.3096 -0.0096001 11.3986C-0.0096001 10.5986 0.4052 9.8876 1.0764 9.2776L1.1992 9.2666L4.0788 9.5226Z"
+                        fill="#EA4335" />
+                </svg>
+                Continue with Google
+            </button>
+            <div class="loading" id="loading" style="display: none;">
+                <div class="spinner"></div> Signing you in...
+            </div>
+            <div id="errorContainer"></div>
+        </div>
+    </div>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+</body>
+
 </html>
