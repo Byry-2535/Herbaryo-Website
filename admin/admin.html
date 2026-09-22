@@ -1,85 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Herbaryo | Admin</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="./admin.css">
-    </head>
-    <body>
-        <header class="admin-header">
-            <div class="container">
-                <div class="header-left">
-                    <a href="javascript:void(0);" class="logo-link" id="scrollToTop">
-                        <h2>HERBARYO</h2>
-                    </a>
-                </div>
-                <div class="admin-user">
-                    <div class="admin-avatar" id="adminAvatar"></div>
-                    <a href="../dashboard/dashboard.html" class="dashboard-btn">📊 Dashboard</a>
-                    <button class="logout-btn" id="logoutBtn">Logout</button>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbaryo | Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./admin.css">
+</head>
+
+<body>
+    <header class="admin-header">
+        <div class="container">
+            <div class="logo">
+                <a href="javascript:void(0);" class="logo-link" id="scrollToTop">
+                    <h2>HERBARYO</h2>
+                </a>
+            </div>
+            <div class="admin-user">
+                <div class="admin-avatar" id="adminAvatar"></div>
+                <a href="../dashboard/dashboard.html" class="dashboard-btn">📊 Dashboard</a>
+                <button class="logout-btn" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="admin-stats">
+            <h2>Total Players</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalUsers">0</div>
+                    <div class="stat-label">Registered</div>
                 </div>
             </div>
-        </header>
-        <main class="container">
-            <section class="admin-stats">
-                <h2>Total Players</h2>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalUsers">0</div>
-                        <div class="stat-label">Registered</div>
-                    </div>
-                </div>
-            </section>
-            <section class="users-section">
-                <h2>👥 Manage Players</h2>
-                <div class="search-section">
-                    <input type="text" id="searchInput" placeholder="🔍 Search players by name or email...">
-                </div>
-                <div class="table-container">
-                    <table id="usersTable">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Herbs Mastered</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td colspan="4">Loading players...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            <section class="transactions-section">
-                <h2>💳 Daily Transactions</h2>
-                <div class="table-container">
-                    <table id="transactionsTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Total Orders</th>
-                                <th>Total Aetherion</th>
-                                <th>Total Revenue (PHP)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionsBody">
-                            <tr><td colspan="4">Loading transactions...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
-        <footer class="footer">
-            <div class="container">
-                <p>© 2026 Herbaryo - Thesis Game by Real's Group. Preserving Philippine herbal knowledge through gamification.</p>
+        </section>
+
+        <section class="users-section">
+            <h2>👥 Manage Players</h2>
+            <div class="search-section">
+                <input type="text" id="searchInput" placeholder="🔍 Search players by name or email...">
             </div>
-        </footer>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-        <script src="./admin.js"></script>
-    </body>
+            <div class="table-container">
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Herbs Mastered</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4">Loading players...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Herbaryo - Thesis Game by Real's Group. Preserving Philippine herbal knowledge through
+                gamification.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script src="./admin.js"></script>
+</body>
+
 </html>

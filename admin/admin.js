@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.log('Admin verified ✅');
                 initAdminUI(user);
                 loadUsers();
-                displayDailyTransactions();
             } else {
                 console.log('Not admin ❌');
                 window.location.replace('../index.html');
@@ -50,6 +49,16 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', async () => {
             await auth.signOut();
             window.location.replace('../index.html');
+        });
+    }
+
+    const scrollToTopBtn = document.getElementById('scrollToTop');
+    if (scrollToTopBtn) {
+        scrollToTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
         });
     }
 
@@ -152,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <h2>${userData.username || 'Unknown'}</h2>
             <div class="user-data-grid">
                 <div><strong>Email:</strong> ${userData.email}</div>
-                <div><strong>Herbs Mastered:</strong> 🌿 ${masteredHerbs.length}/${Object.keys(userData.herbsMastered || {}).length} 
+                <div><strong>Herbs Mastered:</strong> 🌿 ${masteredHerbs.length}/${Object.keys(userData.herbsMastered || {}).length}
                     ${masteredHerbs.length ? '(' + masteredHerbs.join(', ') + ')' : ''}
                 </div>
                 <div><strong>Aurels:</strong> 💰 ${userData.aurels !== undefined ? userData.aurels : 0}</div>
@@ -172,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.className = 'user-modal';
 
         const herbsCheckboxes = allHerbs.map(herb => `
-            <label style="display:flex; align-items:center; gap:0.5rem;">
+            <label style="display:flex; align-items:center; gap:0.5rem; flex-direction:row;">
                 <input type="checkbox" class="editHerbCheckbox" value="${herb}" ${userData.herbsMastered[herb] ? 'checked' : ''}>
                 ${herb}
             </label>
@@ -192,7 +201,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </label>
                 <div><strong>Herbs Mastered:</strong><br>${herbsCheckboxes}</div>
 
-                <!-- Add Aurels and Aetherion fields -->
                 <label>Aurels <input type="number" id="editAurels" value="${userData.aurels !== undefined ? userData.aurels : 0}"></label>
                 <label>Aetherion <input type="number" id="editAetherion" value="${userData.aetherion !== undefined ? userData.aetherion : 0}"></label>
 
@@ -243,53 +251,5 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateStats(users) {
         const totalUsersEl = document.getElementById('totalUsers');
         if (totalUsersEl) totalUsersEl.textContent = users.length;
-    }
-
-    async function displayDailyTransactions() {
-        try {
-            const snapshot = await db.ref('herbaryo-users').once('value');
-            const transactions = [];
-
-            snapshot.forEach(child => {
-                const data = child.val();
-                if (!data.transactions) return;
-                Object.entries(data.transactions).forEach(([id, tx]) => {
-                    transactions.push({
-                        uid: child.key,
-                        username: data.username || 'Unknown',
-                        ...tx
-                    });
-                });
-            });
-
-            transactions.sort((a, b) => b.date - a.date);
-            const tbody = document.getElementById('transactionsBody');
-            if (!tbody) return;
-
-            tbody.innerHTML = transactions.map(tx => `
-                <tr>
-                    <td>${tx.username}</td>
-                    <td>${new Date(tx.date).toLocaleDateString('en-PH')}</td>
-                    <td>+${tx.aetherion || 0}</td>
-                    <td>₱${(tx.phpAmount || 0).toFixed(2)}</td>
-                </tr>
-            `).join('');
-        } catch (err) {
-            console.error('Failed to load transactions:', err);
-        }
-    }
-
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const scrollToTopBtn = document.getElementById('scrollToTop');
-    
-    if (scrollToTopBtn) {
-        scrollToTopBtn.addEventListener('click', () => {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
-        });
     }
 });

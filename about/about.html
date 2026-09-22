@@ -19,7 +19,7 @@
                     <h2>HERBARYO</h2>
                 </a>
             </div>
-            <button class="hamburger" id="hamburgerBtn">
+            <button class="hamburger" id="hamburgerBtn" aria-expanded="false" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -33,29 +33,23 @@
             </ul>
         </div>
     </nav>
-    <section class="hero about-hero">
-        <div class="container">
-            <div class="hero-container">
-                <div class="hero-content">
-                    <h1 class="highlight">Meet the Team</h1>
-                    <p class="hero-desc">Real's Group - Creators of Herbaryo thesis game</p>
-                </div>
-                <div class="hero-visual">
-                    <div class="hero-illustration team-photo" style="background-image: url('us.jpg')">
-                        <div class="photo-overlay"></div>
-                        <span class="photo-fallback">👥</span>
-                    </div>
-                </div>
-            </div>
+
+    <section class="about-hero">
+        <div class="about-hero-overlay"></div>
+        <div class="about-hero-content">
+            <h1>Meet the Team</h1>
+            <p>Real's Group - Creators of Herbaryo thesis game</p>
         </div>
     </section>
+
     <section class="section about-section">
         <div class="container">
             <div class="about-content">
                 <div class="about-text">
                     <h2 class="section-title">Real's Group</h2>
-                    <p class="section-subtitle">Five passionate students of NCST created Herbaryo as our thesis project.
+                    <p class="section-subtitle">Four passionate students of NCST created Herbaryo as our thesis project.
                     </p>
+
                     <div class="team-grid">
                         <div class="team-card">
                             <div class="team-avatar" style="background-image: url('real.jpg')">
@@ -65,6 +59,7 @@
                             <p class="team-role">Team Leader & Lead Programmer</p>
                             <p>Project Manager who oversaw the development and implementation of the game Herbaryo.</p>
                         </div>
+
                         <div class="team-card">
                             <div class="team-avatar" style="background-image: url('dionisio.jpg')">
                                 <span class="avatar-fallback">🎵</span>
@@ -73,6 +68,7 @@
                             <p class="team-role">Sound & Documentation</p>
                             <p>Created immersive sound effects and background music.</p>
                         </div>
+
                         <div class="team-card">
                             <div class="team-avatar" style="background-image: url('limit.jpg')">
                                 <span class="avatar-fallback">🎨</span>
@@ -81,14 +77,7 @@
                             <p class="team-role">UI/UX Designer</p>
                             <p>Designed the beautiful green-themed website and game UI.</p>
                         </div>
-                        <div class="team-card">
-                            <div class="team-avatar" style="background-image: url('solis.jpg')">
-                                <span class="avatar-fallback">📱</span>
-                            </div>
-                            <h3>Vincent Solis</h3>
-                            <p class="team-role">Assets & Research</p>
-                            <p>Researched 10 DOH medicinal plants and created game terrains.</p>
-                        </div>
+
                         <div class="team-card">
                             <div class="team-avatar" style="background-image: url('navarro.jpg')">
                                 <span class="avatar-fallback">📚</span>
@@ -102,12 +91,14 @@
             </div>
         </div>
     </section>
+
     <footer class="footer">
         <div class="container">
             <p>© 2026 Herbaryo - Thesis Game by Real's Group. Preserving Philippine herbal knowledge through
                 gamification.</p>
         </div>
     </footer>
+
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -117,33 +108,26 @@
             const hamburgerBtn = document.getElementById('hamburgerBtn');
             const navMenu = document.getElementById('navMenu');
 
-            if (!hamburgerBtn || !navMenu) {
-                console.error('Hamburger or navMenu not found');
-                return;
-            }
+            if (!hamburgerBtn || !navMenu) return;
 
-            hamburgerBtn.addEventListener('click', () => {
+            const toggleMenu = () => {
                 navMenu.classList.toggle('active');
                 hamburgerBtn.classList.toggle('active');
                 document.body.classList.toggle('menu-open');
-                const expanded = navMenu.classList.contains('active');
-                hamburgerBtn.setAttribute('aria-expanded', expanded);
-            });
+                hamburgerBtn.setAttribute('aria-expanded', navMenu.classList.contains('active'));
+            };
+
+            hamburgerBtn.addEventListener('click', toggleMenu);
 
             document.addEventListener('click', (e) => {
-                if (navMenu.classList.contains('active') &&
-                    !document.querySelector('.nav-container').contains(e.target)) {
-                    navMenu.classList.remove('active');
-                    hamburgerBtn.classList.remove('active');
-                    document.body.classList.remove('menu-open');
+                if (navMenu.classList.contains('active') && !e.target.closest('.nav-container')) {
+                    toggleMenu();
                 }
             });
 
             document.addEventListener('keydown', (e) => {
                 if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                    navMenu.classList.remove('active');
-                    hamburgerBtn.classList.remove('active');
-                    document.body.classList.remove('menu-open');
+                    toggleMenu();
                     hamburgerBtn.focus();
                 }
             });

@@ -1,97 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Herbaryo | Dashboard</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="./dashboard.css">
-    </head>
-    <body>
-        <header class="dashboard-header">
-            <div class="container">
-                <nav class="dashboard-nav">
-                    <div class="logo">
-                        <a href="#" class="logo-link">
-                            <h2>🌿 HERBARYO</h2>
-                        </a>
-                    </div>
-                    <div class="user-profile">
-                        <div class="user-avatar" id="userAvatar">JD</div>
-                        <div class="user-info">
-                            <div class="welcome-text" id="welcomeText">Welcome back!</div>
-                            <div class="user-email" id="userEmail"></div>
-                        </div>
-                        <button class="admin-btn" id="adminBtn">🛠️ Admin</button>
-                        <button class="edit-btn" id="editBtn">✏️ Edit Profile</button>
-                        <button class="logout-btn" id="logoutBtn">Logout</button>
-                    </div>
-                </nav>
-            </div>
-        </header>
-        <main class="container">
-            <section class="stats-display">
-                <h1>Herbalist Dashboard</h1>
-                <p class="dashboard-subtitle">Your Herbaryo progress will appear here</p>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="herbsMasteredCount">🌿 0/10</div>
-                        <div class="stat-label">Herbs Mastered</div>
-                    </div>
-                </div>
-            </section>
 
-            <section class="currency-stats">
-                <div class="currency-card aurels">
-                    <span class="currency-icon">💰</span>
-                    <div>
-                        <div class="currency-label">Aurels</div>
-                        <div class="currency-amount" id="aurelsCount">0</div>
-                    </div>
-                </div>
-                <div class="currency-card aetherion">
-                    <span class="currency-icon">✨</span>
-                    <div>
-                        <div class="currency-label">Aetherion</div>
-                        <div class="currency-amount" id="aetherionCount">0</div>
-                    </div>
-                </div>
-                <div class="currency-card gender">
-                    <span class="currency-icon" id="genderIcon">♂</span>
-                    <div>
-                        <div class="currency-label">Gender</div>
-                        <div class="currency-amount" id="genderText">Male</div>
-                    </div>
-                </div>
-            </section>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbaryo | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./dashboard.css">
+</head>
 
-            <section class="transactions-section">
-                <h2>💳 Top-up History</h2>
-                <p class="dashboard-subtitle">Coming soon - Track your purchases</p>
-                <div class="transactions-table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Aetherion</th>
-                                <th>Amount (PHP)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="transactionsBody">
-                            <tr><td colspan="3" style="text-align:center; color:#666;">No transactions yet</td></tr>
-                        </tbody>
-                    </table>
+<body>
+    <header class="dashboard-header">
+        <div class="container">
+            <nav class="dashboard-nav">
+                <div class="logo">
+                    <a href="#" class="logo-link">
+                        <h2>🌿 HERBARYO</h2>
+                    </a>
                 </div>
-            </section>
-        </main>
-        <footer class="footer">
-            <div class="container">
-                <p>© 2026 Herbaryo - Thesis Game by Real's Group. Preserving Philippine herbal knowledge through gamification.</p>
+                <div class="user-profile">
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <div class="user-info">
+                        <div class="welcome-text" id="welcomeText">Welcome back!</div>
+                        <div class="user-email" id="userEmail"></div>
+                    </div>
+                    <button class="admin-btn" id="adminBtn">🛠️ Admin</button>
+                    <button class="edit-btn" id="editBtn">✏️ Edit Profile</button>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <h1 class="dashboard-title">Herbalist Dashboard</h1>
+        <p class="dashboard-subtitle">Your Herbaryo progress will appear here</p>
+
+        <div class="dashboard-grid-2x2">
+            <div class="stat-card" id="herbsMasteredCard">
+                <div class="stat-number" id="herbsMasteredCount">🌿 0/10</div>
+                <div class="stat-label">Herbs Mastered</div>
             </div>
-        </footer>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-        <script src="./dashboard.js"></script>
-    </body>
+
+            <div class="currency-card aurels">
+                <span class="currency-icon">💰</span>
+                <div>
+                    <div class="currency-label">Aurels</div>
+                    <div class="currency-amount" id="aurelsCount">0</div>
+                </div>
+            </div>
+
+            <div class="currency-card aetherion">
+                <span class="currency-icon">✨</span>
+                <div>
+                    <div class="currency-label">Aetherion</div>
+                    <div class="currency-amount" id="aetherionCount">0</div>
+                </div>
+            </div>
+
+            <div class="currency-card gender">
+                <span class="currency-icon" id="genderIcon">♂</span>
+                <div>
+                    <div class="currency-label">Gender</div>
+                    <div class="currency-amount" id="genderText">Male</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Herbaryo - Thesis Game by Real's Group. Preserving Philippine herbal knowledge through
+                gamification.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script src="./dashboard.js"></script>
+</body>
+
 </html>
