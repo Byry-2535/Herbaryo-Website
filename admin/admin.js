@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <tr>
                 <td>${user.username}</td>
                 <td>${user.email}</td>
-                <td>🌿 ${user.herbsMasteredCount}/${Object.keys(user.herbsMastered).length}</td>
+                <td>${user.herbsMasteredCount}/${Object.keys(user.herbsMastered).length}</td>
                 <td>
                     <button class="action-btn btn-view" data-uid="${user.uid}">View</button>
                     <button class="action-btn btn-delete" data-uid="${user.uid}">Delete</button>
@@ -161,11 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <h2>${userData.username || 'Unknown'}</h2>
             <div class="user-data-grid">
                 <div><strong>Email:</strong> ${userData.email}</div>
-                <div><strong>Herbs Mastered:</strong> 🌿 ${masteredHerbs.length}/${Object.keys(userData.herbsMastered || {}).length}
+                <div><strong>Herbs Mastered:</strong> ${masteredHerbs.length}/${Object.keys(userData.herbsMastered || {}).length}
                     ${masteredHerbs.length ? '(' + masteredHerbs.join(', ') + ')' : ''}
                 </div>
-                <div><strong>Aurels:</strong> 💰 ${userData.aurels !== undefined ? userData.aurels : 0}</div>
-                <div><strong>Aetherion:</strong> ✨ ${userData.aetherion !== undefined ? userData.aetherion : 0}</div>
+                <div><strong>Aurels:</strong> ${userData.aurels !== undefined ? userData.aurels : 0}</div>
+                <div><strong>Aetherion:</strong> ${userData.aetherion !== undefined ? userData.aetherion : 0}</div>
                 <div><strong>Gender:</strong> ${userData.gender?.toLowerCase() === 'male' ? 'Male' : 'Female'}</div>
             </div>
         </div>`;

@@ -22,7 +22,7 @@ function getHerbsCount(herbsObj) {
 function formatHerbsStat(herbsObj) {
     const count = getHerbsCount(herbsObj);
     const total = Object.keys(herbsObj || {}).length || 0;
-    return `🌿 ${count}/${total}`;
+    return `${count}/${total}`;
 }
 
 function updateUserUI(userData) {
@@ -63,7 +63,7 @@ const profileModal = document.createElement('div');
 profileModal.className = 'profile-modal';
 profileModal.innerHTML = `
     <div class="edit-form">
-        <h2>🌿 Edit Profile</h2>
+        <h2>Edit Profile</h2>
         <input type="text" class="edit-input" id="editUsername" placeholder="Enter new display name">
         <div class="edit-buttons">
             <button class="btn-save" id="saveBtn">Save</button>
@@ -120,10 +120,10 @@ function showHerbsModal(herbsObj) {
     modal.innerHTML = `
         <div class="user-modal-content">
             <button class="modal-close">&times;</button>
-            <h2>🌿 Herbs Mastered</h2>
+            <h2>Herbs Mastered</h2>
             <ul style="list-style:none; padding:0; margin:1rem 0;">
                 ${masteredHerbs.length
-            ? masteredHerbs.map(h => `<li>🌱 ${h}</li>`).join('')
+            ? masteredHerbs.map(h => `<li>${h}</li>`).join('')
             : '<li style="color:#666;">No herbs mastered yet</li>'}
             </ul>
         </div>
