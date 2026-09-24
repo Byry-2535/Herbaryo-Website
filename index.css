@@ -32,9 +32,9 @@ body {
 }
 
 .nav-container {
-    max-width: 1200px;
+    max-width: none;
     margin: 0 auto;
-    padding: 0 2rem;
+    padding: 0 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,6 +46,10 @@ body {
     background: linear-gradient(45deg, #2e7d32, #4caf50);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+}
+
+.nav-container .logo {
+    margin-left: 1.25rem;
 }
 
 .nav-menu {
@@ -67,8 +71,7 @@ body {
     color: #4caf50;
 }
 
-.login-btn,
-.download-btn {
+.login-btn {
     background: linear-gradient(45deg, #4caf50, #66bb6a);
     color: white !important;
     padding: 0.8rem 2rem;
@@ -78,15 +81,25 @@ body {
     box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
-.login-btn:hover,
-.download-btn:hover {
+.login-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
 }
 
 .download-btn {
+    background: linear-gradient(45deg, #1565c0, #42a5f5);
+    color: white !important;
     padding: 0.7rem 1.4rem;
     font-size: 0.95rem;
+    border-radius: 25px;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(21, 101, 192, 0.3);
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(21, 101, 192, 0.4);
 }
 
 .hero {

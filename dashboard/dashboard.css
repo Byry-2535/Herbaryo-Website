@@ -4,6 +4,504 @@
     box-sizing: border-box;
 }
 
+* {}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
+    color: #214d2a;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.dashboard-header {
+    padding: 1rem 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(46, 125, 50, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.dashboard-header .container {
+    max-width: none;
+    padding: 0 1rem;
+}
+
+.dashboard-nav,
+.dashboard-actions,
+.section-heading-row {
+    display: flex;
+    align-items: center;
+}
+
+.dashboard-nav,
+.section-heading-row {
+    justify-content: space-between;
+}
+
+.logo h2 {
+    font-weight: 700;
+    font-size: 2rem;
+    background: linear-gradient(45deg, #2e7d32, #4caf50);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+}
+
+.logo-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.dashboard-nav .logo {
+    margin-left: 1.25rem;
+}
+
+.dashboard-actions {
+    gap: 0.7rem;
+}
+
+.edit-btn,
+.admin-btn,
+.logout-btn {
+    padding: 0.7rem 1.25rem;
+    border-radius: 25px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+    font-size: 0.9rem;
+}
+
+.edit-btn {
+    background: #fff3e0;
+    color: #e65100;
+}
+
+.admin-btn {
+    display: none;
+    background: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.logout-btn {
+    background: #ffebee;
+    color: #c62828;
+}
+
+.edit-btn:hover,
+.admin-btn:hover,
+.logout-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(46, 125, 50, 0.16);
+}
+
+main {
+    min-height: calc(100vh - 80px);
+    padding: 3rem 0 1rem;
+}
+
+.dashboard-hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    padding: 3rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.9), rgba(232, 245, 233, 0.75));
+    border-radius: 28px;
+    box-shadow: 0 18px 50px rgba(46, 125, 50, 0.14);
+}
+
+.eyebrow {
+    color: #4caf50;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-hero h1 {
+    color: #2e7d32;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1.1;
+    margin-bottom: 0.8rem;
+}
+
+.hero-description {
+    color: #52705a;
+    font-size: 1.05rem;
+    max-width: 560px;
+}
+
+.hero-avatar {
+    width: 108px;
+    height: 108px;
+    flex: 0 0 108px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #4caf50, #1b5e20);
+    color: white;
+    font-size: 2.8rem;
+    font-weight: 700;
+    box-shadow: 0 12px 30px rgba(46, 125, 50, 0.28);
+    background-size: cover;
+    background-position: center;
+}
+
+.dashboard-section {
+    margin: 0 0 2.5rem;
+}
+
+.section-heading {
+    margin-bottom: 1.25rem;
+}
+
+.section-heading h2 {
+    color: #2e7d32;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+.section-heading-row {
+    align-items: end;
+    gap: 1rem;
+}
+
+.mastery-total {
+    color: #2e7d32;
+    font-size: 1.5rem;
+}
+
+.personal-grid,
+.resource-grid,
+.achievement-grid,
+.herbs-list {
+    display: grid;
+    gap: 1rem;
+}
+
+.personal-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.info-item,
+.resource-card,
+.achievement-card,
+.herb-card {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(76, 175, 80, 0.12);
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(46, 125, 50, 0.1);
+}
+
+.info-item {
+    padding: 1.3rem 1.5rem;
+}
+
+.info-item span,
+.resource-label {
+    display: block;
+    color: #719078;
+    font-size: 0.82rem;
+    margin-bottom: 0.35rem;
+}
+
+.info-item strong {
+    color: #2e7d32;
+    overflow-wrap: anywhere;
+}
+
+.herbs-list {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+.herb-card {
+    padding: 1.25rem;
+    min-height: 110px;
+    border-top: 4px solid #4caf50;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.herb-card.mastered:hover {
+    transform: translateY(-4px);
+}
+
+.herb-card:not(.mastered) {
+    opacity: 0.48;
+    filter: grayscale(1);
+}
+
+.herb-card strong {
+    display: block;
+    color: #2e7d32;
+    margin-bottom: 0.3rem;
+}
+
+.herb-card span {
+    color: #78907c;
+    font-size: 0.78rem;
+}
+
+.resource-grid {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.resource-card {
+    padding: 1.5rem;
+    border-top: 4px solid #4caf50;
+}
+
+.resource-card.aetherion {
+    border-top-color: #8e24aa;
+}
+
+.resource-card strong {
+    display: block;
+    color: #2e7d32;
+    font-size: 2rem;
+}
+
+.resource-card.aetherion strong {
+    color: #7b1fa2;
+}
+
+.achievement-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.achievement-card {
+    padding: 1.4rem;
+    border-top: 4px solid #cfd8d0;
+}
+
+.achievement-card.unlocked {
+    border-top-color: #ffb300;
+}
+
+.achievement-card h3 {
+    color: #2e7d32;
+    font-size: 1rem;
+    margin-bottom: 0.35rem;
+}
+
+.achievement-card p {
+    color: #78907c;
+    font-size: 0.82rem;
+}
+
+.achievement-card:not(.unlocked) {
+    opacity: 0.55;
+}
+
+.profile-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s;
+}
+
+.profile-modal.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.edit-form {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 20px;
+    max-width: 460px;
+    width: 90%;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform 0.3s;
+}
+
+.profile-modal.active .edit-form {
+    transform: scale(1);
+}
+
+.edit-form h2 {
+    color: #2e7d32;
+    margin-bottom: 1.5rem;
+}
+
+.edit-field {
+    display: block;
+    color: #52705a;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.edit-field input,
+.edit-field select {
+    display: block;
+    width: 100%;
+    margin-top: 0.4rem;
+    padding: 0.85rem 1rem;
+    border: 2px solid #c8e6c9;
+    border-radius: 10px;
+    font: inherit;
+}
+
+.edit-note {
+    color: #78907c;
+    font-size: 0.78rem;
+    margin: 0.25rem 0 1rem;
+}
+
+.edit-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.btn-save,
+.btn-cancel {
+    flex: 1;
+    padding: 0.9rem;
+    border-radius: 10px;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-save {
+    color: white;
+    background: #4caf50;
+    border: none;
+}
+
+.btn-cancel {
+    color: #2e7d32;
+    background: white;
+    border: 2px solid #a5d6a7;
+}
+
+.edit-error {
+    color: #c62828;
+    font-size: 0.82rem;
+    margin-top: 0.75rem;
+}
+
+.footer {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: 3rem;
+}
+
+.footer p {
+    color: #2e7d32;
+    font-weight: 500;
+}
+
+@media (max-width: 900px) {
+    .herbs-list {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .achievement-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+    .container {
+        padding: 0 1.25rem;
+    }
+
+    .dashboard-nav {
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .dashboard-actions {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .dashboard-actions button {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.78rem;
+    }
+
+    .dashboard-hero {
+        padding: 2rem;
+        align-items: flex-start;
+    }
+
+    .hero-avatar {
+        width: 72px;
+        height: 72px;
+        flex-basis: 72px;
+        font-size: 1.8rem;
+    }
+
+    .personal-grid,
+    .resource-grid,
+    .achievement-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .herbs-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 420px) {
+    .dashboard-nav {
+        flex-direction: column;
+    }
+
+    .dashboard-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .dashboard-hero {
+        display: block;
+    }
+
+    .hero-avatar {
+        margin-top: 1.5rem;
+    }
+
+    .herbs-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Legacy rules retained below for reference and disabled.
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+*/
+
 html {
     scroll-behavior: smooth;
 }
@@ -31,6 +529,11 @@ body {
     z-index: 100;
 }
 
+.dashboard-header .container {
+    max-width: none;
+    padding: 0 1rem;
+}
+
 .dashboard-nav {
     display: flex;
     justify-content: space-between;
@@ -49,6 +552,10 @@ body {
 .logo-link {
     text-decoration: none;
     color: inherit;
+}
+
+.dashboard-nav .logo {
+    margin-left: 1.25rem;
 }
 
 .user-profile {
@@ -395,4 +902,6 @@ main {
     .dashboard-grid-2x2 {
         grid-template-columns: 1fr;
     }
+
+    margin-left: 1.25rem;
 }

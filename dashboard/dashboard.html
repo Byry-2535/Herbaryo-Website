@@ -19,14 +19,9 @@
                         <h2>HERBARYO</h2>
                     </a>
                 </div>
-                <div class="user-profile">
-                    <div class="user-avatar" id="userAvatar">JD</div>
-                    <div class="user-info">
-                        <div class="welcome-text" id="welcomeText">Welcome back!</div>
-                        <div class="user-email" id="userEmail"></div>
-                    </div>
+                <div class="dashboard-actions">
                     <button class="admin-btn" id="adminBtn">Admin</button>
-                    <button class="edit-btn" id="editBtn">Edit Profile</button>
+                    <button class="edit-btn" id="editBtn">Edit</button>
                     <button class="logout-btn" id="logoutBtn">Logout</button>
                 </div>
             </nav>
@@ -34,39 +29,65 @@
     </header>
 
     <main class="container">
-        <h1 class="dashboard-title">Herbalist Dashboard</h1>
-        <p class="dashboard-subtitle">Your Herbaryo progress will appear here</p>
-
-        <div class="dashboard-grid-2x2">
-            <div class="stat-card" id="herbsMasteredCard">
-                <div class="stat-number" id="herbsMasteredCount">🌿 0/10</div>
-                <div class="stat-label">Herbs Mastered</div>
+        <section class="dashboard-hero">
+            <div>
+                <h1 id="welcomeText">Good morning, Herbalist</h1>
             </div>
+            <div class="hero-avatar" id="userAvatar" aria-hidden="true">H</div>
+        </section>
 
-            <div class="currency-card aurels">
-                <span class="currency-icon">💰</span>
-                <div>
-                    <div class="currency-label">Aurels</div>
-                    <div class="currency-amount" id="aurelsCount">0</div>
+        <section class="dashboard-section personal-section">
+            <div class="section-heading">
+                <h2>Personal Info</h2>
+            </div>
+            <div class="personal-grid">
+                <div class="info-item">
+                    <span>Username</span>
+                    <strong id="usernameValue">Herbalist</strong>
+                </div>
+                <div class="info-item">
+                    <span>Email</span>
+                    <strong id="userEmail">-</strong>
+                </div>
+                <div class="info-item">
+                    <span>Gender</span>
+                    <strong id="genderText">Not specified</strong>
                 </div>
             </div>
+        </section>
 
-            <div class="currency-card aetherion">
-                <span class="currency-icon">✨</span>
+        <section class="dashboard-section">
+            <div class="section-heading section-heading-row">
                 <div>
-                    <div class="currency-label">Aetherion</div>
-                    <div class="currency-amount" id="aetherionCount">0</div>
+                    <h2>Herbs Mastered</h2>
                 </div>
+                <strong class="mastery-total" id="herbsMasteredCount">0/10</strong>
             </div>
+            <div class="herbs-list" id="herbsList"></div>
+        </section>
 
-            <div class="currency-card gender">
-                <span class="currency-icon" id="genderIcon">♂</span>
-                <div>
-                    <div class="currency-label">Gender</div>
-                    <div class="currency-amount" id="genderText">Male</div>
-                </div>
+        <section class="dashboard-section">
+            <div class="section-heading">
+                <h2>Wallet</h2>
             </div>
-        </div>
+            <div class="resource-grid">
+                <article class="resource-card aurels">
+                    <span class="resource-label">Aurels</span>
+                    <strong id="aurelsCount">0</strong>
+                </article>
+                <article class="resource-card aetherion">
+                    <span class="resource-label">Aetherion</span>
+                    <strong id="aetherionCount">0</strong>
+                </article>
+            </div>
+        </section>
+
+        <section class="dashboard-section">
+            <div class="section-heading">
+                <h2>Achievements</h2>
+            </div>
+            <div class="achievement-grid" id="achievementList"></div>
+        </section>
     </main>
 
     <footer class="footer">

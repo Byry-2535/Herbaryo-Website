@@ -28,6 +28,8 @@ body {
 }
 
 .admin-header .container {
+    max-width: none;
+    padding: 0 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -36,6 +38,7 @@ body {
 .logo {
     display: flex;
     align-items: center;
+    margin-left: 1.25rem;
 }
 
 .logo-link {
