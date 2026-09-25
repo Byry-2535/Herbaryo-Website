@@ -19,6 +19,16 @@
                         <h2>HERBARYO</h2>
                     </a>
                 </div>
+                <div class="nav-wallet" aria-label="Wallet balance">
+                    <div class="nav-resource aurels">
+                        <span>Aurels</span>
+                        <strong id="aurelsCount">0</strong>
+                    </div>
+                    <div class="nav-resource aetherion">
+                        <span>Aetherion</span>
+                        <strong id="aetherionCount">0</strong>
+                    </div>
+                </div>
                 <div class="dashboard-actions">
                     <button class="admin-btn" id="adminBtn">Admin</button>
                     <button class="edit-btn" id="editBtn">Edit</button>
@@ -30,10 +40,10 @@
 
     <main class="container">
         <section class="dashboard-hero">
+            <div class="hero-avatar" id="userAvatar" aria-hidden="true">H</div>
             <div>
                 <h1 id="welcomeText">Good morning, Herbalist</h1>
             </div>
-            <div class="hero-avatar" id="userAvatar" aria-hidden="true">H</div>
         </section>
 
         <section class="dashboard-section personal-section">
@@ -64,22 +74,6 @@
                 <strong class="mastery-total" id="herbsMasteredCount">0/10</strong>
             </div>
             <div class="herbs-list" id="herbsList"></div>
-        </section>
-
-        <section class="dashboard-section">
-            <div class="section-heading">
-                <h2>Wallet</h2>
-            </div>
-            <div class="resource-grid">
-                <article class="resource-card aurels">
-                    <span class="resource-label">Aurels</span>
-                    <strong id="aurelsCount">0</strong>
-                </article>
-                <article class="resource-card aetherion">
-                    <span class="resource-label">Aetherion</span>
-                    <strong id="aetherionCount">0</strong>
-                </article>
-            </div>
         </section>
 
         <section class="dashboard-section">

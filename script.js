@@ -29,16 +29,16 @@ function clearError() { if (errorContainer) errorContainer.innerHTML = ''; }
 function showLoading() { document.getElementById('loading').style.display = 'flex'; }
 function hideLoading() { document.getElementById('loading').style.display = 'none'; }
 
-closeModal.addEventListener('click', () => closeLoginModal());
-loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
+if (closeModal && loginModal) closeModal.addEventListener('click', () => closeLoginModal());
+if (loginModal) loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
 function closeLoginModal() {
     loginModal.classList.remove('active');
     document.body.style.overflow = '';
     clearError();
 }
 
-document.getElementById('emailLoginBtn').addEventListener('click', handleEmailLogin);
-document.getElementById('emailSignupBtn').addEventListener('click', handleEmailSignup);
+if (document.getElementById('emailLoginBtn')) document.getElementById('emailLoginBtn').addEventListener('click', handleEmailLogin);
+if (document.getElementById('emailSignupBtn')) document.getElementById('emailSignupBtn').addEventListener('click', handleEmailSignup);
 
 async function handleEmailLogin() {
     const email = document.getElementById('loginEmail').value.trim();
@@ -76,7 +76,7 @@ async function handleEmailSignup() {
     } finally { hideLoading(); }
 }
 
-document.getElementById('googleLogin').addEventListener('click', async () => {
+if (document.getElementById('googleLogin')) document.getElementById('googleLogin').addEventListener('click', async () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     showLoading();
     try {
@@ -179,18 +179,18 @@ auth.onAuthStateChanged(user => {
     if (user) {
         authBtn.textContent = 'Logout';
         authBtn.onclick = async e => { e.preventDefault(); await auth.signOut(); authBtn.textContent = 'Login →'; };
-    } else {
+    } else if (loginModal) {
         authBtn.textContent = 'Login →';
         authBtn.onclick = e => { e.preventDefault(); loginModal.classList.add('active'); document.body.style.overflow = 'hidden'; };
     }
 });
 
-document.getElementById('showSignupTab').addEventListener('click', () => {
+if (document.getElementById('showSignupTab')) document.getElementById('showSignupTab').addEventListener('click', () => {
     document.getElementById('loginTab').classList.remove('active');
     document.getElementById('signupTab').classList.add('active');
 });
 
-document.getElementById('showLoginTab').addEventListener('click', () => {
+if (document.getElementById('showLoginTab')) document.getElementById('showLoginTab').addEventListener('click', () => {
     document.getElementById('signupTab').classList.remove('active');
     document.getElementById('loginTab').classList.add('active');
 });
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-document.getElementById('forgotPasswordBtn').addEventListener('click', async (e) => {
+if (document.getElementById('forgotPasswordBtn')) document.getElementById('forgotPasswordBtn').addEventListener('click', async (e) => {
     e.preventDefault();
 
     const email = document.getElementById('loginEmail').value.trim();
@@ -270,3 +270,8 @@ document.getElementById('forgotPasswordBtn').addEventListener('click', async (e)
         hideLoading();
     }
 });
+
+if (loginModal && window.location.hash === '#login') {
+    loginModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
