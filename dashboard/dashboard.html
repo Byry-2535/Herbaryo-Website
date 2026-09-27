@@ -19,20 +19,24 @@
                         <h2>HERBARYO</h2>
                     </a>
                 </div>
-                <div class="nav-wallet" aria-label="Wallet balance">
-                    <div class="nav-resource aurels">
-                        <span>Aurels</span>
-                        <strong id="aurelsCount">0</strong>
+                <div class="dashboard-tools">
+                    <div class="nav-wallet" aria-label="Wallet balance">
+                        <div class="nav-resource aurels">
+                            <span>Aurels</span>
+                            <strong id="aurelsCount">0</strong>
+                        </div>
                     </div>
-                    <div class="nav-resource aetherion">
-                        <span>Aetherion</span>
-                        <strong id="aetherionCount">0</strong>
+                    <button class="dashboard-menu-toggle" id="dashboardMenuBtn" type="button"
+                        aria-label="Open dashboard menu" aria-controls="dashboardActions" aria-expanded="false">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
+                    <div class="dashboard-actions" id="dashboardActions">
+                        <button class="admin-btn" id="adminBtn">Admin</button>
+                        <button class="edit-btn" id="editBtn">Edit</button>
+                        <button class="logout-btn" id="logoutBtn">Logout</button>
                     </div>
-                </div>
-                <div class="dashboard-actions">
-                    <button class="admin-btn" id="adminBtn">Admin</button>
-                    <button class="edit-btn" id="editBtn">Edit</button>
-                    <button class="logout-btn" id="logoutBtn">Logout</button>
                 </div>
             </nav>
         </div>

@@ -40,17 +40,17 @@ body {
 }
 
 .admin-header::before {
-    top: -10px;
+    top: 50%;
     right: 8%;
-    transform: rotate(35deg);
-    box-shadow: 22px 22px 0 -4px rgba(76, 175, 80, 0.12), 55px 4px 0 -7px rgba(46, 125, 50, 0.1), 92px 28px 0 -8px rgba(76, 175, 80, 0.14);
+    transform: translateY(-50%) rotate(35deg);
+    box-shadow: -22px 4px 0 -4px rgba(76, 175, 80, 0.12), -55px -5px 0 -7px rgba(46, 125, 50, 0.1), -92px 8px 0 -8px rgba(76, 175, 80, 0.14);
 }
 
 .admin-header::after {
-    bottom: -22px;
+    top: 50%;
     left: 23%;
-    transform: rotate(-55deg);
-    box-shadow: 20px 18px 0 -5px rgba(46, 125, 50, 0.1), 54px -4px 0 -8px rgba(76, 175, 80, 0.12), 86px 20px 0 -9px rgba(46, 125, 50, 0.08);
+    transform: translateY(-50%) rotate(-55deg);
+    box-shadow: 20px 4px 0 -5px rgba(46, 125, 50, 0.1), 54px -5px 0 -8px rgba(76, 175, 80, 0.12), 86px 8px 0 -9px rgba(46, 125, 50, 0.08);
 }
 
 .admin-header .container {

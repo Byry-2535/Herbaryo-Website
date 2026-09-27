@@ -105,36 +105,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
     <script src="../script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const navMenu = document.getElementById('navMenu');
-
-            if (!hamburgerBtn || !navMenu) return;
-
-            const toggleMenu = () => {
-                navMenu.classList.toggle('active');
-                hamburgerBtn.classList.toggle('active');
-                document.body.classList.toggle('menu-open');
-                hamburgerBtn.setAttribute('aria-expanded', navMenu.classList.contains('active'));
-            };
-
-            hamburgerBtn.addEventListener('click', toggleMenu);
-
-            document.addEventListener('click', (e) => {
-                if (navMenu.classList.contains('active') && !e.target.closest('.nav-container')) {
-                    toggleMenu();
-                }
-            });
-
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-                    toggleMenu();
-                    hamburgerBtn.focus();
-                }
-            });
-        });
-    </script>
 </body>
 
 </html>

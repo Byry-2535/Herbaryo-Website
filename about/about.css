@@ -7,7 +7,6 @@
     padding: 1rem 0;
     box-shadow: 0 2px 20px rgba(46, 125, 50, 0.1);
     z-index: 1000;
-    overflow: hidden;
 }
 
 .navbar::before,
@@ -22,17 +21,17 @@
 }
 
 .navbar::before {
-    top: -10px;
+    top: 50%;
     right: 8%;
-    transform: rotate(35deg);
-    box-shadow: 22px 22px 0 -4px rgba(76, 175, 80, 0.12), 55px 4px 0 -7px rgba(46, 125, 50, 0.1), 92px 28px 0 -8px rgba(76, 175, 80, 0.14);
+    transform: translateY(-50%) rotate(35deg);
+    box-shadow: -22px 4px 0 -4px rgba(76, 175, 80, 0.12), -55px -5px 0 -7px rgba(46, 125, 50, 0.1), -92px 8px 0 -8px rgba(76, 175, 80, 0.14);
 }
 
 .navbar::after {
-    bottom: -22px;
+    top: 50%;
     left: 23%;
-    transform: rotate(-55deg);
-    box-shadow: 20px 18px 0 -5px rgba(46, 125, 50, 0.1), 54px -4px 0 -8px rgba(76, 175, 80, 0.12), 86px 20px 0 -9px rgba(46, 125, 50, 0.08);
+    transform: translateY(-50%) rotate(-55deg);
+    box-shadow: 20px 4px 0 -5px rgba(46, 125, 50, 0.1), 54px -5px 0 -8px rgba(76, 175, 80, 0.12), 86px 8px 0 -9px rgba(46, 125, 50, 0.08);
 }
 
 .navbar .nav-container {
@@ -206,28 +205,10 @@
 @media (max-width: 768px) {
     .hamburger {
         display: flex;
-    }
-
-    .nav-menu {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 280px;
-        height: 100vh;
-        background: rgba(255, 255, 255, 0.98);
-        backdrop-filter: blur(20px);
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-        padding: 5rem 2rem 2rem;
-        gap: 2rem;
-        transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        box-shadow: -10px 0 30px rgba(46, 125, 50, 0.2);
-        z-index: 1003;
-    }
-
-    .nav-menu.active {
-        right: 0;
+        flex: 0 0 40px;
+        width: 40px;
+        height: 40px;
+        padding: 8px;
     }
 
     body.menu-open::before {

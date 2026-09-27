@@ -156,7 +156,6 @@ async function saveNewUserProfile(user, usernameInput, gender) {
             email: user.email,
             gender: gender,
             photoURL: user.photoURL || '',
-            aetherion: 0,
             aurels: 0,
             herbsMastered: {
                 bawang: false,
@@ -198,34 +197,40 @@ if (document.getElementById('showLoginTab')) document.getElementById('showLoginT
 document.addEventListener('DOMContentLoaded', () => {
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const navMenu = document.getElementById('navMenu');
+    const navContainer = hamburgerBtn?.closest('.nav-container');
 
-    if (!hamburgerBtn || !navMenu) {
+    if (!hamburgerBtn || !navMenu || !navContainer) {
         console.error('Hamburger or navMenu not found');
         return;
     }
 
+    const closeMenu = () => {
+        navMenu.classList.remove('active');
+        hamburgerBtn.classList.remove('active');
+        document.body.classList.remove('menu-open');
+        hamburgerBtn.setAttribute('aria-expanded', 'false');
+    };
+
     hamburgerBtn.addEventListener('click', () => {
-        navMenu.classList.toggle('active');
-        hamburgerBtn.classList.toggle('active');
-        document.body.classList.toggle('menu-open');
-        const expanded = navMenu.classList.contains('active');
-        hamburgerBtn.setAttribute('aria-expanded', expanded);
+        const isOpen = navMenu.classList.toggle('active');
+        hamburgerBtn.classList.toggle('active', isOpen);
+        document.body.classList.toggle('menu-open', isOpen);
+        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+    });
+
+    navMenu.addEventListener('click', event => {
+        if (event.target.closest('a')) closeMenu();
     });
 
     document.addEventListener('click', (e) => {
-        if (navMenu.classList.contains('active') &&
-            !document.querySelector('.nav-container').contains(e.target)) {
-            navMenu.classList.remove('active');
-            hamburgerBtn.classList.remove('active');
-            document.body.classList.remove('menu-open');
+        if (navMenu.classList.contains('active') && !navContainer.contains(e.target)) {
+            closeMenu();
         }
     });
 
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && navMenu.classList.contains('active')) {
-            navMenu.classList.remove('active');
-            hamburgerBtn.classList.remove('active');
-            document.body.classList.remove('menu-open');
+            closeMenu();
             hamburgerBtn.focus();
         }
     });

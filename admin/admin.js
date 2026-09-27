@@ -93,8 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     gender: u.gender || 'Not Specified',
                     herbsMastered: u.herbsMastered || {},
                     herbsMasteredCount: Object.values(u.herbsMastered || {}).filter(v => v).length,
-                    aurels: u.aurels || 0,
-                    aetherion: u.aetherion || 0
+                    aurels: u.aurels || 0
                 });
             });
 
@@ -165,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     ${masteredHerbs.length ? '(' + masteredHerbs.join(', ') + ')' : ''}
                 </div>
                 <div><strong>Aurels:</strong> ${userData.aurels !== undefined ? userData.aurels : 0}</div>
-                <div><strong>Aetherion:</strong> ${userData.aetherion !== undefined ? userData.aetherion : 0}</div>
                 <div><strong>Gender:</strong> ${userData.gender?.toLowerCase() === 'male' ? 'Male' : 'Female'}</div>
             </div>
         </div>`;
@@ -202,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div><strong>Herbs Mastered:</strong><br>${herbsCheckboxes}</div>
 
                 <label>Aurels <input type="number" id="editAurels" value="${userData.aurels !== undefined ? userData.aurels : 0}"></label>
-                <label>Aetherion <input type="number" id="editAetherion" value="${userData.aetherion !== undefined ? userData.aetherion : 0}"></label>
 
                 <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1rem;">
                     <button id="cancelEditBtn" class="action-btn btn-delete">Cancel</button>
@@ -224,14 +221,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             const updatedAurels = parseInt(modal.querySelector('#editAurels').value, 10) || 0;
-            const updatedAetherion = parseInt(modal.querySelector('#editAetherion').value, 10) || 0;
 
             db.ref(`herbaryo-users/${uid}`).update({
                 username: updatedUsername,
                 gender: updatedGender,
                 herbsMastered: updatedHerbs,
-                aurels: updatedAurels,
-                aetherion: updatedAetherion
+                aurels: updatedAurels
             }).then(() => {
                 db.ref(`herbaryo-users/${uid}`).once('value', snapshot => {
                     const updatedUserData = snapshot.val();

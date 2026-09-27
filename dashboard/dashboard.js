@@ -47,7 +47,6 @@ function updateUserUI(userData) {
     document.getElementById('userEmail').textContent = userData.email || auth.currentUser?.email || '-';
     document.getElementById('genderText').textContent = gender;
     document.getElementById('aurelsCount').textContent = userData.aurels || 0;
-    document.getElementById('aetherionCount').textContent = userData.aetherion || 0;
 
     avatar.textContent = getInitials(displayName);
     if (userData.photoURL) {
@@ -88,6 +87,33 @@ function renderAchievements(masteredCount) {
 }
 
 const editBtn = document.getElementById('editBtn');
+const dashboardMenuBtn = document.getElementById('dashboardMenuBtn');
+const dashboardActions = document.getElementById('dashboardActions');
+
+function setDashboardMenuOpen(isOpen) {
+    dashboardActions.classList.toggle('open', isOpen);
+    dashboardMenuBtn.setAttribute('aria-expanded', String(isOpen));
+    dashboardMenuBtn.setAttribute('aria-label', isOpen ? 'Close dashboard menu' : 'Open dashboard menu');
+}
+
+dashboardMenuBtn.addEventListener('click', event => {
+    event.stopPropagation();
+    setDashboardMenuOpen(!dashboardActions.classList.contains('open'));
+});
+
+document.addEventListener('click', event => {
+    if (dashboardActions.classList.contains('open') && !dashboardActions.contains(event.target)) {
+        setDashboardMenuOpen(false);
+    }
+});
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && dashboardActions.classList.contains('open')) {
+        setDashboardMenuOpen(false);
+        dashboardMenuBtn.focus();
+    }
+});
+
 const profileModal = document.createElement('div');
 profileModal.className = 'profile-modal';
 profileModal.innerHTML = `
@@ -124,6 +150,7 @@ function closeEditModal() {
 }
 
 editBtn.addEventListener('click', () => {
+    setDashboardMenuOpen(false);
     const hasPasswordProvider = auth.currentUser?.providerData.some(
         provider => provider.providerId === 'password'
     );
@@ -183,7 +210,10 @@ auth.onAuthStateChanged(user => {
         db.ref(`admins/${user.uid}`).get().then(adminSnap => {
             adminBtn.style.display = adminSnap.exists() && adminSnap.val() === true ? 'inline-block' : 'none';
         });
-        adminBtn.onclick = () => { window.location.href = '../admin/admin.html'; };
+        adminBtn.onclick = () => {
+            setDashboardMenuOpen(false);
+            window.location.href = '../admin/admin.html';
+        };
 
         updateUserUI(data);
         renderHerbs(data.herbsMastered || {});
@@ -191,6 +221,7 @@ auth.onAuthStateChanged(user => {
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
+    setDashboardMenuOpen(false);
     await auth.signOut();
     window.location.replace('../index.html');
 });
