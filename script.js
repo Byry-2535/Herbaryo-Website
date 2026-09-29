@@ -184,12 +184,14 @@ auth.onAuthStateChanged(user => {
     }
 });
 
-if (document.getElementById('showSignupTab')) document.getElementById('showSignupTab').addEventListener('click', () => {
+if (document.getElementById('showSignupTab')) document.getElementById('showSignupTab').addEventListener('click', event => {
+    event.preventDefault();
     document.getElementById('loginTab').classList.remove('active');
     document.getElementById('signupTab').classList.add('active');
 });
 
-if (document.getElementById('showLoginTab')) document.getElementById('showLoginTab').addEventListener('click', () => {
+if (document.getElementById('showLoginTab')) document.getElementById('showLoginTab').addEventListener('click', event => {
+    event.preventDefault();
     document.getElementById('signupTab').classList.remove('active');
     document.getElementById('loginTab').classList.add('active');
 });
