@@ -211,22 +211,6 @@
         padding: 8px;
     }
 
-    body.menu-open::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 1000;
-        pointer-events: none;
-    }
-
-    body.menu-open {
-        overflow: hidden;
-    }
-
     .team-grid {
         grid-template-columns: 1fr;
         gap: 2rem;
@@ -244,5 +228,38 @@
 
     .about-hero-content h1 {
         font-size: clamp(2.5rem, 12vw, 4rem);
+    }
+
+    .hamburger {
+        display: flex;
+        order: 2;
+        margin-left: auto;
+        flex: 0 0 40px;
+        width: 40px;
+        height: 40px;
+        padding: 8px;
+        gap: 4px;
+        border: 1px solid rgba(46, 125, 50, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.55);
+        z-index: 110;
+        transition: none;
+    }
+
+    .hamburger span {
+        width: 18px;
+        height: 2px;
+        border-radius: 2px;
+        background: #2e7d32;
+        transition: none;
+        transform: none;
+        opacity: 1;
+    }
+
+    .hamburger.active span:nth-child(1),
+    .hamburger.active span:nth-child(2),
+    .hamburger.active span:nth-child(3) {
+        transform: none;
+        opacity: 1;
     }
 }

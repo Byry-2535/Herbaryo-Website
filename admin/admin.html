@@ -14,14 +14,21 @@
     <header class="admin-header">
         <div class="container">
             <div class="logo">
-                <a href="javascript:void(0);" class="logo-link" id="scrollToTop">
-                    <h2>HERBARYO</h2>
-                </a>
+                <div class="logo-link" id="scrollToTop" aria-label="Admin page">
+                    <h2>ADMIN</h2>
+                </div>
             </div>
             <div class="admin-user">
-                <div class="admin-avatar" id="adminAvatar"></div>
-                <a href="../dashboard/dashboard.html" class="dashboard-btn">Dashboard</a>
-                <button class="logout-btn" id="logoutBtn">Logout</button>
+                <button class="admin-menu-toggle" id="adminMenuBtn" type="button" aria-label="Open admin menu"
+                    aria-controls="adminActions" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <div class="admin-actions" id="adminActions">
+                    <a href="../dashboard/dashboard.html" class="dashboard-btn">Dashboard</a>
+                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                </div>
             </div>
         </div>
     </header>
@@ -38,7 +45,7 @@
         </section>
 
         <section class="users-section">
-            <h2>👥 Manage Players</h2>
+            <h2>Manage Players</h2>
             <div class="search-section">
                 <input type="text" id="searchInput" placeholder="🔍 Search players by name or email...">
             </div>

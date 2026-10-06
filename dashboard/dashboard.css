@@ -76,6 +76,10 @@ body {
     align-items: center;
 }
 
+.dashboard-nav {
+    min-height: 52px;
+}
+
 .dashboard-nav,
 .section-heading-row {
     justify-content: space-between;
@@ -968,16 +972,16 @@ main {
 .dashboard-nav {
     flex-direction: row;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
 }
 
 .dashboard-nav .logo {
     flex: 0 0 auto;
-    margin-left: 0;
+    margin-left: 1.25rem;
 }
 
 .dashboard-nav .logo h2 {
-    font-size: 1.4rem;
+    font-size: 2rem;
 }
 
 .dashboard-tools {
@@ -1090,7 +1094,7 @@ main {
     }
 
     .dashboard-nav .logo h2 {
-        font-size: 1.2rem;
+        font-size: 1.5rem;
     }
 
     .dashboard-tools {

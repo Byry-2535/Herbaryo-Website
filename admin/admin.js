@@ -52,6 +52,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const adminMenuBtn = document.getElementById('adminMenuBtn');
+    const adminActions = document.getElementById('adminActions');
+    if (adminMenuBtn && adminActions) {
+        const setAdminMenuOpen = isOpen => {
+            adminActions.classList.toggle('open', isOpen);
+            adminMenuBtn.setAttribute('aria-expanded', String(isOpen));
+            adminMenuBtn.setAttribute('aria-label', isOpen ? 'Close admin menu' : 'Open admin menu');
+        };
+
+        adminMenuBtn.addEventListener('click', event => {
+            event.stopPropagation();
+            setAdminMenuOpen(!adminActions.classList.contains('open'));
+        });
+
+        document.addEventListener('click', event => {
+            if (adminActions.classList.contains('open') && !event.target.closest('.admin-user')) {
+                setAdminMenuOpen(false);
+            }
+        });
+
+        document.addEventListener('keydown', event => {
+            if (event.key === 'Escape' && adminActions.classList.contains('open')) {
+                setAdminMenuOpen(false);
+                adminMenuBtn.focus();
+            }
+        });
+    }
+
     const scrollToTopBtn = document.getElementById('scrollToTop');
     if (scrollToTopBtn) {
         scrollToTopBtn.addEventListener('click', () => {
@@ -151,20 +179,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showUserModal(userData) {
         if (!userData) return;
-        const masteredHerbs = Object.entries(userData.herbsMastered || {}).filter(([_, mastered]) => mastered).map(([name]) => name);
+
+        const herbEntries = Object.entries(userData.herbsMastered || {});
+        const totalHerbs = herbEntries.length || 10;
+        const masteredHerbs = herbEntries.filter(([_, mastered]) => mastered).map(([name]) => name);
+        const allHerbs = herbEntries.length ? herbEntries.map(([name]) => name) : [
+            'bawang', 'sambong', 'tsaang_gubat', 'ampalaya', 'yerba_buena',
+            'ulasimang_bato', 'bayabas', 'akapulko', 'lagundi', 'niyog_niyogan'
+        ];
+
+        const herbsMarkup = allHerbs.map(herb => {
+            const isMastered = herbEntries.length ? !!userData.herbsMastered[herb] : false;
+            const label = herb.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+            return `
+                <div class="herb-pill ${isMastered ? 'mastered' : 'locked'}">
+                    <span>${label}</span>
+                </div>
+            `;
+        }).join('');
+
         const modal = document.createElement('div');
         modal.className = 'user-modal';
         modal.innerHTML = `
         <div class="user-modal-content">
             <button class="modal-close">&times;</button>
-            <h2>${userData.username || 'Unknown'}</h2>
+            <div class="profile-header">
+                <h2>${userData.username || 'Unknown'}</h2>
+            </div>
+
             <div class="user-data-grid">
-                <div><strong>Email:</strong> ${userData.email}</div>
-                <div><strong>Herbs Mastered:</strong> ${masteredHerbs.length}/${Object.keys(userData.herbsMastered || {}).length}
-                    ${masteredHerbs.length ? '(' + masteredHerbs.join(', ') + ')' : ''}
+                <div class="profile-meta-row">
+                    <span><strong>Email:</strong> ${userData.email || 'Not provided'}</span>
                 </div>
-                <div><strong>Aurels:</strong> ${userData.aurels !== undefined ? userData.aurels : 0}</div>
-                <div><strong>Gender:</strong> ${userData.gender?.toLowerCase() === 'male' ? 'Male' : 'Female'}</div>
+                <div class="profile-meta-row">
+                    <span><strong>Gender:</strong> ${userData.gender?.toLowerCase() === 'male' ? 'Male' : userData.gender?.toLowerCase() === 'female' ? 'Female' : 'Not specified'}</span>
+                    <span><strong>Aurels:</strong> ${userData.aurels !== undefined ? userData.aurels : 0}</span>
+                </div>
+            </div>
+
+            <div class="herbs-summary">
+                <strong>Herbs Mastered:</strong>
+                <span>${masteredHerbs.length}/${totalHerbs}</span>
+            </div>
+
+            <div class="herb-grid">
+                ${herbsMarkup}
             </div>
         </div>`;
         document.body.appendChild(modal);
@@ -174,14 +233,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showEditModal(uid, userData) {
         if (!userData) return;
-        const allHerbs = Object.keys(userData.herbsMastered || {});
+
+        const defaultHerbs = [
+            'bawang', 'sambong', 'tsaang_gubat', 'ampalaya', 'yerba_buena',
+            'ulasimang_bato', 'bayabas', 'akapulko', 'lagundi', 'niyog_niyogan'
+        ];
+        const allHerbs = Object.keys(userData.herbsMastered || {}).length
+            ? Object.keys(userData.herbsMastered)
+            : defaultHerbs;
         const modal = document.createElement('div');
         modal.className = 'user-modal';
 
         const herbsCheckboxes = allHerbs.map(herb => `
-            <label style="display:flex; align-items:center; gap:0.5rem; flex-direction:row;">
+            <label class="edit-herb-item">
                 <input type="checkbox" class="editHerbCheckbox" value="${herb}" ${userData.herbsMastered[herb] ? 'checked' : ''}>
-                ${herb}
+                <span>${herb.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}</span>
             </label>
         `).join('');
 
@@ -189,19 +255,27 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="user-modal-content">
             <button class="modal-close">&times;</button>
             <h2>Edit Player</h2>
-            <div class="user-data-grid">
-                <label>Username<input type="text" id="editName" value="${userData.username || ''}"></label>
-                <label>Gender
+            <div class="edit-form">
+                <label class="field-group">
+                    <span>Username</span>
+                    <input type="text" id="editName" value="${userData.username || ''}">
+                </label>
+                <label class="field-group">
+                    <span>Gender</span>
                     <select id="editGender">
                         <option value="male" ${userData.gender?.toLowerCase() === 'male' ? 'selected' : ''}>Male</option>
                         <option value="female" ${userData.gender?.toLowerCase() === 'female' ? 'selected' : ''}>Female</option>
                     </select>
                 </label>
-                <div><strong>Herbs Mastered:</strong><br>${herbsCheckboxes}</div>
-
-                <label>Aurels <input type="number" id="editAurels" value="${userData.aurels !== undefined ? userData.aurels : 0}"></label>
-
-                <div style="display:flex; justify-content:flex-end; gap:1rem; margin-top:1rem;">
+                <label class="field-group">
+                    <span>Aurels</span>
+                    <input type="number" id="editAurels" min="0" step="1" value="${userData.aurels !== undefined ? userData.aurels : 0}">
+                </label>
+                <div class="field-group">
+                    <span>Herbs Mastered</span>
+                    <div class="edit-herb-grid">${herbsCheckboxes}</div>
+                </div>
+                <div class="edit-actions">
                     <button id="cancelEditBtn" class="action-btn btn-delete">Cancel</button>
                     <button id="saveEditBtn">Save Changes</button>
                 </div>

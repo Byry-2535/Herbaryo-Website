@@ -209,15 +209,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeMenu = () => {
         navMenu.classList.remove('active');
         hamburgerBtn.classList.remove('active');
-        document.body.classList.remove('menu-open');
         hamburgerBtn.setAttribute('aria-expanded', 'false');
+        hamburgerBtn.setAttribute('aria-label', 'Open navigation menu');
     };
 
     hamburgerBtn.addEventListener('click', () => {
         const isOpen = navMenu.classList.toggle('active');
         hamburgerBtn.classList.toggle('active', isOpen);
-        document.body.classList.toggle('menu-open', isOpen);
-        hamburgerBtn.setAttribute('aria-expanded', isOpen);
+        hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+        hamburgerBtn.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
     });
 
     navMenu.addEventListener('click', event => {
