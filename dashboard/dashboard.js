@@ -67,23 +67,6 @@ function renderHerbs(herbsObj = {}) {
             <span>${mastered ? 'Mastered' : 'Not mastered'}</span>
         </article>`;
     }).join('');
-
-    renderAchievements(masteredCount);
-}
-
-function renderAchievements(masteredCount) {
-    const achievements = [
-        ['First Discovery', 'Master your first herb.', masteredCount >= 1],
-        ['Field Student', 'Master five herbs.', masteredCount >= 5],
-        ['Herbaryo Keeper', 'Master all ten herbs.', masteredCount >= 10]
-    ];
-
-    document.getElementById('achievementList').innerHTML = achievements.map(([title, description, unlocked]) => `
-        <article class="achievement-card${unlocked ? ' unlocked' : ''}">
-            <h3>${title}</h3>
-            <p>${unlocked ? 'Unlocked' : description}</p>
-        </article>
-    `).join('');
 }
 
 const editBtn = document.getElementById('editBtn');
