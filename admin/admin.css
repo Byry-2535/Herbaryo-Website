@@ -275,6 +275,16 @@ th {
     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
 }
 
+.btn-edit {
+    background: linear-gradient(45deg, #f9a825, #ffca28);
+    color: #4e342e;
+}
+
+.btn-edit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(249, 168, 37, 0.4);
+}
+
 .btn-delete {
     background: linear-gradient(45deg, #f44336, #ef5350);
     color: white;
@@ -436,9 +446,237 @@ th {
     opacity: 0.75;
 }
 
+.user-modal-content.user-view-content {
+    width: min(760px, 94vw);
+    max-width: 760px;
+    padding: 1.5rem;
+}
+
+.view-profile-header {
+    display: grid;
+    justify-items: start;
+    gap: 0.25rem;
+    margin-bottom: 1.25rem;
+    padding-right: 2.5rem;
+}
+
+.view-name-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.user-modal-content .view-profile-header h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 1.6rem;
+}
+
+.view-profile-header p {
+    color: #61776a;
+    overflow-wrap: anywhere;
+}
+
+.account-type-badge {
+    padding: 0.25rem 0.65rem;
+    border-radius: 999px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-size: 0.76rem;
+    font-weight: 700;
+}
+
+.view-save-tabs {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+    padding: 0.25rem;
+    border: 1px solid #dcedc8;
+    border-radius: 10px;
+    background: #edf4eb;
+}
+
+.view-save-tab {
+    min-width: 82px;
+    min-height: 38px;
+    padding: 0.4rem 0.8rem;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #61776a;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.view-save-tab.active {
+    background: #ffffff;
+    color: #2e7d32;
+    box-shadow: 0 1px 4px rgba(46, 125, 50, 0.14);
+}
+
+.view-save-tab:focus-visible {
+    outline: 2px solid #2e7d32;
+    outline-offset: 2px;
+}
+
+.view-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.6rem;
+}
+
+.view-stat {
+    min-width: 0;
+    padding: 0.75rem;
+    border: 1px solid #dcedc8;
+    border-top: 3px solid #66a76c;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.view-stat span {
+    display: block;
+    margin-bottom: 0.2rem;
+    color: #718778;
+    font-size: 0.74rem;
+}
+
+.view-stat strong {
+    display: block;
+    color: #284631;
+    font-size: 1.05rem;
+    overflow-wrap: anywhere;
+}
+
+.view-modal-section {
+    margin-top: 1.25rem;
+}
+
+.view-section-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.65rem;
+}
+
+.view-section-heading h3 {
+    color: #284631;
+    font-size: 1rem;
+}
+
+.view-section-heading strong {
+    color: #2e7d32;
+    font-size: 0.84rem;
+    white-space: nowrap;
+}
+
+.view-herb-grid,
+.view-achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.view-herb-card,
+.view-achievement-card {
+    min-width: 0;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid #dce8dc;
+    border-radius: 9px;
+    background: #ffffff;
+}
+
+.view-herb-card strong,
+.view-achievement-card strong {
+    display: block;
+    color: #284631;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.view-herb-card span,
+.view-achievement-card span {
+    display: block;
+    margin-top: 0.2rem;
+    color: #718778;
+    font-size: 0.7rem;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.view-herb-card.mastered,
+.view-achievement-card.unlocked {
+    border-left: 3px solid #4caf50;
+    background: #f8fcf7;
+}
+
+.view-achievement-card.unlocked {
+    border-left-color: #d29b37;
+}
+
+.view-herb-card.locked,
+.view-achievement-card.locked {
+    background: #ecefec;
+    filter: grayscale(1);
+    opacity: 0.68;
+}
+
 .edit-form {
     display: grid;
     gap: 1rem;
+}
+
+.user-modal-content.user-edit-content {
+    max-width: 700px;
+}
+
+.edit-save-tabs {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    gap: 0.25rem;
+    padding: 0.25rem;
+    border: 1px solid #dcedc8;
+    border-radius: 10px;
+    background: #edf4eb;
+}
+
+.edit-save-tab {
+    min-width: 82px;
+    min-height: 38px;
+    padding: 0.4rem 0.8rem;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: #61776a;
+    font: inherit;
+    font-size: 0.84rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.edit-save-tab.active {
+    background: #ffffff;
+    color: #2e7d32;
+    box-shadow: 0 1px 4px rgba(46, 125, 50, 0.14);
+}
+
+.edit-save-tab:focus-visible {
+    outline: 2px solid #2e7d32;
+    outline-offset: 2px;
+}
+
+.edit-slot-fields {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
 }
 
 .field-group {
@@ -451,6 +689,12 @@ th {
 }
 
 .edit-herb-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.edit-achievement-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
@@ -545,6 +789,32 @@ th {
     font-weight: 500;
 }
 
+@media (max-width: 600px) {
+    .user-modal-content.user-view-content {
+        width: 96%;
+        max-height: 86vh;
+        padding: 1.1rem;
+    }
+
+    .view-stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .view-stat:last-child {
+        grid-column: 1 / -1;
+    }
+
+    .view-herb-grid,
+    .view-achievement-grid {
+        gap: 0.4rem;
+    }
+
+    .view-herb-card,
+    .view-achievement-card {
+        padding: 0.6rem;
+    }
+}
+
 @media (max-width: 768px) {
     .admin-header .container {
         padding: 0 1rem;
@@ -635,7 +905,9 @@ th {
     th:nth-child(2),
     td:nth-child(2),
     th:nth-child(3),
-    td:nth-child(3) {
+    td:nth-child(3),
+    th:nth-child(4),
+    td:nth-child(4) {
         display: none;
     }
 
@@ -673,5 +945,32 @@ th {
         margin: 0 0.12rem 0 0;
         padding: 0.55rem 0.58rem;
         font-size: 0.84rem;
+    }
+}
+
+@media (max-width: 520px) {
+    .user-modal-content.user-edit-content {
+        width: 96%;
+        max-height: 86vh;
+        padding: 1.1rem;
+    }
+
+    .edit-slot-fields {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+
+    .edit-herb-grid,
+    .edit-achievement-grid {
+        gap: 0.45rem;
+    }
+
+    .edit-herb-item {
+        padding: 0.6rem;
+    }
+
+    .edit-herb-item span {
+        font-size: 0.75rem;
+        overflow-wrap: anywhere;
     }
 }

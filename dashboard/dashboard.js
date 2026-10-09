@@ -25,10 +25,24 @@ const herbCatalog = [
     ['niyog_niyogan', 'Niyog-niyogan']
 ];
 
+const generalAchievementCatalog = [
+    ['hello_world', 'Hello, World!', 'First login into the game'],
+    ['no_more_limits', 'No More Limits', 'Buy the full version of the game'],
+    ['serious_dedication', 'Serious Dedication', 'Survive 20 days'],
+    ['good_neighbour', 'Good Neighbour', 'Keep 200 reputation for at least 5 days'],
+    ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
+    ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs']
+];
+
 let currentUserData = {};
+let currentSaveData = {};
+let selectedSaveSlot = 'slot1';
 
 function getHerbsCount(herbsObj = {}) {
-    return herbCatalog.filter(([key]) => herbsObj[key] === true).length;
+    return herbCatalog.filter(([key]) => {
+        const herb = herbsObj[key];
+        return herb === true || herb?.mastered === true;
+    }).length;
 }
 
 function getInitials(username = 'Herbalist') {
@@ -38,15 +52,13 @@ function getInitials(username = 'Herbalist') {
 function updateUserUI(userData) {
     const displayName = userData.username || 'Herbalist';
     const avatar = document.getElementById('userAvatar');
-    const gender = userData.gender ? userData.gender.charAt(0).toUpperCase() + userData.gender.slice(1).toLowerCase() : 'Not specified';
     const hour = new Date().getHours();
     const greeting = hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening';
 
     document.getElementById('welcomeText').textContent = `${greeting}, ${displayName}`;
     document.getElementById('usernameValue').textContent = displayName;
     document.getElementById('userEmail').textContent = userData.email || auth.currentUser?.email || '-';
-    document.getElementById('genderText').textContent = gender;
-    document.getElementById('aurelsCount').textContent = userData.aurels || 0;
+    document.getElementById('accountTypeValue').textContent = userData.isPremium === true ? 'Premium' : 'Free';
 
     avatar.textContent = getInitials(displayName);
     if (userData.photoURL) {
@@ -61,13 +73,70 @@ function renderHerbs(herbsObj = {}) {
     const masteredCount = getHerbsCount(herbsObj);
     document.getElementById('herbsMasteredCount').textContent = `${masteredCount}/10`;
     document.getElementById('herbsList').innerHTML = herbCatalog.map(([key, label]) => {
-        const mastered = herbsObj[key] === true;
-        return `<article class="herb-card${mastered ? ' mastered' : ''}">
+        const herb = herbsObj[key];
+        const mastered = herb === true || herb?.mastered === true;
+        const discovered = mastered || herb?.discovered === true;
+        return `<article class="herb-card ${mastered ? 'mastered' : 'locked'}">
             <strong>${label}</strong>
-            <span>${mastered ? 'Mastered' : 'Not mastered'}</span>
+            <span>${mastered ? 'Mastered' : discovered ? 'Discovered' : 'Not discovered'}</span>
         </article>`;
     }).join('');
 }
+
+function renderAchievements(achievementData = {}) {
+    const general = achievementData.general || {};
+    const herbs = achievementData.herbs || {};
+    const achievements = [
+        ...generalAchievementCatalog.map(([key, title, description]) => ({
+            key,
+            title,
+            description,
+            unlocked: general[key] === true
+        })),
+        ...herbCatalog.map(([key, title]) => ({
+            key: `master_${key}`,
+            title: `Master ${title}`,
+            description: `Master ${title}`,
+            unlocked: herbs[`master_${key}`] === true
+        }))
+    ];
+
+    const unlockedCount = achievements.filter(achievement => achievement.unlocked).length;
+    document.getElementById('achievementCount').textContent = `${unlockedCount}/${achievements.length}`;
+    document.getElementById('achievementList').innerHTML = achievements.map(achievement => `
+        <article class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}">
+            <strong>${achievement.title}</strong>
+            <span>${achievement.unlocked ? 'Unlocked' : achievement.description}</span>
+        </article>
+    `).join('');
+}
+
+function renderSaveSlot(saveData = {}) {
+    const gender = saveData.gender === 'female' ? 'Female' : 'Male';
+    document.getElementById('genderValue').textContent = gender;
+    document.getElementById('aurelsValue').textContent = saveData.aurels ?? 0;
+    document.getElementById('reputationValue').textContent = saveData.reputation ?? 0;
+    document.getElementById('levelValue').textContent = saveData.level ?? 1;
+    document.getElementById('dayValue').textContent = saveData.day ?? 1;
+    renderHerbs(saveData.herbsMastered || {});
+    renderAchievements(saveData.achievements || {});
+}
+
+document.querySelectorAll('.save-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        selectedSaveSlot = tab.dataset.slot;
+        document.querySelectorAll('.save-tab').forEach(saveTab => {
+            const isSelected = saveTab === tab;
+            saveTab.classList.toggle('active', isSelected);
+            saveTab.setAttribute('aria-selected', String(isSelected));
+        });
+
+        document.getElementById('saveSlotPanel').setAttribute('aria-labelledby', tab.id);
+        currentSaveData = currentUserData.saves?.[selectedSaveSlot]
+            || HerbaryoSchema.createDefaultSave('male');
+        renderSaveSlot(currentSaveData);
+    });
+});
 
 const editBtn = document.getElementById('editBtn');
 const dashboardMenuBtn = document.getElementById('dashboardMenuBtn');
@@ -140,7 +209,7 @@ editBtn.addEventListener('click', () => {
 
     document.getElementById('editUsername').value = currentUserData.username || '';
     document.getElementById('editPassword').value = '';
-    document.getElementById('editGender').value = (currentUserData.gender || 'male').toLowerCase() === 'female' ? 'female' : 'male';
+    document.getElementById('editGender').value = (currentSaveData.gender || 'male').toLowerCase() === 'female' ? 'female' : 'male';
     document.getElementById('passwordEditField').hidden = !hasPasswordProvider;
     profileModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -166,7 +235,10 @@ document.getElementById('editForm').addEventListener('submit', async event => {
     }
 
     try {
-        await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({ username, gender });
+        await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({
+            username,
+            [`saves/${selectedSaveSlot}/gender`]: gender
+        });
         if (password) await auth.currentUser.updatePassword(password);
         closeEditModal();
     } catch (updateError) {
@@ -177,7 +249,7 @@ document.getElementById('editForm').addEventListener('submit', async event => {
     }
 });
 
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(async user => {
     if (!user) {
         window.location.replace('../index.html');
         return;
@@ -185,9 +257,16 @@ auth.onAuthStateChanged(user => {
 
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
 
+    try {
+        await HerbaryoSchema.migrateUser(userRef, user);
+    } catch (error) {
+        console.error('Failed to migrate player profile:', error);
+    }
+
     userRef.on('value', snapshot => {
         const data = snapshot.val() || {};
         currentUserData = data;
+        currentSaveData = data.saves?.slot1 || HerbaryoSchema.createDefaultSave(data.gender || 'male', data);
 
         const adminBtn = document.getElementById('adminBtn');
         db.ref(`admins/${user.uid}`).get().then(adminSnap => {
@@ -199,7 +278,9 @@ auth.onAuthStateChanged(user => {
         };
 
         updateUserUI(data);
-        renderHerbs(data.herbsMastered || {});
+        currentSaveData = data.saves?.[selectedSaveSlot]
+            || HerbaryoSchema.createDefaultSave('male');
+        renderSaveSlot(currentSaveData);
     });
 });
 

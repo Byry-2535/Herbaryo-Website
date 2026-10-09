@@ -20,12 +20,6 @@
                     </a>
                 </div>
                 <div class="dashboard-tools">
-                    <div class="nav-wallet" aria-label="Wallet balance">
-                        <div class="nav-resource aurels">
-                            <span>Aurels</span>
-                            <strong id="aurelsCount">0</strong>
-                        </div>
-                    </div>
                     <button class="dashboard-menu-toggle" id="dashboardMenuBtn" type="button"
                         aria-label="Open dashboard menu" aria-controls="dashboardActions" aria-expanded="false">
                         <span></span>
@@ -45,9 +39,7 @@
     <main class="container">
         <section class="dashboard-hero">
             <div class="hero-avatar" id="userAvatar" aria-hidden="true">H</div>
-            <div>
-                <h1 id="welcomeText">Good morning, Herbalist</h1>
-            </div>
+            <h1 id="welcomeText">Greetings, Herbalist</h1>
         </section>
 
         <section class="dashboard-section personal-section">
@@ -64,22 +56,65 @@
                     <strong id="userEmail">-</strong>
                 </div>
                 <div class="info-item">
-                    <span>Gender</span>
-                    <strong id="genderText">Not specified</strong>
+                    <span>Account Type</span>
+                    <strong id="accountTypeValue">Free</strong>
                 </div>
             </div>
         </section>
 
-        <section class="dashboard-section">
-            <div class="section-heading section-heading-row">
-                <div>
-                    <h2>Herbs Mastered</h2>
-                </div>
-                <strong class="mastery-total" id="herbsMasteredCount">0/10</strong>
+        <section class="dashboard-section saves-section">
+            <div class="section-heading">
+                <h2>Saves</h2>
             </div>
-            <div class="herbs-list" id="herbsList"></div>
-        </section>
+            <div class="save-tabs" role="tablist" aria-label="Save slots">
+                <button class="save-tab active" id="slot1Tab" type="button" role="tab" aria-selected="true"
+                    aria-controls="saveSlotPanel" data-slot="slot1">Slot 1</button>
+                <button class="save-tab" id="slot2Tab" type="button" role="tab" aria-selected="false"
+                    aria-controls="saveSlotPanel" data-slot="slot2">Slot 2</button>
+                <button class="save-tab" id="slot3Tab" type="button" role="tab" aria-selected="false"
+                    aria-controls="saveSlotPanel" data-slot="slot3">Slot 3</button>
+            </div>
+            <div class="save-panel" id="saveSlotPanel" role="tabpanel" aria-labelledby="slot1Tab">
+                <div class="save-stats" id="saveStats">
+                    <article class="stat-card">
+                        <span>Gender</span>
+                        <strong id="genderValue">Male</strong>
+                    </article>
+                    <article class="stat-card aurels-stat">
+                        <span>Aurels</span>
+                        <strong id="aurelsValue">0</strong>
+                    </article>
+                    <article class="stat-card reputation-stat">
+                        <span>Reputation</span>
+                        <strong id="reputationValue">0</strong>
+                    </article>
+                    <article class="stat-card level-stat">
+                        <span>Level</span>
+                        <strong id="levelValue">1</strong>
+                    </article>
+                    <article class="stat-card day-stat">
+                        <span>Day</span>
+                        <strong id="dayValue">1</strong>
+                    </article>
+                </div>
 
+                <section class="dashboard-section nested-section">
+                    <div class="section-heading section-heading-row">
+                        <h2>Herbs Mastered</h2>
+                        <strong class="mastery-total" id="herbsMasteredCount">0/10</strong>
+                    </div>
+                    <div class="herbs-list" id="herbsList"></div>
+                </section>
+
+                <section class="dashboard-section nested-section achievements-section">
+                    <div class="section-heading section-heading-row">
+                        <h2>Achievements</h2>
+                        <strong class="mastery-total" id="achievementCount">0/16</strong>
+                    </div>
+                    <div class="achievement-grid" id="achievementList"></div>
+                </section>
+            </div>
+        </section>
     </main>
 
     <footer class="footer">
@@ -92,6 +127,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script src="../database-schema.js"></script>
     <script src="./dashboard.js"></script>
 </body>
 

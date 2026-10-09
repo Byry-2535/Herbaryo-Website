@@ -149,28 +149,20 @@ async function skipProfile(user) {
 async function saveNewUserProfile(user, usernameInput, gender) {
     const uid = user.uid;
     const displayName = usernameInput || user.displayName || 'Herbalist';
-    const userSnap = await db.ref(`herbaryo-users/${uid}`).once('value');
+    const userRef = db.ref(`herbaryo-users/${uid}`);
+    const userSnap = await userRef.once('value');
     if (!userSnap.exists()) {
-        await db.ref(`herbaryo-users/${uid}`).set({
-            username: displayName,
-            email: user.email,
-            gender: gender,
-            photoURL: user.photoURL || '',
-            aurels: 0,
-            herbsMastered: {
-                bawang: false,
-                sambong: false,
-                tsaang_gubat: false,
-                ampalaya: false,
-                yerba_buena: false,
-                ulasimang_bato: false,
-                bayabas: false,
-                akapulko: false,
-                lagundi: false,
-                niyog_niyogan: false
-            }
-        });
+        await userRef.set(HerbaryoSchema.createDefaultProfile(user, displayName, gender));
+        return;
     }
+
+    await HerbaryoSchema.migrateUser(userRef, user);
+    await userRef.update({
+        username: displayName,
+        email: user.email || '',
+        photoURL: user.photoURL || '',
+        'saves/slot1/gender': gender
+    });
 }
 
 auth.onAuthStateChanged(user => {
