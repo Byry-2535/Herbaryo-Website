@@ -29,7 +29,7 @@ const generalAchievementCatalog = [
     ['hello_world', 'Hello, World!', 'First login into the game'],
     ['no_more_limits', 'No More Limits', 'Buy the full version of the game'],
     ['serious_dedication', 'Serious Dedication', 'Survive 20 days'],
-    ['good_neighbour', 'Good Neighbour', 'Keep 200 reputation for at least 5 days'],
+    ['good_neighbour', 'Good Neighbour', 'Keep 100 reputation for at least 5 days'],
     ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
     ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs']
 ];
@@ -41,7 +41,7 @@ let selectedSaveSlot = 'slot1';
 function getHerbsCount(herbsObj = {}) {
     return herbCatalog.filter(([key]) => {
         const herb = herbsObj[key];
-        return herb === true || herb?.mastered === true;
+        return herb === true || herb?.mastered === true || herb?.mastery >= 100;
     }).length;
 }
 
@@ -74,11 +74,11 @@ function renderHerbs(herbsObj = {}) {
     document.getElementById('herbsMasteredCount').textContent = `${masteredCount}/10`;
     document.getElementById('herbsList').innerHTML = herbCatalog.map(([key, label]) => {
         const herb = herbsObj[key];
-        const mastered = herb === true || herb?.mastered === true;
-        const discovered = mastered || herb?.discovered === true;
+        const mastery = herb === true ? 100 : Math.min(100, Math.max(0, Number(herb?.mastery) || 0));
+        const mastered = herb === true || herb?.mastered === true || mastery >= 100;
         return `<article class="herb-card ${mastered ? 'mastered' : 'locked'}">
             <strong>${label}</strong>
-            <span>${mastered ? 'Mastered' : discovered ? 'Discovered' : 'Not discovered'}</span>
+            <span>${mastered ? 'Mastered' : `${mastery}% mastery`}</span>
         </article>`;
     }).join('');
 }
@@ -116,7 +116,7 @@ function renderSaveSlot(saveData = {}) {
     document.getElementById('genderValue').textContent = gender;
     document.getElementById('aurelsValue').textContent = saveData.aurels ?? 0;
     document.getElementById('reputationValue').textContent = saveData.reputation ?? 0;
-    document.getElementById('levelValue').textContent = saveData.level ?? 1;
+    document.getElementById('chapterValue').textContent = saveData.chapter ?? 1;
     document.getElementById('dayValue').textContent = saveData.day ?? 1;
     renderHerbs(saveData.herbsMastered || {});
     renderAchievements(saveData.achievements || {});

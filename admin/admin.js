@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ['hello_world', 'Hello, World!', 'First login into the game'],
             ['no_more_limits', 'No More Limits', 'Buy the full version of the game'],
             ['serious_dedication', 'Serious Dedication', 'Survive 20 days'],
-            ['good_neighbour', 'Good Neighbour', 'Keep 200 reputation for at least 5 days'],
+            ['good_neighbour', 'Good Neighbour', 'Keep 100 reputation for at least 5 days'],
             ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
             ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs']
         ];
@@ -236,7 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="view-stat"><span>Gender</span><strong id="viewGender">-</strong></div>
                     <div class="view-stat"><span>Aurels</span><strong id="viewAurels">0</strong></div>
                     <div class="view-stat"><span>Reputation</span><strong id="viewReputation">0</strong></div>
-                    <div class="view-stat"><span>Level</span><strong id="viewLevel">1</strong></div>
+                    <div class="view-stat"><span>Chapter</span><strong id="viewChapter">1</strong></div>
                     <div class="view-stat"><span>Day</span><strong id="viewDay">1</strong></div>
                 </div>
 
@@ -270,12 +270,13 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.querySelector('#viewGender').textContent = saveData.gender === 'female' ? 'Female' : 'Male';
             modal.querySelector('#viewAurels').textContent = saveData.aurels ?? 0;
             modal.querySelector('#viewReputation').textContent = saveData.reputation ?? 0;
-            modal.querySelector('#viewLevel').textContent = saveData.level ?? 1;
+            modal.querySelector('#viewChapter').textContent = saveData.chapter ?? 1;
             modal.querySelector('#viewDay').textContent = saveData.day ?? 1;
             modal.querySelector('#viewHerbsCount').textContent = `${masteredCount}/10`;
             modal.querySelector('#viewHerbGrid').innerHTML = modalHerbCatalog.map(([key, label]) => {
+                const mastery = herbs[key].mastery;
                 const mastered = herbs[key].mastered;
-                return `<div class="view-herb-card ${mastered ? 'mastered' : 'locked'}"><strong>${label}</strong><span>${mastered ? 'Mastered' : 'Not mastered'}</span></div>`;
+                return `<div class="view-herb-card ${mastered ? 'mastered' : 'locked'}"><strong>${label}</strong><span>${mastered ? 'Mastered' : `${mastery}% mastery`}</span></div>`;
             }).join('');
 
             const achievementCards = [
@@ -352,8 +353,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const herbCheckboxes = HerbaryoSchema.herbKeys.map(herb => `
             <label class="edit-herb-item">
-                <input type="checkbox" class="editHerbCheckbox" value="${herb}">
                 <span>${herbLabels[herb]}</span>
+                <input type="number" class="editHerbMastery" data-herb="${herb}" value="0" min="0" max="100" step="1" required aria-label="${herbLabels[herb]} mastery percent">
             </label>
         `).join('');
         const achievementCheckboxes = [
@@ -404,19 +405,19 @@ document.addEventListener('DOMContentLoaded', () => {
                     </label>
                     <label class="field-group">
                         <span>Aurels</span>
-                        <input type="number" id="editAurels" min="0" step="1" required>
+                        <input type="number" id="editAurels" min="0" max="9999" step="1" required>
                     </label>
                     <label class="field-group">
                         <span>Reputation</span>
-                        <input type="number" id="editReputation" min="0" max="200" step="1" required>
+                        <input type="number" id="editReputation" min="0" max="100" step="1" required>
                     </label>
                     <label class="field-group">
-                        <span>Level</span>
-                        <input type="number" id="editLevel" min="1" max="4" step="1" required>
+                        <span>Chapter</span>
+                        <input type="number" id="editChapter" min="1" max="3" step="1" required>
                     </label>
                     <label class="field-group">
                         <span>Day</span>
-                        <input type="number" id="editDay" min="1" max="100" step="1" required>
+                        <input type="number" id="editDay" min="1" max="60" step="1" required>
                     </label>
                 </div>
 
@@ -446,11 +447,11 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.querySelector('#editGender').value = save.gender === 'female' ? 'female' : 'male';
             modal.querySelector('#editAurels').value = save.aurels ?? 0;
             modal.querySelector('#editReputation').value = save.reputation ?? 0;
-            modal.querySelector('#editLevel').value = save.level ?? 1;
+            modal.querySelector('#editChapter').value = save.chapter ?? 1;
             modal.querySelector('#editDay').value = save.day ?? 1;
 
-            modal.querySelectorAll('.editHerbCheckbox').forEach(checkbox => {
-                checkbox.checked = save.herbsMastered[checkbox.value]?.mastered === true;
+            modal.querySelectorAll('.editHerbMastery').forEach(input => {
+                input.value = save.herbsMastered[input.dataset.herb]?.mastery ?? 0;
             });
             modal.querySelectorAll('.editAchievementCheckbox').forEach(checkbox => {
                 checkbox.checked = save.achievements[checkbox.dataset.category]?.[checkbox.value] === true;
@@ -460,17 +461,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const captureSlot = () => {
             const save = slotDrafts[selectedSlot];
             save.gender = modal.querySelector('#editGender').value;
-            save.aurels = Number(modal.querySelector('#editAurels').value);
-            save.reputation = Number(modal.querySelector('#editReputation').value);
-            save.level = Number(modal.querySelector('#editLevel').value);
-            save.day = Number(modal.querySelector('#editDay').value);
+            save.aurels = Number.parseInt(modal.querySelector('#editAurels').value, 10);
+            save.reputation = Number.parseInt(modal.querySelector('#editReputation').value, 10);
+            save.chapter = Number.parseInt(modal.querySelector('#editChapter').value, 10);
+            save.day = Number.parseInt(modal.querySelector('#editDay').value, 10);
 
-            modal.querySelectorAll('.editHerbCheckbox').forEach(checkbox => {
-                const priorState = save.herbsMastered[checkbox.value] || {};
-                save.herbsMastered[checkbox.value] = {
-                    discovered: checkbox.checked || priorState.discovered === true,
-                    mastered: checkbox.checked
-                };
+            modal.querySelectorAll('.editHerbMastery').forEach(input => {
+                const herbKey = input.dataset.herb;
+                const mastery = Number.parseInt(input.value, 10);
+                save.herbsMastered[herbKey] = { mastery, mastered: mastery === 100 };
             });
             modal.querySelectorAll('.editAchievementCheckbox').forEach(checkbox => {
                 save.achievements[checkbox.dataset.category][checkbox.value] = checkbox.checked;
@@ -494,7 +493,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderSlot(selectedSlot);
 
         modal.querySelector('#saveEditBtn').onclick = async () => {
-            const editableFields = [...modal.querySelectorAll('#editName, #editAccountType, #editGender, #editAurels, #editReputation, #editLevel, #editDay')];
+            const editableFields = [...modal.querySelectorAll('#editName, #editAccountType, #editGender, #editAurels, #editReputation, #editChapter, #editDay, .editHerbMastery')];
             const invalidField = editableFields.find(field => !field.checkValidity());
             if (invalidField) {
                 invalidField.reportValidity();
