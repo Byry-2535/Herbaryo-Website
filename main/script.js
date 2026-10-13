@@ -40,8 +40,23 @@ function closeLoginModal() {
 if (document.getElementById('emailLoginBtn')) document.getElementById('emailLoginBtn').addEventListener('click', handleEmailLogin);
 if (document.getElementById('emailSignupBtn')) document.getElementById('emailSignupBtn').addEventListener('click', handleEmailSignup);
 
+['loginEmail', 'loginPassword'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleEmailLogin();
+        }
+    });
+});
+
+function normalizeLoginEmail(email) {
+    const value = email.trim();
+    if (!value || value.includes('@')) return value;
+    return `${value}@gmail.com`;
+}
+
 async function handleEmailLogin() {
-    const email = document.getElementById('loginEmail').value.trim();
+    const email = normalizeLoginEmail(document.getElementById('loginEmail').value);
     const password = document.getElementById('loginPassword').value;
     showLoading();
     try {
@@ -111,13 +126,11 @@ function showUsernameModal(user) {
             </div>
             <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
                 <button id="createProfileBtn" class="btn-primary" style="padding:1rem 2rem;min-width:140px;">Create Profile</button>
-                <button id="skipBtn" class="btn-secondary" style="padding:1rem 2rem;min-width:100px;background:white;color:#2e7d32;border:2px solid #a5d6a7;">Skip</button>
             </div>
         </div>
     `;
     setTimeout(() => {
         document.getElementById('createProfileBtn').onclick = () => createProfile(user);
-        document.getElementById('skipBtn').onclick = () => skipProfile(user);
     }, 100);
 }
 
@@ -129,17 +142,6 @@ async function createProfile(user) {
     showLoading();
     try {
         await saveNewUserProfile(user, username, gender);
-        window.location.replace('./dashboard/dashboard.html');
-    } catch {
-        showError('Failed to save profile');
-    } finally { hideLoading(); }
-}
-
-async function skipProfile(user) {
-    const gender = document.querySelector('input[name="gender"]:checked').value;
-    showLoading();
-    try {
-        await saveNewUserProfile(user, null, gender);
         window.location.replace('./dashboard/dashboard.html');
     } catch {
         showError('Failed to save profile');

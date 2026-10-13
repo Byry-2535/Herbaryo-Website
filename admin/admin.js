@@ -177,21 +177,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('.btn-view').forEach(btn => btn.onclick = () => showUserModal(allUsers.find(u => u.uid === btn.dataset.uid)));
         document.querySelectorAll('.btn-edit').forEach(btn => btn.onclick = () => showEditModal(btn.dataset.uid, allUsers.find(u => u.uid === btn.dataset.uid)));
-        document.querySelectorAll('.btn-delete').forEach(btn => btn.onclick = () => deleteUser(btn.dataset.uid));
+        document.querySelectorAll('.btn-delete').forEach(btn => btn.onclick = () => deleteUser(btn.dataset.uid, btn));
     }
 
-    function deleteUser(uid) {
-        if (!confirm('Are you sure you want to delete this player?')) return;
+    function showAdminToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `admin-toast ${type}`;
+        toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        window.setTimeout(() => toast.remove(), 3500);
+    }
 
-        db.ref(`herbaryo-users/${uid}`).remove()
-            .then(() => {
-                alert('Player deleted successfully');
-                loadUsers();
-            })
-            .catch(err => {
+    function deleteUser(uid, trigger) {
+        const player = allUsers.find(user => user.uid === uid);
+        const modal = document.createElement('div');
+        modal.className = 'user-modal delete-modal';
+        modal.innerHTML = `
+            <section class="delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="deleteDialogTitle" aria-describedby="deleteDialogDescription">
+                <button class="delete-dialog-close" type="button" aria-label="Cancel delete">&times;</button>
+                <span class="delete-dialog-kicker">Manage Players</span>
+                <h2 id="deleteDialogTitle">Delete ${player?.username || 'this player'}?</h2>
+                <p id="deleteDialogDescription">This permanently removes the player's profile and all three save slots.</p>
+                <div class="delete-dialog-actions">
+                    <button class="delete-cancel-btn" id="cancelDeleteBtn" type="button">Cancel</button>
+                    <button class="delete-confirm-btn" id="confirmDeleteBtn" type="button">Delete player</button>
+                </div>
+            </section>`;
+        document.body.appendChild(modal);
+        document.body.style.overflow = 'hidden';
+
+        const closeModal = () => {
+            modal.remove();
+            document.body.style.overflow = '';
+            if (trigger?.isConnected) trigger.focus();
+        };
+
+        modal.querySelector('.delete-dialog-close').onclick = closeModal;
+        modal.querySelector('#cancelDeleteBtn').onclick = closeModal;
+        modal.onclick = event => {
+            if (event.target === modal) closeModal();
+        };
+        modal.onkeydown = event => {
+            if (event.key === 'Escape') closeModal();
+        };
+        modal.querySelector('#cancelDeleteBtn').focus();
+
+        modal.querySelector('#confirmDeleteBtn').onclick = async event => {
+            const confirmButton = event.currentTarget;
+            confirmButton.disabled = true;
+            confirmButton.textContent = 'Deleting...';
+
+            try {
+                await db.ref(`herbaryo-users/${uid}`).remove();
+                closeModal();
+                showAdminToast('Player deleted successfully.', 'success');
+                await loadUsers();
+            } catch (err) {
                 console.error('Failed to delete player:', err);
-                alert('Failed to delete player');
-            });
+                closeModal();
+                showAdminToast('Failed to delete player. Please try again.', 'error');
+            }
+        };
     }
 
     function showUserModal(userData) {

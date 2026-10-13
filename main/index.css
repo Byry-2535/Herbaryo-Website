@@ -129,7 +129,7 @@ body {
     align-items: center;
     position: relative;
     padding-top: 80px;
-    background: linear-gradient(rgba(12, 43, 22, 0.55), rgba(12, 43, 22, 0.55)), url('bg/sample_main.png') center / cover no-repeat;
+    background: linear-gradient(rgba(12, 43, 22, 0.55), rgba(12, 43, 22, 0.55)), url('../img/sample_main.png') center / cover no-repeat;
 }
 
 .hero-container {
@@ -281,6 +281,13 @@ body {
     margin-top: 2rem;
 }
 
+.download-filename {
+    margin: 0.75rem 0 0;
+    color: #52705a;
+    font-size: 0.88rem;
+    overflow-wrap: anywhere;
+}
+
 .full-version {
     border-top-color: #1565c0;
 }
@@ -306,15 +313,15 @@ body {
 }
 
 .gameplay-card {
-    background-image: url('bg/sample_1.png');
+    background-image: url('../img/sample_1.png');
 }
 
 .herbs-card {
-    background-image: url('bg/sample_2.png');
+    background-image: url('../img/sample_2.png');
 }
 
 .learning-card {
-    background-image: url('bg/sample_3.png');
+    background-image: url('../img/sample_3.png');
 }
 
 .feature-card::before {
@@ -560,7 +567,7 @@ body {
         align-items: center;
         padding: 6.5rem 0 3rem;
         background-color: #e8f5e9;
-        background-image: linear-gradient(rgba(12, 43, 22, 0.58), rgba(12, 43, 22, 0.66)), url('bg/sample_main_cropped.png');
+        background-image: linear-gradient(rgba(12, 43, 22, 0.58), rgba(12, 43, 22, 0.66)), url('../img/sample_main_cropped.png');
         background-size: 100% 100%, cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -1418,26 +1425,28 @@ input[type="radio"]:hover {
 }
 
 .divider {
-    position: relative;
-    text-align: center;
-    margin: 2rem 0;
-    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin: 1.25rem 0;
+    color: #7b897e;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
-.divider::before {
+.divider::before,
+.divider::after {
     content: '';
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
+    flex: 1;
     height: 1px;
-    background: #e0e0e0;
+    background: #dce6dc;
 }
 
 .divider span {
-    background: white;
-    padding: 0 1.5rem;
-    font-size: 0.9rem;
+    flex: 0 0 auto;
+    padding: 0;
+    background: transparent;
 }
 
 .auth-text {

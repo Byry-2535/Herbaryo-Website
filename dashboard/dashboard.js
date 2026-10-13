@@ -174,11 +174,16 @@ profileModal.innerHTML = `
         <label class="edit-field">Edit username
             <input type="text" id="editUsername" minlength="3" required>
         </label>
+        <div id="currentPasswordField" hidden>
+            <label class="edit-field">Old password
+                <input type="password" id="editCurrentPassword" autocomplete="current-password" placeholder="Enter your old password">
+            </label>
+        </div>
         <div id="passwordEditField">
             <label class="edit-field">Change password
-                <input type="password" id="editPassword" minlength="8" placeholder="Enter a new password">
+                <input type="password" id="editPassword" minlength="8" autocomplete="new-password" placeholder="Enter a new password">
             </label>
-            <p class="edit-note">Leave it blank to keep your current password. A recent sign-in may be required.</p>
+            <p class="edit-note">Leave both password fields blank to keep your current password.</p>
         </div>
         <label class="edit-field">Gender
             <select id="editGender">
@@ -195,10 +200,22 @@ profileModal.innerHTML = `
 `;
 document.body.appendChild(profileModal);
 
+const currentPasswordField = document.getElementById('currentPasswordField');
+const currentPasswordInput = document.getElementById('editCurrentPassword');
+const newPasswordInput = document.getElementById('editPassword');
+
+newPasswordInput.addEventListener('input', () => {
+    const requiresCurrentPassword = newPasswordInput.value.length > 0
+        && !document.getElementById('passwordEditField').hidden;
+    currentPasswordInput.required = requiresCurrentPassword;
+    if (!requiresCurrentPassword) currentPasswordInput.value = '';
+});
+
 function closeEditModal() {
     profileModal.classList.remove('active');
     document.body.style.overflow = '';
     document.getElementById('editError').textContent = '';
+    currentPasswordInput.value = '';
 }
 
 editBtn.addEventListener('click', () => {
@@ -208,7 +225,10 @@ editBtn.addEventListener('click', () => {
     );
 
     document.getElementById('editUsername').value = currentUserData.username || '';
-    document.getElementById('editPassword').value = '';
+    newPasswordInput.value = '';
+    currentPasswordInput.value = '';
+    currentPasswordField.hidden = !hasPasswordProvider;
+    currentPasswordInput.required = false;
     document.getElementById('editGender').value = (currentSaveData.gender || 'male').toLowerCase() === 'female' ? 'female' : 'male';
     document.getElementById('passwordEditField').hidden = !hasPasswordProvider;
     profileModal.classList.add('active');
@@ -222,8 +242,12 @@ document.getElementById('editForm').addEventListener('submit', async event => {
     event.preventDefault();
     const error = document.getElementById('editError');
     const username = document.getElementById('editUsername').value.trim();
-    const password = document.getElementById('editPassword').value;
+    const password = newPasswordInput.value;
+    const currentPassword = currentPasswordInput.value;
     const gender = document.getElementById('editGender').value;
+    const hasPasswordProvider = auth.currentUser?.providerData.some(
+        provider => provider.providerId === 'password'
+    );
 
     if (username.length < 3) {
         error.textContent = 'Username must be at least 3 characters.';
@@ -233,19 +257,36 @@ document.getElementById('editForm').addEventListener('submit', async event => {
         error.textContent = 'Password must be at least 8 characters.';
         return;
     }
+    if (password && hasPasswordProvider && !currentPassword) {
+        error.textContent = 'Enter your current password to change it.';
+        currentPasswordInput.focus();
+        return;
+    }
 
     try {
+        if (password && hasPasswordProvider) {
+            const credential = firebase.auth.EmailAuthProvider.credential(
+                auth.currentUser.email,
+                currentPassword
+            );
+            await auth.currentUser.reauthenticateWithCredential(credential);
+        }
+
         await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({
             username,
             [`saves/${selectedSaveSlot}/gender`]: gender
         });
-        if (password) await auth.currentUser.updatePassword(password);
+        if (password && hasPasswordProvider) await auth.currentUser.updatePassword(password);
         closeEditModal();
     } catch (updateError) {
         console.error(updateError);
-        error.textContent = updateError.code === 'auth/requires-recent-login'
-            ? 'Please sign in again before changing your password.'
-            : 'Unable to save your profile right now.';
+        if (['auth/wrong-password', 'auth/invalid-credential'].includes(updateError.code)) {
+            error.textContent = 'Your current password is incorrect.';
+        } else if (updateError.code === 'auth/requires-recent-login') {
+            error.textContent = 'Please sign in again before changing your password.';
+        } else {
+            error.textContent = 'Unable to save your profile right now.';
+        }
     }
 });
 
