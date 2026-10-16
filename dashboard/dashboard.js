@@ -185,12 +185,6 @@ profileModal.innerHTML = `
             </label>
             <p class="edit-note">Leave both password fields blank to keep your current password.</p>
         </div>
-        <label class="edit-field">Gender
-            <select id="editGender">
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-            </select>
-        </label>
         <p class="edit-error" id="editError" role="alert"></p>
         <div class="edit-buttons">
             <button type="submit" class="btn-save">Save</button>
@@ -229,7 +223,6 @@ editBtn.addEventListener('click', () => {
     currentPasswordInput.value = '';
     currentPasswordField.hidden = !hasPasswordProvider;
     currentPasswordInput.required = false;
-    document.getElementById('editGender').value = (currentSaveData.gender || 'male').toLowerCase() === 'female' ? 'female' : 'male';
     document.getElementById('passwordEditField').hidden = !hasPasswordProvider;
     profileModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -244,7 +237,6 @@ document.getElementById('editForm').addEventListener('submit', async event => {
     const username = document.getElementById('editUsername').value.trim();
     const password = newPasswordInput.value;
     const currentPassword = currentPasswordInput.value;
-    const gender = document.getElementById('editGender').value;
     const hasPasswordProvider = auth.currentUser?.providerData.some(
         provider => provider.providerId === 'password'
     );
@@ -272,10 +264,7 @@ document.getElementById('editForm').addEventListener('submit', async event => {
             await auth.currentUser.reauthenticateWithCredential(credential);
         }
 
-        await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({
-            username,
-            [`saves/${selectedSaveSlot}/gender`]: gender
-        });
+        await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({ username });
         if (password && hasPasswordProvider) await auth.currentUser.updatePassword(password);
         closeEditModal();
     } catch (updateError) {

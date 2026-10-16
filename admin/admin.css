@@ -4,6 +4,14 @@
     box-sizing: border-box;
 }
 
+html {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
@@ -963,7 +971,7 @@ th {
 
 @media (max-width: 650px) {
     .admin-header {
-        padding: 0.55rem 0;
+        padding: 1rem 0;
         overflow: visible;
     }
 
@@ -972,7 +980,7 @@ th {
     }
 
     .logo-link h2 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
     }
 
     .admin-user {

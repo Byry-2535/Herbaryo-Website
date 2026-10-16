@@ -6,6 +6,14 @@
     -moz-osx-font-smoothing: grayscale;
 }
 
+html {
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
+}
+
 body {
     font-family: 'Poppins', sans-serif;
     background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 50%, #a5d6a7 100%);
@@ -203,6 +211,73 @@ body {
     transform: translateY(-2px);
 }
 
+.back-to-top {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 1001;
+    width: 3rem;
+    height: 3rem;
+    border: 0;
+    border-radius: 50%;
+    background: #2e7d32;
+    color: white;
+    font: inherit;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.back-to-top::after {
+    content: "Back to the top";
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 0.75rem);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: #1b5e20;
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(0.25rem, -50%);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.back-to-top svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.back-to-top:hover {
+    background: #4caf50;
+    transform: translateY(-2px);
+}
+
+.back-to-top:hover::after,
+.back-to-top:focus-visible::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.back-to-top:focus-visible {
+    outline: 3px solid #81c784;
+    outline-offset: 3px;
+}
+
+.back-to-top[hidden] {
+    display: none;
+}
+
 .section {
     padding: 5rem 0;
 }
@@ -228,6 +303,7 @@ body {
 
 .download-section {
     background: rgba(255, 255, 255, 0.3);
+    padding: 7rem 0;
 }
 
 .download-content {
@@ -242,7 +318,7 @@ body {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2rem;
-    max-width: 780px;
+    max-width: 960px;
     margin: 0 auto;
 }
 
@@ -252,7 +328,8 @@ body {
 
 .download-option {
     background: white;
-    padding: 2rem;
+    min-height: 240px;
+    padding: 2.5rem;
     border-radius: 20px;
     box-shadow: 0 10px 40px rgba(46, 125, 50, 0.12);
     border-top: 4px solid #4caf50;
@@ -625,6 +702,7 @@ body {
     }
 
     .download-option {
+        min-height: 0;
         padding: 1.1rem 0.8rem;
     }
 
@@ -729,6 +807,10 @@ body {
 
     .section {
         padding: 3.5rem 0;
+    }
+
+    .download-section {
+        padding: 4.5rem 0;
     }
 
     .section-title {

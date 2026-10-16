@@ -8,6 +8,11 @@
 
 html {
     scroll-behavior: smooth;
+    scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+    display: none;
 }
 
 body {
@@ -1080,7 +1085,7 @@ main {
     }
 
     .dashboard-header {
-        padding: 0.55rem 0;
+        padding: 1rem 0;
     }
 
     .dashboard-header .container {
@@ -1140,7 +1145,7 @@ body {
 }
 
 .dashboard-header {
-    padding: 0.65rem 0;
+    padding: 1rem 0;
     background: rgba(248, 251, 246, 0.96);
 }
 
@@ -1433,9 +1438,9 @@ main.container {
 }
 
 .footer {
-    margin-top: 1rem;
-    padding: 1.25rem 0;
-    background: rgba(255, 255, 255, 0.8);
+    margin-top: 0;
+    padding: 3rem 0;
+    background: rgba(255, 255, 255, 0.9);
     box-shadow: none;
 }
 
@@ -1463,7 +1468,7 @@ main.container {
 
 @media (max-width: 650px) {
     .dashboard-header {
-        padding: 0.55rem 0;
+        padding: 1rem 0;
     }
 
     .dashboard-header .container {
@@ -1476,6 +1481,14 @@ main.container {
 
     .dashboard-menu-toggle {
         display: flex;
+    }
+
+    .dashboard-nav {
+        min-height: 40px;
+    }
+
+    .dashboard-nav .logo h2 {
+        font-size: 1.4rem;
     }
 
     .dashboard-actions {

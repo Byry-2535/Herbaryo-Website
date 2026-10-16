@@ -49,6 +49,15 @@ if (document.getElementById('emailSignupBtn')) document.getElementById('emailSig
     });
 });
 
+['signupEmail', 'signupPassword', 'confirmPassword'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleEmailSignup();
+        }
+    });
+});
+
 function normalizeLoginEmail(email) {
     const value = email.trim();
     if (!value || value.includes('@')) return value;
@@ -194,6 +203,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const navMenu = document.getElementById('navMenu');
     const navContainer = hamburgerBtn?.closest('.nav-container');
+    const backToTop = document.getElementById('backToTop');
+
+    if (backToTop) {
+        const updateBackToTopVisibility = () => {
+            backToTop.hidden = window.scrollY <= 300;
+        };
+
+        window.addEventListener('scroll', updateBackToTopVisibility, { passive: true });
+        updateBackToTopVisibility();
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+            });
+        });
+    }
 
     if (!hamburgerBtn || !navMenu || !navContainer) {
         console.error('Hamburger or navMenu not found');
