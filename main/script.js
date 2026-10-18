@@ -128,7 +128,7 @@ function showUsernameModal(user) {
         <div style="text-align:center;padding:1rem;">
             <h2 style="color:#2e7d32;margin-bottom:1.5rem;">🌿 Welcome!</h2>
             <p style="color:#666;margin-bottom:2rem;">Choose your username:</p>
-            <input type="text" id="usernameInput" placeholder="HerbalistJuan" maxlength="20" style="width:100%;padding:1rem;border:2px solid #a5d6a7;border-radius:12px;margin-bottom:1.5rem;">
+            <input type="text" id="usernameInput" placeholder="Username" maxlength="20" style="width:100%;padding:1rem;border:2px solid #a5d6a7;border-radius:12px;margin-bottom:1.5rem;">
             <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
                 <label><input type="radio" name="gender" value="male" checked> ♂ Male</label>
                 <label><input type="radio" name="gender" value="female"> ♀ Female</label>
@@ -138,6 +138,9 @@ function showUsernameModal(user) {
             </div>
         </div>
     `;
+    document.getElementById('usernameInput').value = (
+        user.email?.split('@')[0] || user.displayName || ''
+    ).slice(0, 20);
     setTimeout(() => {
         document.getElementById('createProfileBtn').onclick = () => createProfile(user);
     }, 100);

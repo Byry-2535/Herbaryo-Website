@@ -6,7 +6,8 @@
 
     const generalAchievementKeys = [
         'hello_world', 'no_more_limits', 'serious_dedication',
-        'good_neighbour', 'a_whole_new_world', 'master_herbalist'
+        'good_neighbour', 'a_whole_new_world', 'master_herbalist',
+        'becoming_an_apprentice'
     ];
 
     const herbAchievementKeys = herbKeys.map(key => `master_${key}`);
@@ -60,7 +61,7 @@
         return {
             gender: gender === 'female' ? 'female' : 'male',
             aurels: boundedInteger(previous.aurels, 0, 0, 9999),
-            reputation: boundedInteger(previous.reputation, 0, 0, 100),
+            reputation: boundedInteger(previous.reputation, 0, 0, 300),
             chapter: boundedInteger(previous.chapter ?? previous.level, 1, 1, 3),
             day: boundedInteger(previous.day, 1, 1, 60),
             inventory: {
@@ -82,7 +83,7 @@
     function createDefaultProfile(user, username, gender) {
         const saveGender = gender === 'female' ? 'female' : 'male';
         return {
-            username: username || user.displayName || 'Herbalist',
+            username: username || user.email?.split('@')[0] || user.displayName || 'Herbalist',
             email: user.email || '',
             photoURL: user.photoURL || '',
             isPremium: false,
@@ -104,7 +105,7 @@
         const updates = {};
 
         if (profile.username === undefined) {
-            updates.username = authUser.displayName || 'Herbalist';
+            updates.username = authUser.email?.split('@')[0] || authUser.displayName || 'Herbalist';
         }
         if (profile.email === undefined) updates.email = authUser.email || '';
         if (profile.photoURL === undefined) updates.photoURL = authUser.photoURL || '';

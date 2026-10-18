@@ -170,7 +170,7 @@ body {
 }
 
 main {
-    padding: 2rem 0;
+    padding: 3.5rem 0 2rem;
     min-height: calc(100vh - 100px);
 }
 

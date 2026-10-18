@@ -31,7 +31,8 @@ const generalAchievementCatalog = [
     ['serious_dedication', 'Serious Dedication', 'Survive 20 days'],
     ['good_neighbour', 'Good Neighbour', 'Keep 100 reputation for at least 5 days'],
     ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
-    ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs']
+    ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs'],
+    ['becoming_an_apprentice', 'Becoming an Apprentice', 'Complete the tutorial']
 ];
 
 let currentUserData = {};

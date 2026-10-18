@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${user.username}</td>
                 <td>${user.email}</td>
                 <td>${user.herbsMasteredCount}/${Object.keys(user.herbsMastered).length}</td>
-                <td>${user.achievementsCount}/16</td>
+                <td>${user.achievementsCount}/${Object.keys(HerbaryoSchema.createDefaultSave().achievements.general).length + HerbaryoSchema.herbKeys.length}</td>
                 <td>
                     <button class="action-btn btn-view" data-uid="${user.uid}">View</button>
                     <button class="action-btn btn-edit" data-uid="${user.uid}">Edit</button>
@@ -250,7 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ['serious_dedication', 'Serious Dedication', 'Survive 20 days'],
             ['good_neighbour', 'Good Neighbour', 'Keep 100 reputation for at least 5 days'],
             ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
-            ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs']
+            ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs'],
+            ['becoming_an_apprentice', 'Becoming an Apprentice', 'Complete the tutorial']
         ];
         const modalHerbCatalog = [
             ['akapulko', 'Akapulko'], ['ampalaya', 'Ampalaya'], ['bawang', 'Bawang'],
@@ -298,7 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <section class="view-modal-section">
                     <div class="view-section-heading">
                         <h3>Achievements</h3>
-                        <strong id="viewAchievementsCount">0/16</strong>
+                        <strong id="viewAchievementsCount">0/${generalAchievements.length + modalHerbCatalog.length}</strong>
                     </div>
                     <div class="view-achievement-grid" id="viewAchievementGrid"></div>
                 </section>
@@ -388,7 +389,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ['serious_dedication', 'Serious Dedication'],
             ['good_neighbour', 'Good Neighbour'],
             ['a_whole_new_world', 'A Whole New World'],
-            ['master_herbalist', 'Master Herbalist']
+            ['master_herbalist', 'Master Herbalist'],
+            ['becoming_an_apprentice', 'Becoming an Apprentice']
         ];
         const herbLabels = Object.fromEntries(HerbaryoSchema.herbKeys.map(herb => [
             herb,
@@ -456,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </label>
                     <label class="field-group">
                         <span>Reputation</span>
-                        <input type="number" id="editReputation" min="0" max="100" step="1" required>
+                        <input type="number" id="editReputation" min="0" max="300" step="1" required>
                     </label>
                     <label class="field-group">
                         <span>Chapter</span>
