@@ -7,7 +7,8 @@
     const generalAchievementKeys = [
         'hello_world', 'no_more_limits', 'serious_dedication',
         'good_neighbour', 'a_whole_new_world', 'master_herbalist',
-        'becoming_an_apprentice'
+        'becoming_an_apprentice', 'ohhh_kawaaiii', 'press_b_button',
+        'brochure_expert'
     ];
 
     const herbAchievementKeys = herbKeys.map(key => `master_${key}`);
@@ -54,12 +55,16 @@
         return inventoryHerbs;
     }
 
-    function createDefaultSave(gender = 'male', previous = {}) {
+    function normalizeGender(gender) {
+        return ['male', 'female'].includes(gender) ? gender : 'N/A';
+    }
+
+    function createDefaultSave(gender, previous = {}) {
         const inventory = previous.inventory || {};
         const achievementSource = previous.achievements || {};
 
         return {
-            gender: gender === 'female' ? 'female' : 'male',
+            gender: normalizeGender(previous.gender ?? gender),
             aurels: boundedInteger(previous.aurels, 0, 0, 9999),
             reputation: boundedInteger(previous.reputation, 0, 0, 300),
             chapter: boundedInteger(previous.chapter ?? previous.level, 1, 1, 3),
@@ -80,15 +85,13 @@
         };
     }
 
-    function createDefaultProfile(user, username, gender) {
-        const saveGender = gender === 'female' ? 'female' : 'male';
+    function createDefaultProfile(user, username, gender = 'N/A') {
+        const saveGender = normalizeGender(gender);
         return {
             username: username || user.email?.split('@')[0] || user.displayName || 'Herbalist',
             email: user.email || '',
             photoURL: user.photoURL || '',
             isPremium: false,
-            friends: {},
-            friend_request: {},
             saves: {
                 slot1: createDefaultSave(saveGender),
                 slot2: createDefaultSave(saveGender),
@@ -101,7 +104,7 @@
         const snapshot = await userRef.once('value');
         const profile = snapshot.val() || {};
         const saves = profile.saves || {};
-        const legacyGender = profile.gender === 'female' ? 'female' : 'male';
+        const legacyGender = normalizeGender(profile.gender);
         const updates = {};
 
         if (profile.username === undefined) {
@@ -110,8 +113,8 @@
         if (profile.email === undefined) updates.email = authUser.email || '';
         if (profile.photoURL === undefined) updates.photoURL = authUser.photoURL || '';
         if (profile.isPremium === undefined) updates.isPremium = false;
-        if (profile.friends === undefined) updates.friends = {};
-        if (profile.friend_request === undefined) updates.friend_request = {};
+        if (profile.friends !== undefined) updates.friends = null;
+        if (profile.friend_request !== undefined) updates.friend_request = null;
 
         for (const slotName of ['slot1', 'slot2', 'slot3']) {
             const slot = saves[slotName];

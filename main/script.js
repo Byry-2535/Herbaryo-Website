@@ -91,8 +91,11 @@ async function handleEmailSignup() {
     showLoading();
     try {
         const result = await auth.createUserWithEmailAndPassword(email, password);
-        await result.user.sendEmailVerification();
-        showError('Verification email sent! Please check your inbox.', true);
+        const actionCodeSettings = ['http:', 'https:'].includes(window.location.protocol)
+            ? { url: new URL('./index.html?emailVerification=success', window.location.href).href }
+            : undefined;
+        await result.user.sendEmailVerification(actionCodeSettings);
+        showError('Verification email sent. After verifying, return here to sign in.', true);
         await auth.signOut();
     } catch (error) {
         if (error.code === 'auth/email-already-in-use') showError('Email already registered. Try login.');
@@ -105,11 +108,26 @@ if (document.getElementById('googleLogin')) document.getElementById('googleLogin
     showLoading();
     try {
         const result = await auth.signInWithPopup(provider);
-        await checkUserProfile(result.user);
+        await ensureGoogleProfile(result.user);
+        showError('Google sign-in successful! Redirecting to your dashboard...', true);
+        window.setTimeout(() => window.location.replace('./dashboard/dashboard.html'), 1800);
     } catch (error) {
         showError('Google login failed: ' + error.message);
     } finally { hideLoading(); }
 });
+
+async function ensureGoogleProfile(user) {
+    const userRef = db.ref(`herbaryo-users/${user.uid}`);
+    const snapshot = await userRef.once('value');
+
+    if (!snapshot.exists()) {
+        const defaultUsername = user.email?.split('@')[0] || user.displayName || 'Herbalist';
+        await userRef.set(HerbaryoSchema.createDefaultProfile(user, defaultUsername));
+        return;
+    }
+
+    await HerbaryoSchema.migrateUser(userRef, user);
+}
 
 async function checkUserProfile(user) {
     if (!user) return;
@@ -126,21 +144,23 @@ function showUsernameModal(user) {
     const activeTab = document.querySelector('.tab-content.active');
     activeTab.innerHTML = `
         <div style="text-align:center;padding:1rem;">
-            <h2 style="color:#2e7d32;margin-bottom:1.5rem;">🌿 Welcome!</h2>
             <p style="color:#666;margin-bottom:2rem;">Choose your username:</p>
             <input type="text" id="usernameInput" placeholder="Username" maxlength="20" style="width:100%;padding:1rem;border:2px solid #a5d6a7;border-radius:12px;margin-bottom:1.5rem;">
-            <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;">
-                <label><input type="radio" name="gender" value="male" checked> ♂ Male</label>
-                <label><input type="radio" name="gender" value="female"> ♀ Female</label>
-            </div>
             <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
                 <button id="createProfileBtn" class="btn-primary" style="padding:1rem 2rem;min-width:140px;">Create Profile</button>
             </div>
         </div>
     `;
-    document.getElementById('usernameInput').value = (
+    const usernameInput = document.getElementById('usernameInput');
+    usernameInput.value = (
         user.email?.split('@')[0] || user.displayName || ''
     ).slice(0, 20);
+    usernameInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            createProfile(user);
+        }
+    });
     setTimeout(() => {
         document.getElementById('createProfileBtn').onclick = () => createProfile(user);
     }, 100);
@@ -148,25 +168,24 @@ function showUsernameModal(user) {
 
 async function createProfile(user) {
     const username = document.getElementById('usernameInput').value.trim();
-    const gender = document.querySelector('input[name="gender"]:checked').value;
     if (!username || username.length < 3) return showError('Username must be 3+ characters');
 
     showLoading();
     try {
-        await saveNewUserProfile(user, username, gender);
+        await saveNewUserProfile(user, username);
         window.location.replace('./dashboard/dashboard.html');
     } catch {
         showError('Failed to save profile');
     } finally { hideLoading(); }
 }
 
-async function saveNewUserProfile(user, usernameInput, gender) {
+async function saveNewUserProfile(user, usernameInput) {
     const uid = user.uid;
     const displayName = usernameInput || user.displayName || 'Herbalist';
     const userRef = db.ref(`herbaryo-users/${uid}`);
     const userSnap = await userRef.once('value');
     if (!userSnap.exists()) {
-        await userRef.set(HerbaryoSchema.createDefaultProfile(user, displayName, gender));
+        await userRef.set(HerbaryoSchema.createDefaultProfile(user, displayName));
         return;
     }
 
@@ -174,8 +193,7 @@ async function saveNewUserProfile(user, usernameInput, gender) {
     await userRef.update({
         username: displayName,
         email: user.email || '',
-        photoURL: user.photoURL || '',
-        'saves/slot1/gender': gender
+        photoURL: user.photoURL || ''
     });
 }
 
@@ -207,6 +225,58 @@ document.addEventListener('DOMContentLoaded', () => {
     const navMenu = document.getElementById('navMenu');
     const navContainer = hamburgerBtn?.closest('.nav-container');
     const backToTop = document.getElementById('backToTop');
+    const downloadVersionButtons = document.querySelectorAll('[data-download-version]');
+    const downloadCards = document.querySelectorAll('[data-download-card]');
+    const specVersionButtons = document.querySelectorAll('[data-spec-version]');
+    const specCards = document.querySelectorAll('[data-spec-card]');
+
+    downloadVersionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const selectedVersion = button.dataset.downloadVersion;
+
+            downloadVersionButtons.forEach(versionButton => {
+                const isSelected = versionButton === button;
+                versionButton.classList.toggle('active', isSelected);
+                versionButton.setAttribute('aria-pressed', String(isSelected));
+            });
+
+            downloadCards.forEach(card => {
+                card.classList.toggle('active', card.dataset.downloadCard === selectedVersion);
+            });
+
+            const selectedCard = document.querySelector(`[data-download-card="${selectedVersion}"]`);
+            if (selectedCard && window.matchMedia('(max-width: 768px)').matches) {
+                selectedCard.scrollIntoView({
+                    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                    block: 'nearest'
+                });
+            }
+        });
+    });
+
+    specVersionButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const selectedLevel = button.dataset.specVersion;
+
+            specVersionButtons.forEach(versionButton => {
+                const isSelected = versionButton === button;
+                versionButton.classList.toggle('active', isSelected);
+                versionButton.setAttribute('aria-pressed', String(isSelected));
+            });
+
+            specCards.forEach(card => {
+                card.classList.toggle('active', card.dataset.specCard === selectedLevel);
+            });
+
+            const selectedCard = document.querySelector(`[data-spec-card="${selectedLevel}"]`);
+            if (selectedCard && window.matchMedia('(max-width: 768px)').matches) {
+                selectedCard.scrollIntoView({
+                    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+                    block: 'nearest'
+                });
+            }
+        });
+    });
 
     if (backToTop) {
         const updateBackToTopVisibility = () => {
@@ -304,3 +374,36 @@ if (loginModal && window.location.hash === '#login') {
     loginModal.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
+
+async function handleEmailVerificationRedirect() {
+    if (!loginModal) return;
+
+    const currentUrl = new URL(window.location.href);
+    const params = currentUrl.searchParams;
+    const isContinueUrl = params.get('emailVerification') === 'success';
+    const verificationCode = params.get('oobCode');
+    const isDirectVerification = params.get('mode') === 'verifyEmail' && verificationCode;
+
+    if (!isContinueUrl && !isDirectVerification) return;
+
+    try {
+        if (isDirectVerification) {
+            await auth.applyActionCode(verificationCode);
+        }
+
+        document.getElementById('signupTab').classList.remove('active');
+        document.getElementById('loginTab').classList.add('active');
+        loginModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        showError('Account created successfully! Your email is verified. You can now sign in.', true);
+
+        ['emailVerification', 'mode', 'oobCode', 'apiKey', 'continueUrl', 'lang'].forEach(key => {
+            params.delete(key);
+        });
+        window.history.replaceState({}, '', currentUrl);
+    } catch (error) {
+        showError('Email verification failed: ' + error.message);
+    }
+}
+
+handleEmailVerificationRedirect();

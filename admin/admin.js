@@ -46,9 +46,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            await auth.signOut();
-            window.location.replace('../index.html');
+        logoutBtn.addEventListener('click', () => {
+            const trigger = logoutBtn;
+            const modal = document.createElement('div');
+            modal.className = 'user-modal logout-confirm-modal';
+            modal.innerHTML = `
+                <section class="logout-confirm-dialog" role="alertdialog" aria-modal="true"
+                    aria-labelledby="logoutDialogTitle" aria-describedby="logoutDialogDescription">
+                    <button class="logout-dialog-close" type="button" aria-label="Cancel logout">&times;</button>
+                    <span class="logout-dialog-kicker">Admin</span>
+                    <h2 id="logoutDialogTitle">Log out?</h2>
+                    <p id="logoutDialogDescription">Are you sure you want to log out of your account?</p>
+                    <p class="logout-dialog-error" role="alert" hidden></p>
+                    <div class="logout-dialog-actions">
+                        <button class="logout-cancel-btn" type="button">Cancel</button>
+                        <button class="logout-confirm-btn" type="button">Log out</button>
+                    </div>
+                </section>`;
+            document.body.appendChild(modal);
+            const previousOverflow = document.body.style.overflow;
+            let isSigningOut = false;
+            document.body.style.overflow = 'hidden';
+
+            const closeModal = () => {
+                if (isSigningOut) return;
+                modal.remove();
+                document.body.style.overflow = previousOverflow;
+                document.removeEventListener('keydown', handleKeydown);
+                if (trigger.isConnected) trigger.focus();
+            };
+            const handleKeydown = event => {
+                if (event.key === 'Escape') closeModal();
+            };
+
+            const closeButton = modal.querySelector('.logout-dialog-close');
+            const cancelButton = modal.querySelector('.logout-cancel-btn');
+            closeButton.addEventListener('click', closeModal);
+            cancelButton.addEventListener('click', closeModal);
+            modal.addEventListener('click', event => {
+                if (event.target === modal) closeModal();
+            });
+            document.addEventListener('keydown', handleKeydown);
+            modal.querySelector('.logout-cancel-btn').focus();
+
+            modal.querySelector('.logout-confirm-btn').addEventListener('click', async event => {
+                const confirmButton = event.currentTarget;
+                const error = modal.querySelector('.logout-dialog-error');
+                isSigningOut = true;
+                confirmButton.disabled = true;
+                closeButton.disabled = true;
+                cancelButton.disabled = true;
+                confirmButton.textContent = 'Logging out...';
+
+                try {
+                    await auth.signOut();
+                    isSigningOut = false;
+                    closeModal();
+                    window.location.replace('../index.html');
+                } catch (signOutError) {
+                    console.error('Failed to log out:', signOutError);
+                    error.textContent = 'Unable to log out right now. Please try again.';
+                    error.hidden = false;
+                    isSigningOut = false;
+                    confirmButton.disabled = false;
+                    closeButton.disabled = false;
+                    cancelButton.disabled = false;
+                    confirmButton.textContent = 'Log out';
+                }
+            });
         });
     }
 
@@ -108,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function normalizePlayer(uid, profile) {
-        const saveData = profile.saves?.slot1 || HerbaryoSchema.createDefaultSave(profile.gender || 'male', profile);
+        const saveData = profile.saves?.slot1 || HerbaryoSchema.createDefaultSave(undefined, profile);
         const herbsMastered = HerbaryoSchema.createHerbMastery(saveData.herbsMastered || {});
         const herbsMasteredCount = Object.values(herbsMastered).filter(herb => herb.mastered).length;
         const achievements = saveData.achievements || {};
@@ -122,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             uid,
             username: profile.username || 'Unknown',
             email: profile.email || '',
-            gender: saveData.gender || 'Not Specified',
+            gender: saveData.gender || 'N/A',
             aurels: saveData.aurels || 0,
             saveData,
             herbsMastered,
@@ -251,7 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ['good_neighbour', 'Good Neighbour', 'Keep 100 reputation for at least 5 days'],
             ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
             ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs'],
-            ['becoming_an_apprentice', 'Becoming an Apprentice', 'Complete the tutorial']
+            ['becoming_an_apprentice', 'Becoming an Apprentice', 'Complete the tutorial'],
+            ['ohhh_kawaaiii', 'Ohhh Kawaaiii', 'Use your first emote'],
+            ['press_b_button', 'Press B Button', 'Purchase a boots upgrade'],
+            ['brochure_expert', 'Brochure Expert', 'Purchase all upgrades']
         ];
         const modalHerbCatalog = [
             ['akapulko', 'Akapulko'], ['ampalaya', 'Ampalaya'], ['bawang', 'Bawang'],
@@ -310,12 +378,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const renderSlot = slotKey => {
             const saveData = userData.saves?.[slotKey]
                 || (slotKey === 'slot1' ? userData.saveData : null)
-                || HerbaryoSchema.createDefaultSave('male');
+                || HerbaryoSchema.createDefaultSave();
             const herbs = HerbaryoSchema.createHerbMastery(saveData.herbsMastered || {});
             const masteredCount = Object.values(herbs).filter(herb => herb.mastered).length;
             const achievements = saveData.achievements || {};
 
-            modal.querySelector('#viewGender').textContent = saveData.gender === 'female' ? 'Female' : 'Male';
+            modal.querySelector('#viewGender').textContent = saveData.gender === 'female'
+                ? 'Female'
+                : saveData.gender === 'male' ? 'Male' : 'N/A';
             modal.querySelector('#viewAurels').textContent = saveData.aurels ?? 0;
             modal.querySelector('#viewReputation').textContent = saveData.reputation ?? 0;
             modal.querySelector('#viewChapter').textContent = saveData.chapter ?? 1;
@@ -373,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const slotDrafts = Object.fromEntries(slotNames.map(slotName => {
             const existingSave = userData.saves?.[slotName]
                 || (slotName === 'slot1' ? userData.saveData : null)
-                || HerbaryoSchema.createDefaultSave('male');
+                || HerbaryoSchema.createDefaultSave();
             return [slotName, {
                 ...existingSave,
                 herbsMastered: HerbaryoSchema.createHerbMastery(existingSave.herbsMastered || {}),
@@ -390,7 +460,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ['good_neighbour', 'Good Neighbour'],
             ['a_whole_new_world', 'A Whole New World'],
             ['master_herbalist', 'Master Herbalist'],
-            ['becoming_an_apprentice', 'Becoming an Apprentice']
+            ['becoming_an_apprentice', 'Becoming an Apprentice'],
+            ['ohhh_kawaaiii', 'Ohhh Kawaaiii'],
+            ['press_b_button', 'Press B Button'],
+            ['brochure_expert', 'Brochure Expert']
         ];
         const herbLabels = Object.fromEntries(HerbaryoSchema.herbKeys.map(herb => [
             herb,
@@ -448,6 +521,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <label class="field-group">
                         <span>Gender</span>
                         <select id="editGender">
+                            <option value="N/A">N/A</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
                         </select>
@@ -493,7 +567,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const renderSlot = slotName => {
             const save = slotDrafts[slotName];
-            modal.querySelector('#editGender').value = save.gender === 'female' ? 'female' : 'male';
+            modal.querySelector('#editGender').value = ['male', 'female'].includes(save.gender)
+                ? save.gender
+                : 'N/A';
             modal.querySelector('#editAurels').value = save.aurels ?? 0;
             modal.querySelector('#editReputation').value = save.reputation ?? 0;
             modal.querySelector('#editChapter').value = save.chapter ?? 1;

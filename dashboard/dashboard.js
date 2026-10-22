@@ -32,7 +32,10 @@ const generalAchievementCatalog = [
     ['good_neighbour', 'Good Neighbour', 'Keep 100 reputation for at least 5 days'],
     ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
     ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs'],
-    ['becoming_an_apprentice', 'Becoming an Apprentice', 'Complete the tutorial']
+    ['becoming_an_apprentice', 'Becoming an Apprentice', 'Complete the tutorial'],
+    ['ohhh_kawaaiii', 'Ohhh Kawaaiii', 'Use your first emote'],
+    ['press_b_button', 'Press B Button', 'Purchase a boots upgrade'],
+    ['brochure_expert', 'Brochure Expert', 'Purchase all upgrades']
 ];
 
 let currentUserData = {};
@@ -113,7 +116,9 @@ function renderAchievements(achievementData = {}) {
 }
 
 function renderSaveSlot(saveData = {}) {
-    const gender = saveData.gender === 'female' ? 'Female' : 'Male';
+    const gender = saveData.gender === 'female'
+        ? 'Female'
+        : saveData.gender === 'male' ? 'Male' : 'N/A';
     document.getElementById('genderValue').textContent = gender;
     document.getElementById('aurelsValue').textContent = saveData.aurels ?? 0;
     document.getElementById('reputationValue').textContent = saveData.reputation ?? 0;
@@ -134,7 +139,7 @@ document.querySelectorAll('.save-tab').forEach(tab => {
 
         document.getElementById('saveSlotPanel').setAttribute('aria-labelledby', tab.id);
         currentSaveData = currentUserData.saves?.[selectedSaveSlot]
-            || HerbaryoSchema.createDefaultSave('male');
+            || HerbaryoSchema.createDefaultSave();
         renderSaveSlot(currentSaveData);
     });
 });
@@ -297,7 +302,7 @@ auth.onAuthStateChanged(async user => {
     userRef.on('value', snapshot => {
         const data = snapshot.val() || {};
         currentUserData = data;
-        currentSaveData = data.saves?.slot1 || HerbaryoSchema.createDefaultSave(data.gender || 'male', data);
+        currentSaveData = data.saves?.slot1 || HerbaryoSchema.createDefaultSave(undefined, data);
 
         const adminBtn = document.getElementById('adminBtn');
         db.ref(`admins/${user.uid}`).get().then(adminSnap => {
@@ -310,13 +315,78 @@ auth.onAuthStateChanged(async user => {
 
         updateUserUI(data);
         currentSaveData = data.saves?.[selectedSaveSlot]
-            || HerbaryoSchema.createDefaultSave('male');
+            || HerbaryoSchema.createDefaultSave();
         renderSaveSlot(currentSaveData);
     });
 });
 
 document.getElementById('logoutBtn').addEventListener('click', async () => {
     setDashboardMenuOpen(false);
-    await auth.signOut();
-    window.location.replace('../index.html');
+    const trigger = document.getElementById('logoutBtn');
+    const modal = document.createElement('div');
+    modal.className = 'logout-confirm-modal';
+    modal.innerHTML = `
+        <section class="logout-confirm-dialog" role="alertdialog" aria-modal="true"
+            aria-labelledby="logoutDialogTitle" aria-describedby="logoutDialogDescription">
+            <button class="logout-dialog-close" type="button" aria-label="Cancel logout">&times;</button>
+            <span class="logout-dialog-kicker">Dashboard</span>
+            <h2 id="logoutDialogTitle">Log out?</h2>
+            <p id="logoutDialogDescription">Are you sure you want to log out of your account?</p>
+            <p class="logout-dialog-error" role="alert" hidden></p>
+            <div class="logout-dialog-actions">
+                <button class="logout-cancel-btn" type="button">Cancel</button>
+                <button class="logout-confirm-btn" type="button">Log out</button>
+            </div>
+        </section>`;
+    document.body.appendChild(modal);
+    const previousOverflow = document.body.style.overflow;
+    let isSigningOut = false;
+    document.body.style.overflow = 'hidden';
+
+    const closeModal = () => {
+        if (isSigningOut) return;
+        modal.remove();
+        document.body.style.overflow = previousOverflow;
+        document.removeEventListener('keydown', handleKeydown);
+        if (trigger.isConnected) trigger.focus();
+    };
+    const handleKeydown = event => {
+        if (event.key === 'Escape') closeModal();
+    };
+
+    const closeButton = modal.querySelector('.logout-dialog-close');
+    const cancelButton = modal.querySelector('.logout-cancel-btn');
+    closeButton.addEventListener('click', closeModal);
+    cancelButton.addEventListener('click', closeModal);
+    modal.addEventListener('click', event => {
+        if (event.target === modal) closeModal();
+    });
+    document.addEventListener('keydown', handleKeydown);
+    modal.querySelector('.logout-cancel-btn').focus();
+
+    modal.querySelector('.logout-confirm-btn').addEventListener('click', async event => {
+        const confirmButton = event.currentTarget;
+        const error = modal.querySelector('.logout-dialog-error');
+        isSigningOut = true;
+        confirmButton.disabled = true;
+        closeButton.disabled = true;
+        cancelButton.disabled = true;
+        confirmButton.textContent = 'Logging out...';
+
+        try {
+            await auth.signOut();
+            isSigningOut = false;
+            closeModal();
+            window.location.replace('../index.html');
+        } catch (signOutError) {
+            console.error('Failed to log out:', signOutError);
+            error.textContent = 'Unable to log out right now. Please try again.';
+            error.hidden = false;
+            isSigningOut = false;
+            confirmButton.disabled = false;
+            closeButton.disabled = false;
+            cancelButton.disabled = false;
+            confirmButton.textContent = 'Log out';
+        }
+    });
 });

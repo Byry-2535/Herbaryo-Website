@@ -58,15 +58,21 @@
     <section id="download" class="section download-section">
         <div class="container download-content">
             <h2 class="section-title">Download Herbaryo</h2>
+            <div class="download-version-switch" role="group" aria-label="Choose game version">
+                <button class="download-version-button active" type="button" data-download-version="free"
+                    aria-controls="freeVersionCard" aria-pressed="true">Free Version</button>
+                <button class="download-version-button" type="button" data-download-version="full"
+                    aria-controls="fullVersionCard" aria-pressed="false">Full Version</button>
+            </div>
             <div class="download-options">
-                <article class="download-option">
+                <article class="download-option active" id="freeVersionCard" data-download-card="free">
                     <h3>Free Version</h3>
                     <ul>
                         <li>Chapter 1 (Day 20)</li>
                         <li>Limited Gameplay</li>
                     </ul>
                 </article>
-                <article class="download-option full-version">
+                <article class="download-option full-version" id="fullVersionCard" data-download-card="full">
                     <h3>Full Version</h3>
                     <ul>
                         <li>Chapter 2 (Day 40)</li>
@@ -204,8 +210,15 @@
         <div class="container">
             <h2 class="section-title">Device Requirements</h2>
             <p class="section-subtitle">Run Herbaryo smoothly on your mobile device</p>
+            <div class="download-version-switch spec-version-switch" role="group"
+                aria-label="Choose device requirement level">
+                <button class="download-version-button active" type="button" data-spec-version="minimum"
+                    aria-controls="minimumSpecsCard" aria-pressed="true">Minimum</button>
+                <button class="download-version-button" type="button" data-spec-version="recommended"
+                    aria-controls="recommendedSpecsCard" aria-pressed="false">Recommended</button>
+            </div>
             <div class="specs-grid">
-                <div class="spec-card minimum">
+                <article class="spec-card minimum active" id="minimumSpecsCard" data-spec-card="minimum">
                     <h3>Minimum</h3>
                     <div class="spec-list">
                         <div class="spec-item">
@@ -218,29 +231,30 @@
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">Storage</span>
-                            <span class="spec-value">200 MB</span>
+                            <span class="spec-value">300 MB</span>
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">Processor</span>
-                            <span class="spec-value">Helio G81</span>
+                            <span class="spec-value">Helio G99</span>
                         </div>
                     </div>
                     <p class="spec-note">Playable at 30 FPS</p>
-                </div>
-                <div class="spec-card recommended">
+                </article>
+                <article class="spec-card recommended" id="recommendedSpecsCard"
+                    data-spec-card="recommended">
                     <h3>Recommended</h3>
                     <div class="spec-list">
                         <div class="spec-item">
                             <span class="spec-label">Android</span>
-                            <span class="spec-value">11</span>
+                            <span class="spec-value">12</span>
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">RAM</span>
-                            <span class="spec-value">6 GB</span>
+                            <span class="spec-value">8 GB</span>
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">Storage</span>
-                            <span class="spec-value">200 MB</span>
+                            <span class="spec-value">300 MB</span>
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">Processor</span>
@@ -248,7 +262,7 @@
                         </div>
                     </div>
                     <p class="spec-note">60 FPS smooth gameplay</p>
-                </div>
+                </article>
             </div>
             <div class="compatibility-note">
                 <p><strong>✅ Compatible with 90% of Android devices in PH</strong> (most 2018+ phones)</p>
