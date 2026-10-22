@@ -506,6 +506,13 @@ body {
     transform: translateY(50px) scale(0.9);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
+    scrollbar-width: none;
+    scrollbar-gutter: stable;
+    overscroll-behavior: contain;
+}
+
+.login-modal::-webkit-scrollbar {
+    display: none;
 }
 
 .modal-overlay.active .login-modal {
@@ -1548,6 +1555,102 @@ input[type="radio"]:hover {
     outline: none;
     border-color: #4caf50;
     box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.profile-setup {
+    padding: 0.75rem 0;
+    text-align: center;
+}
+
+.profile-setup-prompt {
+    margin-bottom: 1rem;
+    color: #666;
+}
+
+.profile-setup > input {
+    width: 100%;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 2px solid #a5d6a7;
+    border-radius: 12px;
+    font: inherit;
+}
+
+.profile-setup > input:focus {
+    outline: none;
+    border-color: #4caf50;
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+}
+
+.profile-avatar-section {
+    margin-bottom: 1.25rem;
+    text-align: left;
+}
+
+.profile-avatar-label {
+    display: block;
+    margin-bottom: 0.65rem;
+    color: #52705a;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.profile-avatar-picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+    gap: 0.55rem;
+}
+
+.profile-avatar-option {
+    min-width: 0;
+    padding: 0.35rem;
+    border: 2px solid #e0e9e0;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #52705a;
+    font: inherit;
+    font-size: 0.68rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
+}
+
+.profile-avatar-option:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.14);
+}
+
+.profile-avatar-option.selected {
+    border-color: #43a047;
+    background: #f4fbf4;
+    box-shadow: 0 0 0 2px rgba(67, 160, 71, 0.16);
+}
+
+.profile-avatar-option:focus-visible {
+    outline: 3px solid rgba(46, 125, 50, 0.35);
+    outline-offset: 2px;
+}
+
+.profile-avatar-option img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    margin-bottom: 0.35rem;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.profile-avatar-option span {
+    display: block;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.profile-create-btn {
+    min-width: 140px;
+    padding: 0.9rem 1.5rem;
 }
 
 .full-width {

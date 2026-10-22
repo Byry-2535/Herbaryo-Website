@@ -15,6 +15,7 @@ const db = firebase.database();
 const loginModal = document.getElementById('loginModal');
 const closeModal = document.getElementById('closeModal');
 const errorContainer = document.getElementById('errorContainer');
+let selectedProfileAvatar = HerbaryoSchema.defaultAvatarPath;
 
 function showError(message, isSuccess = false) {
     clearError();
@@ -108,7 +109,12 @@ if (document.getElementById('googleLogin')) document.getElementById('googleLogin
     showLoading();
     try {
         const result = await auth.signInWithPopup(provider);
-        await ensureGoogleProfile(result.user);
+        const needsProfileSetup = await ensureGoogleProfile(result.user);
+        if (needsProfileSetup) {
+            showError('Google sign-in successful! Choose your username and avatar to finish setup.', true);
+            showUsernameModal(result.user);
+            return;
+        }
         showError('Google sign-in successful! Redirecting to your dashboard...', true);
         window.setTimeout(() => window.location.replace('./dashboard/dashboard.html'), 1800);
     } catch (error) {
@@ -123,10 +129,11 @@ async function ensureGoogleProfile(user) {
     if (!snapshot.exists()) {
         const defaultUsername = user.email?.split('@')[0] || user.displayName || 'Herbalist';
         await userRef.set(HerbaryoSchema.createDefaultProfile(user, defaultUsername));
-        return;
+        return true;
     }
 
     await HerbaryoSchema.migrateUser(userRef, user);
+    return false;
 }
 
 async function checkUserProfile(user) {
@@ -142,19 +149,46 @@ async function checkUserProfile(user) {
 
 function showUsernameModal(user) {
     const activeTab = document.querySelector('.tab-content.active');
+    selectedProfileAvatar = HerbaryoSchema.defaultAvatarPath;
     activeTab.innerHTML = `
-        <div style="text-align:center;padding:1rem;">
-            <p style="color:#666;margin-bottom:2rem;">Choose your username:</p>
-            <input type="text" id="usernameInput" placeholder="Username" maxlength="20" style="width:100%;padding:1rem;border:2px solid #a5d6a7;border-radius:12px;margin-bottom:1.5rem;">
-            <div style="display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem;">
-                <button id="createProfileBtn" class="btn-primary" style="padding:1rem 2rem;min-width:140px;">Create Profile</button>
+        <div class="profile-setup">
+            <p class="profile-setup-prompt">Choose your username and avatar:</p>
+            <input type="text" id="usernameInput" placeholder="Username" maxlength="20">
+            <div class="profile-avatar-section">
+                <span class="profile-avatar-label">Choose your avatar</span>
+                <div class="profile-avatar-picker" id="profileAvatarPicker" role="group"
+                    aria-label="Choose your profile avatar">
+                    ${HerbaryoSchema.avatarPaths.map(avatarPath => {
+                        const avatarName = avatarPath.split('/').pop().replace(/\.png$/i, '').replace(/_/g, ' ');
+                        const imagePath = avatarPath.replace('../img/', './img/');
+                        const isSelected = avatarPath === selectedProfileAvatar;
+                        return `<button class="profile-avatar-option${isSelected ? ' selected' : ''}"
+                            type="button" data-avatar-path="${avatarPath}" aria-label="Choose ${avatarName}"
+                            aria-pressed="${isSelected}">
+                            <img src="${imagePath}" alt="${avatarName}">
+                            <span>${avatarName}</span>
+                        </button>`;
+                    }).join('')}
+                </div>
             </div>
+            <button id="createProfileBtn" class="btn-primary profile-create-btn" type="button">Create Profile</button>
         </div>
     `;
     const usernameInput = document.getElementById('usernameInput');
     usernameInput.value = (
         user.email?.split('@')[0] || user.displayName || ''
     ).slice(0, 20);
+    document.getElementById('profileAvatarPicker').addEventListener('click', event => {
+        const option = event.target.closest('.profile-avatar-option');
+        if (!option) return;
+
+        selectedProfileAvatar = HerbaryoSchema.normalizeAvatar(option.dataset.avatarPath);
+        document.querySelectorAll('.profile-avatar-option').forEach(avatarOption => {
+            const isSelected = avatarOption === option;
+            avatarOption.classList.toggle('selected', isSelected);
+            avatarOption.setAttribute('aria-pressed', String(isSelected));
+        });
+    });
     usernameInput.addEventListener('keydown', event => {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -185,7 +219,9 @@ async function saveNewUserProfile(user, usernameInput) {
     const userRef = db.ref(`herbaryo-users/${uid}`);
     const userSnap = await userRef.once('value');
     if (!userSnap.exists()) {
-        await userRef.set(HerbaryoSchema.createDefaultProfile(user, displayName));
+        const profile = HerbaryoSchema.createDefaultProfile(user, displayName);
+        profile.photoURL = selectedProfileAvatar;
+        await userRef.set(profile);
         return;
     }
 
@@ -193,7 +229,7 @@ async function saveNewUserProfile(user, usernameInput) {
     await userRef.update({
         username: displayName,
         email: user.email || '',
-        photoURL: user.photoURL || ''
+        photoURL: selectedProfileAvatar
     });
 }
 

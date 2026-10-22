@@ -12,6 +12,14 @@
     ];
 
     const herbAchievementKeys = herbKeys.map(key => `master_${key}`);
+    const avatarPaths = [
+        'Chieftain_VillageElder.png',
+        'Kael_MaleMC.png',
+        'Lily_FemaleMC.png',
+        'Lolo_Herbalist.png',
+        'Researcher.png'
+    ].map(filename => `../img/avatars/${filename}`);
+    const defaultAvatarPath = '../img/avatars/Researcher.png';
 
     function boundedInteger(value, fallback, minimum, maximum) {
         if (value === undefined || value === null || value === '') return fallback;
@@ -59,6 +67,10 @@
         return ['male', 'female'].includes(gender) ? gender : 'N/A';
     }
 
+    function normalizeAvatar(avatarPath) {
+        return avatarPaths.includes(avatarPath) ? avatarPath : defaultAvatarPath;
+    }
+
     function createDefaultSave(gender, previous = {}) {
         const inventory = previous.inventory || {};
         const achievementSource = previous.achievements || {};
@@ -90,7 +102,7 @@
         return {
             username: username || user.email?.split('@')[0] || user.displayName || 'Herbalist',
             email: user.email || '',
-            photoURL: user.photoURL || '',
+            photoURL: defaultAvatarPath,
             isPremium: false,
             saves: {
                 slot1: createDefaultSave(saveGender),
@@ -111,7 +123,8 @@
             updates.username = authUser.email?.split('@')[0] || authUser.displayName || 'Herbalist';
         }
         if (profile.email === undefined) updates.email = authUser.email || '';
-        if (profile.photoURL === undefined) updates.photoURL = authUser.photoURL || '';
+        const avatarPath = normalizeAvatar(profile.photoURL);
+        if (profile.photoURL !== avatarPath) updates.photoURL = avatarPath;
         if (profile.isPremium === undefined) updates.isPremium = false;
         if (profile.friends !== undefined) updates.friends = null;
         if (profile.friend_request !== undefined) updates.friend_request = null;
@@ -137,6 +150,9 @@
 
     window.HerbaryoSchema = {
         herbKeys,
+        avatarPaths,
+        defaultAvatarPath,
+        normalizeAvatar,
         createDefaultProfile,
         createDefaultSave,
         createHerbMastery,

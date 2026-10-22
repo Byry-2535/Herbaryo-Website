@@ -41,6 +41,7 @@ const generalAchievementCatalog = [
 let currentUserData = {};
 let currentSaveData = {};
 let selectedSaveSlot = 'slot1';
+let selectedAvatarPath = HerbaryoSchema.defaultAvatarPath;
 
 function getHerbsCount(herbsObj = {}) {
     return herbCatalog.filter(([key]) => {
@@ -65,12 +66,8 @@ function updateUserUI(userData) {
     document.getElementById('accountTypeValue').textContent = userData.isPremium === true ? 'Premium' : 'Free';
 
     avatar.textContent = getInitials(displayName);
-    if (userData.photoURL) {
-        avatar.style.backgroundImage = `url(${userData.photoURL})`;
-        avatar.textContent = '';
-    } else {
-        avatar.style.backgroundImage = '';
-    }
+    avatar.style.backgroundImage = `url("${HerbaryoSchema.normalizeAvatar(userData.photoURL)}")`;
+    avatar.textContent = '';
 }
 
 function renderHerbs(herbsObj = {}) {
@@ -191,6 +188,20 @@ profileModal.innerHTML = `
             </label>
             <p class="edit-note">Leave both password fields blank to keep your current password.</p>
         </div>
+        <div class="avatar-editor">
+            <span class="edit-field">Profile avatar</span>
+            <button class="avatar-picker-toggle" id="avatarPickerToggle" type="button"
+                aria-expanded="false" aria-controls="avatarPicker">Edit avatar</button>
+            <div class="avatar-picker" id="avatarPicker" aria-label="Available avatars" hidden>
+                ${HerbaryoSchema.avatarPaths.map(avatarPath => {
+                    const avatarName = avatarPath.split('/').pop().replace('.png', '').replace(/_/g, ' ');
+                    return `<button class="avatar-option" type="button" data-avatar-path="${avatarPath}"
+                        aria-label="Choose ${avatarName}" aria-pressed="false">
+                        <img src="${avatarPath}" alt="${avatarName}">
+                    </button>`;
+                }).join('')}
+            </div>
+        </div>
         <p class="edit-error" id="editError" role="alert"></p>
         <div class="edit-buttons">
             <button type="submit" class="btn-save">Save</button>
@@ -203,6 +214,28 @@ document.body.appendChild(profileModal);
 const currentPasswordField = document.getElementById('currentPasswordField');
 const currentPasswordInput = document.getElementById('editCurrentPassword');
 const newPasswordInput = document.getElementById('editPassword');
+const avatarPicker = document.getElementById('avatarPicker');
+const avatarPickerToggle = document.getElementById('avatarPickerToggle');
+
+function selectAvatar(avatarPath) {
+    selectedAvatarPath = HerbaryoSchema.normalizeAvatar(avatarPath);
+    profileModal.querySelectorAll('.avatar-option').forEach(option => {
+        const isSelected = option.dataset.avatarPath === selectedAvatarPath;
+        option.classList.toggle('selected', isSelected);
+        option.setAttribute('aria-pressed', String(isSelected));
+    });
+}
+
+avatarPickerToggle.addEventListener('click', () => {
+    const isExpanded = avatarPickerToggle.getAttribute('aria-expanded') === 'true';
+    avatarPickerToggle.setAttribute('aria-expanded', String(!isExpanded));
+    avatarPicker.hidden = isExpanded;
+});
+
+avatarPicker.addEventListener('click', event => {
+    const option = event.target.closest('.avatar-option');
+    if (option) selectAvatar(option.dataset.avatarPath);
+});
 
 newPasswordInput.addEventListener('input', () => {
     const requiresCurrentPassword = newPasswordInput.value.length > 0
@@ -225,6 +258,9 @@ editBtn.addEventListener('click', () => {
     );
 
     document.getElementById('editUsername').value = currentUserData.username || '';
+    selectAvatar(currentUserData.photoURL);
+    avatarPicker.hidden = true;
+    avatarPickerToggle.setAttribute('aria-expanded', 'false');
     newPasswordInput.value = '';
     currentPasswordInput.value = '';
     currentPasswordField.hidden = !hasPasswordProvider;
@@ -270,7 +306,10 @@ document.getElementById('editForm').addEventListener('submit', async event => {
             await auth.currentUser.reauthenticateWithCredential(credential);
         }
 
-        await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({ username });
+        await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({
+            username,
+            photoURL: selectedAvatarPath
+        });
         if (password && hasPasswordProvider) await auth.currentUser.updatePassword(password);
         closeEditModal();
     } catch (updateError) {

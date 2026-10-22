@@ -163,13 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
         avatar.innerHTML = '';
         avatar.setAttribute('data-initials', displayName.charAt(0).toUpperCase());
 
-        if (user.photoURL) {
-            avatar.style.backgroundImage = `url(${user.photoURL})`;
-            avatar.classList.add('has-photo');
-        } else {
-            avatar.style.backgroundImage = '';
-            avatar.classList.remove('has-photo');
-        }
+        avatar.style.backgroundImage = `url("${HerbaryoSchema.defaultAvatarPath}")`;
+        avatar.classList.add('has-photo');
     }
 
     function normalizePlayer(uid, profile) {
@@ -187,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
             uid,
             username: profile.username || 'Unknown',
             email: profile.email || '',
+            photoURL: HerbaryoSchema.normalizeAvatar(profile.photoURL),
             gender: saveData.gender || 'N/A',
             aurels: saveData.aurels || 0,
             saveData,
@@ -200,11 +196,26 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const snapshot = await db.ref('herbaryo-users').once('value');
             const users = [];
+            const avatarUpdates = {};
 
             snapshot.forEach(child => {
                 const u = child.val() || {};
+                const avatarPath = HerbaryoSchema.normalizeAvatar(u.photoURL);
+                if (u.photoURL !== avatarPath) {
+                    avatarUpdates[`${child.key}/photoURL`] = avatarPath;
+                    u.photoURL = avatarPath;
+                }
                 users.push(normalizePlayer(child.key, u));
             });
+
+            if (Object.keys(avatarUpdates).length) {
+                try {
+                    await db.ref('herbaryo-users').update(avatarUpdates);
+                } catch (error) {
+                    console.error('Failed to update existing player avatars:', error);
+                    showAdminToast('Could not save the default avatar for all players. Please try again.', 'error');
+                }
+            }
 
             users.sort((a, b) => b.herbsMasteredCount - a.herbsMasteredCount);
             allUsers = users;
@@ -228,7 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         tbody.innerHTML = filteredUsers.map(user => `
             <tr>
-                <td>${user.username}</td>
+                <td>
+                    <span class="player-name-cell">
+                        <img class="player-avatar" src="${HerbaryoSchema.normalizeAvatar(user.photoURL)}" alt="">
+                        <span>${user.username}</span>
+                    </span>
+                </td>
                 <td>${user.email}</td>
                 <td>${user.herbsMasteredCount}/${Object.keys(user.herbsMastered).length}</td>
                 <td>${user.achievementsCount}/${Object.keys(HerbaryoSchema.createDefaultSave().achievements.general).length + HerbaryoSchema.herbKeys.length}</td>
@@ -335,6 +351,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <button class="modal-close">&times;</button>
             <div class="view-profile-header">
                 <div class="view-name-row">
+                    <img class="view-player-avatar" src="${HerbaryoSchema.normalizeAvatar(userData.photoURL)}" alt="">
                     <h2>${userData.username || 'Unknown'}</h2>
                     <span class="account-type-badge">${userData.isPremium === true ? 'Premium' : 'Free'}</span>
                 </div>
@@ -470,6 +487,7 @@ document.addEventListener('DOMContentLoaded', () => {
             herb.replace(/_/g, ' ').replace(/\b\w/g, letter => letter.toUpperCase())
         ]));
         let selectedSlot = 'slot1';
+        let selectedAvatarPath = HerbaryoSchema.normalizeAvatar(userData.photoURL);
         const modal = document.createElement('div');
         modal.className = 'user-modal';
 
@@ -503,6 +521,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span>Username</span>
                     <input type="text" id="editName" minlength="3" required value="${userData.username || ''}">
                 </label>
+                <div class="edit-avatar-section">
+                    <span class="edit-avatar-label">Profile avatar</span>
+                    <div class="admin-avatar-picker" role="group" aria-label="Choose player avatar">
+                        ${HerbaryoSchema.avatarPaths.map(avatarPath => {
+                            const avatarName = avatarPath.split('/').pop().replace(/\.[^.]+$/, '').replace(/_/g, ' ');
+                            const isSelected = avatarPath === selectedAvatarPath;
+                            return `<button class="admin-avatar-option${isSelected ? ' selected' : ''}" type="button"
+                                data-avatar-path="${avatarPath}" aria-label="Choose ${avatarName}"
+                                aria-pressed="${isSelected}">
+                                <img src="${avatarPath}" alt="${avatarName}">
+                            </button>`;
+                        }).join('')}
+                    </div>
+                </div>
                 <label class="field-group">
                     <span>Account Type</span>
                     <select id="editAccountType">
@@ -564,6 +596,17 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(modal);
         modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.querySelector('#cancelEditBtn').onclick = () => modal.remove();
+        modal.querySelector('.admin-avatar-picker').addEventListener('click', event => {
+            const option = event.target.closest('.admin-avatar-option');
+            if (!option) return;
+
+            selectedAvatarPath = HerbaryoSchema.normalizeAvatar(option.dataset.avatarPath);
+            modal.querySelectorAll('.admin-avatar-option').forEach(avatarOption => {
+                const isSelected = avatarOption === option;
+                avatarOption.classList.toggle('selected', isSelected);
+                avatarOption.setAttribute('aria-pressed', String(isSelected));
+            });
+        });
 
         const renderSlot = slotName => {
             const save = slotDrafts[slotName];
@@ -637,6 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 const updates = {
                     username: updatedUsername,
+                    photoURL: selectedAvatarPath,
                     isPremium: modal.querySelector('#editAccountType').value === 'true'
                 };
                 slotNames.forEach(slotName => {
