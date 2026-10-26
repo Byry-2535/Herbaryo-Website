@@ -340,15 +340,15 @@ body {
 }
 
 .gameplay-card {
-    background-image: url('../img/sample_1.png');
+    background-image: url('../img/screenshots/Baryo.png');
 }
 
 .herbs-card {
-    background-image: url('../img/sample_2.png');
+    background-image: url('../img/screenshots/Scarecrow.png');
 }
 
 .learning-card {
-    background-image: url('../img/sample_3.png');
+    background-image: url('../img/screenshots/Herb%20Picking.png');
 }
 
 .feature-card::before {
@@ -772,6 +772,34 @@ body {
         gap: 0.75rem;
     }
 
+    .screenshots-section .screenshots-grid {
+        display: flex;
+        gap: 1rem;
+        margin: -0.5rem -1rem 0;
+        padding: 0.5rem 1rem 1.25rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(46, 125, 50, 0.45) transparent;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .screenshots-section .screenshot-card {
+        flex: 0 0 min(82vw, 340px);
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
+    }
+
+    .screenshots-grid::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .screenshots-grid::-webkit-scrollbar-thumb {
+        background: rgba(46, 125, 50, 0.45);
+        border-radius: 4px;
+    }
+
     .herb-image {
         height: 120px;
     }
@@ -894,6 +922,45 @@ html {
     grid-column: 2;
     justify-self: center;
     width: min(100%, 360px);
+}
+
+.screenshots-section {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.screenshots-section .section-title {
+    margin-bottom: 1rem;
+}
+
+.screenshots-section .section-subtitle {
+    margin-bottom: 2.5rem;
+}
+
+.screenshots-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+}
+
+.screenshot-card {
+    overflow: hidden;
+    margin: 0;
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(46, 125, 50, 0.14);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.screenshot-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(46, 125, 50, 0.22);
+}
+
+.screenshot-card img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
 }
 
 .herb-card:hover {
