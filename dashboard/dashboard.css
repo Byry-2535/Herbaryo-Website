@@ -228,6 +228,70 @@ main {
     background-position: center;
 }
 
+.feedback-button {
+    position: fixed;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    z-index: 1001;
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #2e7d32;
+    color: #ffffff;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.feedback-button::after {
+    content: "Give feedback";
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 0.75rem);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    background: #1b5e20;
+    color: #ffffff;
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.2;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(0.25rem, -50%);
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.feedback-button svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.feedback-button:hover {
+    background: #4caf50;
+    transform: translateY(-2px);
+}
+
+.feedback-button:hover::after,
+.feedback-button:focus-visible::after {
+    opacity: 1;
+    transform: translate(0, -50%);
+}
+
+.feedback-button:focus-visible {
+    outline: 3px solid #81c784;
+    outline-offset: 3px;
+}
+
 .dashboard-section {
     margin: 0 0 2.5rem;
 }

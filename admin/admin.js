@@ -170,7 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function normalizePlayer(uid, profile) {
         const saveData = profile.saves?.slot1 || HerbaryoSchema.createDefaultSave(undefined, profile);
         const herbsMastered = HerbaryoSchema.createHerbMastery(saveData.herbsMastered || {});
-        const herbsMasteredCount = Object.values(herbsMastered).filter(herb => herb.mastered).length;
+        const herbsMasteredCount = Object.values(herbsMastered)
+            .filter(herb => herb.mastered || herb.mastery >= HerbaryoSchema.maxHerbMastery).length;
         const achievements = saveData.achievements || {};
         const achievementsCount = [
             ...Object.values(achievements.general || {}),
@@ -217,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            users.sort((a, b) => b.herbsMasteredCount - a.herbsMasteredCount);
+            users.sort((a, b) => a.username.localeCompare(b.username, undefined, { sensitivity: 'base' }));
             allUsers = users;
             updateStats(users);
             displayUsers(users);
@@ -404,14 +405,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? 'Female'
                 : saveData.gender === 'male' ? 'Male' : 'N/A';
             modal.querySelector('#viewAurels').textContent = saveData.aurels ?? 0;
-            modal.querySelector('#viewReputation').textContent = saveData.reputation ?? 0;
+            modal.querySelector('#viewReputation').textContent = Math.min(
+                HerbaryoSchema.maxReputation,
+                Math.max(0, Number(saveData.reputation) || 0)
+            );
             modal.querySelector('#viewChapter').textContent = saveData.chapter ?? 1;
             modal.querySelector('#viewDay').textContent = saveData.day ?? 1;
             modal.querySelector('#viewHerbsCount').textContent = `${masteredCount}/10`;
             modal.querySelector('#viewHerbGrid').innerHTML = modalHerbCatalog.map(([key, label]) => {
                 const mastery = herbs[key].mastery;
                 const mastered = herbs[key].mastered;
-                return `<div class="view-herb-card ${mastered ? 'mastered' : 'locked'}"><strong>${label}</strong><span>${mastered ? 'Mastered' : `${mastery}% mastery`}</span></div>`;
+                return `<div class="view-herb-card ${mastered ? 'mastered' : 'locked'}"><strong>${label}</strong><span>${mastered ? 'Mastered' : `${mastery}/${HerbaryoSchema.maxHerbMastery} mastery`}</span></div>`;
             }).join('');
 
             const achievementCards = [
@@ -463,6 +467,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 || HerbaryoSchema.createDefaultSave();
             return [slotName, {
                 ...existingSave,
+                reputation: Math.min(
+                    HerbaryoSchema.maxReputation,
+                    Math.max(0, Math.trunc(Number(existingSave.reputation) || 0))
+                ),
                 herbsMastered: HerbaryoSchema.createHerbMastery(existingSave.herbsMastered || {}),
                 achievements: {
                     general: { ...(existingSave.achievements?.general || {}) },
@@ -494,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const herbCheckboxes = HerbaryoSchema.herbKeys.map(herb => `
             <label class="edit-herb-item">
                 <span>${herbLabels[herb]}</span>
-                <input type="number" class="editHerbMastery" data-herb="${herb}" value="0" min="0" max="100" step="1" required aria-label="${herbLabels[herb]} mastery percent">
+                <input type="number" class="editHerbMastery" data-herb="${herb}" value="0" min="0" max="${HerbaryoSchema.maxHerbMastery}" step="1" required aria-label="${herbLabels[herb]} mastery">
             </label>
         `).join('');
         const achievementCheckboxes = [
@@ -564,7 +572,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     </label>
                     <label class="field-group">
                         <span>Reputation</span>
-                        <input type="number" id="editReputation" min="0" max="300" step="1" required>
+                        <input type="number" id="editReputation" min="0" max="${HerbaryoSchema.maxReputation}" step="1" required>
                     </label>
                     <label class="field-group">
                         <span>Chapter</span>
@@ -636,8 +644,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             modal.querySelectorAll('.editHerbMastery').forEach(input => {
                 const herbKey = input.dataset.herb;
-                const mastery = Number.parseInt(input.value, 10);
-                save.herbsMastered[herbKey] = { mastery, mastered: mastery === 100 };
+                const mastery = Math.min(
+                    HerbaryoSchema.maxHerbMastery,
+                    Number.parseInt(input.value, 10)
+                );
+                save.herbsMastered[herbKey] = {
+                    mastery,
+                    mastered: mastery >= HerbaryoSchema.maxHerbMastery
+                };
             });
             modal.querySelectorAll('.editAchievementCheckbox').forEach(checkbox => {
                 save.achievements[checkbox.dataset.category][checkbox.value] = checkbox.checked;

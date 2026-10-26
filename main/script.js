@@ -15,6 +15,10 @@ const db = firebase.database();
 const loginModal = document.getElementById('loginModal');
 const closeModal = document.getElementById('closeModal');
 const errorContainer = document.getElementById('errorContainer');
+const downloadModal = document.getElementById('downloadModal');
+const openDownloadModalButton = document.getElementById('openDownloadModal');
+const closeDownloadModalButton = document.getElementById('closeDownloadModal');
+let previousDownloadModalOverflow = '';
 let selectedProfileAvatar = HerbaryoSchema.defaultAvatarPath;
 
 function showError(message, isSuccess = false) {
@@ -38,8 +42,45 @@ function closeLoginModal() {
     clearError();
 }
 
+function closeDownloadModal() {
+    downloadModal.classList.remove('active');
+    document.body.style.overflow = previousDownloadModalOverflow;
+    openDownloadModalButton.focus();
+}
+
+if (downloadModal && openDownloadModalButton && closeDownloadModalButton) {
+    openDownloadModalButton.addEventListener('click', () => {
+        previousDownloadModalOverflow = document.body.style.overflow;
+        downloadModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        closeDownloadModalButton.focus();
+    });
+
+    closeDownloadModalButton.addEventListener('click', closeDownloadModal);
+    downloadModal.addEventListener('click', event => {
+        if (event.target === downloadModal) closeDownloadModal();
+    });
+    document.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && downloadModal.classList.contains('active')) {
+            closeDownloadModal();
+        }
+    });
+}
+
 if (document.getElementById('emailLoginBtn')) document.getElementById('emailLoginBtn').addEventListener('click', handleEmailLogin);
 if (document.getElementById('emailSignupBtn')) document.getElementById('emailSignupBtn').addEventListener('click', handleEmailSignup);
+
+document.querySelectorAll('.password-toggle').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        const passwordInput = document.getElementById(toggle.dataset.passwordTarget);
+        const isVisible = passwordInput.type === 'text';
+
+        passwordInput.type = isVisible ? 'password' : 'text';
+        toggle.setAttribute('aria-label', isVisible ? 'Show password' : 'Hide password');
+        toggle.setAttribute('aria-pressed', String(!isVisible));
+        toggle.querySelector('.password-eye-slash').classList.toggle('visible', !isVisible);
+    });
+});
 
 ['loginEmail', 'loginPassword'].forEach(id => {
     document.getElementById(id)?.addEventListener('keydown', event => {
@@ -261,34 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const navMenu = document.getElementById('navMenu');
     const navContainer = hamburgerBtn?.closest('.nav-container');
     const backToTop = document.getElementById('backToTop');
-    const downloadVersionButtons = document.querySelectorAll('[data-download-version]');
-    const downloadCards = document.querySelectorAll('[data-download-card]');
     const specVersionButtons = document.querySelectorAll('[data-spec-version]');
     const specCards = document.querySelectorAll('[data-spec-card]');
-
-    downloadVersionButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const selectedVersion = button.dataset.downloadVersion;
-
-            downloadVersionButtons.forEach(versionButton => {
-                const isSelected = versionButton === button;
-                versionButton.classList.toggle('active', isSelected);
-                versionButton.setAttribute('aria-pressed', String(isSelected));
-            });
-
-            downloadCards.forEach(card => {
-                card.classList.toggle('active', card.dataset.downloadCard === selectedVersion);
-            });
-
-            const selectedCard = document.querySelector(`[data-download-card="${selectedVersion}"]`);
-            if (selectedCard && window.matchMedia('(max-width: 768px)').matches) {
-                selectedCard.scrollIntoView({
-                    behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-                    block: 'nearest'
-                });
-            }
-        });
-    });
 
     specVersionButtons.forEach(button => {
         button.addEventListener('click', () => {

@@ -46,7 +46,7 @@ let selectedAvatarPath = HerbaryoSchema.defaultAvatarPath;
 function getHerbsCount(herbsObj = {}) {
     return herbCatalog.filter(([key]) => {
         const herb = herbsObj[key];
-        return herb === true || herb?.mastered === true || herb?.mastery >= 100;
+        return herb === true || herb?.mastered === true || herb?.mastery >= HerbaryoSchema.maxHerbMastery;
     }).length;
 }
 
@@ -75,11 +75,15 @@ function renderHerbs(herbsObj = {}) {
     document.getElementById('herbsMasteredCount').textContent = `${masteredCount}/10`;
     document.getElementById('herbsList').innerHTML = herbCatalog.map(([key, label]) => {
         const herb = herbsObj[key];
-        const mastery = herb === true ? 100 : Math.min(100, Math.max(0, Number(herb?.mastery) || 0));
-        const mastered = herb === true || herb?.mastered === true || mastery >= 100;
+        const mastery = herb === true
+            ? HerbaryoSchema.maxHerbMastery
+            : Math.min(HerbaryoSchema.maxHerbMastery, Math.max(0, Number(herb?.mastery) || 0));
+        const mastered = herb === true
+            || herb?.mastered === true
+            || mastery >= HerbaryoSchema.maxHerbMastery;
         return `<article class="herb-card ${mastered ? 'mastered' : 'locked'}">
             <strong>${label}</strong>
-            <span>${mastered ? 'Mastered' : `${mastery}% mastery`}</span>
+            <span>${mastered ? 'Mastered' : `${mastery}/${HerbaryoSchema.maxHerbMastery} mastery`}</span>
         </article>`;
     }).join('');
 }

@@ -12,6 +12,8 @@
     ];
 
     const herbAchievementKeys = herbKeys.map(key => `master_${key}`);
+    const maxHerbMastery = 300;
+    const maxReputation = 100;
     const avatarPaths = [
         'Chieftain_VillageElder.png',
         'Kael_MaleMC.png',
@@ -36,16 +38,15 @@
             if (typeof state === 'object' && state !== null) {
                 mastery = boundedInteger(
                     state.mastery,
-                    state.mastered === true ? 100 : state.discovered === true ? 1 : 0,
+                    state.mastered === true ? maxHerbMastery : state.discovered === true ? 1 : 0,
                     0,
-                    100
+                    maxHerbMastery
                 );
-                if (state.mastered === true) mastery = 100;
             } else {
-                mastery = state === true ? 100 : boundedInteger(state, 0, 0, 100);
+                mastery = state === true ? maxHerbMastery : boundedInteger(state, 0, 0, maxHerbMastery);
             }
 
-            return [key, { mastery, mastered: mastery === 100 }];
+            return [key, { mastery, mastered: state?.mastered === true || mastery >= maxHerbMastery }];
         }));
     }
 
@@ -78,7 +79,7 @@
         return {
             gender: normalizeGender(previous.gender ?? gender),
             aurels: boundedInteger(previous.aurels, 0, 0, 9999),
-            reputation: boundedInteger(previous.reputation, 0, 0, 300),
+            reputation: boundedInteger(previous.reputation, 0, 0, maxReputation),
             chapter: boundedInteger(previous.chapter ?? previous.level, 1, 1, 3),
             day: boundedInteger(previous.day, 1, 1, 60),
             inventory: {
@@ -150,6 +151,8 @@
 
     window.HerbaryoSchema = {
         herbKeys,
+        maxHerbMastery,
+        maxReputation,
         avatarPaths,
         defaultAvatarPath,
         normalizeAvatar,

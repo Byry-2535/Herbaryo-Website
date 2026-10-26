@@ -26,7 +26,6 @@
             </button>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#home">Home</a></li>
-                <li><a href="#download">Download</a></li>
                 <li><a href="#features">Game</a></li>
                 <li><a href="#herbs">Herbs</a></li>
                 <li><a href="#specs">Specs</a></li>
@@ -50,40 +49,14 @@
                             <span class="genre-tag">Multiplayer</span>
                             <span class="genre-tag">Simulation</span>
                         </div>
+                        <div class="hero-cta-buttons">
+                            <button class="btn-primary hero-download-btn" id="openDownloadModal" type="button">
+                                Download Game
+                            </button>
+                            <button class="btn-secondary" type="button">Watch Trailer</button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </section>
-    <section id="download" class="section download-section">
-        <div class="container download-content">
-            <h2 class="section-title">Download Herbaryo</h2>
-            <div class="download-version-switch" role="group" aria-label="Choose game version">
-                <button class="download-version-button active" type="button" data-download-version="free"
-                    aria-controls="freeVersionCard" aria-pressed="true">Free Version</button>
-                <button class="download-version-button" type="button" data-download-version="full"
-                    aria-controls="fullVersionCard" aria-pressed="false">Full Version</button>
-            </div>
-            <div class="download-options">
-                <article class="download-option active" id="freeVersionCard" data-download-card="free">
-                    <h3>Free Version</h3>
-                    <ul>
-                        <li>Chapter 1 (Day 20)</li>
-                        <li>Limited Gameplay</li>
-                    </ul>
-                </article>
-                <article class="download-option full-version" id="fullVersionCard" data-download-card="full">
-                    <h3>Full Version</h3>
-                    <ul>
-                        <li>Chapter 2 (Day 40)</li>
-                        <li>Chapter 3 (Day 60)</li>
-                        <li>Multiplayer Support</li>
-                    </ul>
-                </article>
-            </div>
-            <div class="download-action">
-                <a href="./sample_apk.apk" class="btn-primary" download>Download Free</a>
-                <p class="download-filename">Sample Apk</p>
             </div>
         </div>
     </section>
@@ -209,7 +182,7 @@
     <section id="specs" class="section specs-section">
         <div class="container">
             <h2 class="section-title">Device Requirements</h2>
-            <p class="section-subtitle">Run Herbaryo smoothly on your mobile device</p>
+            <p class="section-subtitle">What Phone Do You Need?</p>
             <div class="download-version-switch spec-version-switch" role="group"
                 aria-label="Choose device requirement level">
                 <button class="download-version-button active" type="button" data-spec-version="minimum"
@@ -223,11 +196,11 @@
                     <div class="spec-list">
                         <div class="spec-item">
                             <span class="spec-label">Android</span>
-                            <span class="spec-value">10</span>
+                            <span class="spec-value">12</span>
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">RAM</span>
-                            <span class="spec-value">3 GB</span>
+                            <span class="spec-value">4 GB</span>
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">Storage</span>
@@ -235,18 +208,17 @@
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">Processor</span>
-                            <span class="spec-value">Helio G99</span>
+                            <span class="spec-value">Helio G70</span>
                         </div>
                     </div>
                     <p class="spec-note">Playable at 30 FPS</p>
                 </article>
-                <article class="spec-card recommended" id="recommendedSpecsCard"
-                    data-spec-card="recommended">
+                <article class="spec-card recommended" id="recommendedSpecsCard" data-spec-card="recommended">
                     <h3>Recommended</h3>
                     <div class="spec-list">
                         <div class="spec-item">
                             <span class="spec-label">Android</span>
-                            <span class="spec-value">12</span>
+                            <span class="spec-value">13</span>
                         </div>
                         <div class="spec-item">
                             <span class="spec-label">RAM</span>
@@ -275,6 +247,24 @@
                 gamification.</p>
         </div>
     </footer>
+    <div class="modal-overlay" id="downloadModal">
+        <section class="login-modal download-modal" role="dialog" aria-modal="true"
+            aria-labelledby="downloadModalTitle">
+            <button class="close-btn" id="closeDownloadModal" type="button" aria-label="Close download details">
+                &times;
+            </button>
+            <div class="modal-header">
+                <h2 id="downloadModalTitle">Download Herbaryo</h2>
+            </div>
+            <ul class="download-version-list">
+                <li><span>Chapter 1</span><strong>Free Version</strong></li>
+                <li><span>Chapter 2</span><strong>Full Version</strong></li>
+                <li><span>Chapter 3</span><strong>Full Version</strong></li>
+                <li><span>Multiplayer</span><strong>Full Version</strong></li>
+            </ul>
+            <button class="btn-primary full-width download-modal-button" type="button">Download Now</button>
+        </section>
+    </div>
     <div class="modal-overlay" id="loginModal">
         <div class="login-modal">
             <button class="close-btn" id="closeModal">&times;</button>
@@ -286,7 +276,17 @@
                     <input type="email" id="loginEmail" placeholder="your@email.com">
                 </div>
                 <div class="form-group">
-                    <input type="password" id="loginPassword" placeholder="Password">
+                    <div class="password-input-wrap">
+                        <input type="password" id="loginPassword" placeholder="Password">
+                        <button class="password-toggle" type="button" data-password-target="loginPassword"
+                            aria-label="Show password" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                                <circle cx="12" cy="12" r="3" />
+                                <path class="password-eye-slash" d="m4 4 16 16" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-row">
                     <a href="#" class="forgot-password" id="forgotPasswordBtn">
@@ -301,10 +301,30 @@
                     <input type="email" id="signupEmail" placeholder="your@email.com">
                 </div>
                 <div class="form-group">
-                    <input type="password" id="signupPassword" placeholder="Password (8+ chars)">
+                    <div class="password-input-wrap">
+                        <input type="password" id="signupPassword" placeholder="Password (8+ chars)">
+                        <button class="password-toggle" type="button" data-password-target="signupPassword"
+                            aria-label="Show password" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                                <circle cx="12" cy="12" r="3" />
+                                <path class="password-eye-slash" d="m4 4 16 16" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <input type="password" id="confirmPassword" placeholder="Confirm password">
+                    <div class="password-input-wrap">
+                        <input type="password" id="confirmPassword" placeholder="Confirm password">
+                        <button class="password-toggle" type="button" data-password-target="confirmPassword"
+                            aria-label="Show password" aria-pressed="false">
+                            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                                <circle cx="12" cy="12" r="3" />
+                                <path class="password-eye-slash" d="m4 4 16 16" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <button class="btn-primary full-width" id="emailSignupBtn">Create Account</button>
                 <button id="resendVerification" style="display:none;" class="btn-secondary full-width">Resend
