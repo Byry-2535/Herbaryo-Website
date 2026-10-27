@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Herbaryo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://www.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="./main/index.css">
@@ -64,16 +67,23 @@
     <section id="features" class="section">
         <div class="container">
             <h2 class="section-title">The Herbaryo Experience</h2>
+            <p class="section-subtitle">Explore a world where learning about Philippine herbs meets adventure.</p>
             <div class="features-grid" role="region" aria-label="Herbaryo game features" tabindex="0">
                 <div class="feature-card gameplay-card">
+                    <img class="feature-image" src="./img/screenshots/Baryo.webp" alt="" aria-hidden="true"
+                        loading="lazy" decoding="async">
                     <h3>Interactive Gameplay</h3>
                     <p>Harvest, identify and learn through engaging mechanics designed for effective learning</p>
                 </div>
                 <div class="feature-card herbs-card">
+                    <img class="feature-image" src="./img/screenshots/Scarecrow.webp" alt="" aria-hidden="true"
+                        loading="lazy" decoding="async">
                     <h3>10 Native Herbs</h3>
                     <p>Complete database of DOH approved medicinal plants with traditional and scientific info</p>
                 </div>
                 <div class="feature-card learning-card">
+                    <img class="feature-image" src="./img/screenshots/Multi.webp" alt="" aria-hidden="true"
+                        loading="lazy" decoding="async">
                     <h3>Learn while Playing</h3>
                     <p>Progress through levels while mastering real-world herbal knowledge in a fun and engaging way.
                     </p>
@@ -186,25 +196,24 @@
             <p class="section-subtitle">Take a look at the world and gameplay of Herbaryo.</p>
             <div class="screenshots-grid">
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Baryo.png" alt="Herbaryo village gameplay">
+                    <img src="./img/screenshots/Herb%20Picking.webp" alt="Picking medicinal herbs in Herbaryo"
+                        loading="lazy" decoding="async">
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Herb%20Picking.png" alt="Picking medicinal herbs in Herbaryo">
+                    <img src="./img/screenshots/Herbarium.webp" alt="Herbarium collection in Herbaryo" loading="lazy"
+                        decoding="async">
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Herbarium.png" alt="Herbarium collection in Herbaryo">
+                    <img src="./img/screenshots/Shop.webp" alt="In-game shop in Herbaryo" loading="lazy"
+                        decoding="async">
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Scarecrow.png" alt="Training gameplay with a scarecrow">
+                    <img src="./img/screenshots/Skill%20Tree.webp" alt="Player skill tree in Herbaryo" loading="lazy"
+                        decoding="async">
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Shop.png" alt="In-game shop in Herbaryo">
-                </figure>
-                <figure class="screenshot-card">
-                    <img src="./img/screenshots/Skill%20Tree.png" alt="Player skill tree in Herbaryo">
-                </figure>
-                <figure class="screenshot-card">
-                    <img src="./img/screenshots/Waving.png" alt="Characters waving in Herbaryo">
+                    <img src="./img/screenshots/Waving.webp" alt="Characters waving in Herbaryo" loading="lazy"
+                        decoding="async">
                 </figure>
             </div>
         </div>
@@ -386,11 +395,11 @@
             <path d="M12 19V5m-6 6 6-6 6 6" />
         </svg>
     </button>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-    <script src="./main/database-schema.js"></script>
-    <script src="./main/script.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+    <script defer src="./main/database-schema.js"></script>
+    <script defer src="./main/script.js"></script>
 </body>
 
 </html>

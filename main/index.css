@@ -137,7 +137,7 @@ body {
     align-items: center;
     position: relative;
     padding-top: 80px;
-    background: linear-gradient(rgba(12, 43, 22, 0.55), rgba(12, 43, 22, 0.55)), url('../img/sample_main.png') center / cover no-repeat;
+    background: linear-gradient(rgba(12, 43, 22, 0.55), rgba(12, 43, 22, 0.55)), url('../img/sample_main.webp') center / cover no-repeat;
 }
 
 .hero-container {
@@ -181,6 +181,12 @@ body {
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+}
+
+.hero-cta-buttons .btn-primary,
+.hero-cta-buttons .btn-secondary {
+    padding: 0.85rem 2rem;
+    font-size: 1rem;
 }
 
 .btn-primary,
@@ -292,6 +298,54 @@ body {
     display: none;
 }
 
+.hero,
+.section {
+    position: relative;
+    isolation: isolate;
+}
+
+.hero::before,
+.hero::after,
+.section::before,
+.section::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    width: 24px;
+    height: 42px;
+    border-radius: 100% 0 100% 0;
+    background: rgba(76, 175, 80, 0.12);
+    pointer-events: none;
+}
+
+.hero::before,
+.section::before {
+    top: 18%;
+    right: 7%;
+    transform: rotate(35deg);
+    box-shadow:
+        -22px 4px 0 -4px rgba(76, 175, 80, 0.1),
+        -55px -5px 0 -7px rgba(46, 125, 50, 0.08),
+        -92px 8px 0 -8px rgba(76, 175, 80, 0.1);
+}
+
+.hero::after,
+.section::after {
+    bottom: 12%;
+    left: 7%;
+    transform: rotate(-55deg);
+    box-shadow:
+        20px 4px 0 -5px rgba(46, 125, 50, 0.08),
+        54px -5px 0 -8px rgba(76, 175, 80, 0.1),
+        86px 8px 0 -9px rgba(46, 125, 50, 0.07);
+}
+
+.hero > .container,
+.section > .container {
+    position: relative;
+    z-index: 1;
+}
+
 .section {
     padding: 5rem 0;
 }
@@ -312,6 +366,14 @@ body {
 }
 
 .herbs-section .section-title {
+    margin-bottom: 2.5rem;
+}
+
+#features .section-title {
+    margin-bottom: 1rem;
+}
+
+#features .section-subtitle {
     margin-bottom: 2.5rem;
 }
 
@@ -340,26 +402,42 @@ body {
 }
 
 .gameplay-card {
-    background-image: url('../img/screenshots/Baryo.png');
+    background-image: none;
 }
 
 .herbs-card {
-    background-image: url('../img/screenshots/Scarecrow.png');
+    background-image: none;
 }
 
 .learning-card {
-    background-image: url('../img/screenshots/Herb%20Picking.png');
+    background-image: none;
 }
 
 .feature-card::before {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 1;
     background: rgba(12, 43, 22, 0.58);
+}
+
+.feature-image {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .feature-card>* {
     position: relative;
+    z-index: 2;
+}
+
+.feature-card > .feature-image {
+    position: absolute;
+    z-index: 0;
 }
 
 .feature-card:hover {
@@ -641,7 +719,7 @@ body {
         align-items: center;
         padding: 6.5rem 0 3rem;
         background-color: #e8f5e9;
-        background-image: linear-gradient(rgba(12, 43, 22, 0.58), rgba(12, 43, 22, 0.66)), url('../img/sample_main_cropped.png');
+        background-image: linear-gradient(rgba(12, 43, 22, 0.58), rgba(12, 43, 22, 0.66)), url('../img/sample_main_cropped.webp');
         background-size: 100% 100%, cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -686,6 +764,17 @@ body {
 
     .hero-buttons {
         justify-content: flex-start;
+    }
+
+    .hero-cta-buttons {
+        gap: 0.75rem;
+    }
+
+    .hero-cta-buttons .btn-primary,
+    .hero-cta-buttons .btn-secondary {
+        min-height: 44px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.95rem;
     }
 
     .game-genre {
@@ -849,6 +938,16 @@ body {
     .hero-desc {
         font-size: 0.98rem;
         margin-bottom: 1.25rem;
+    }
+
+    .hero-cta-buttons {
+        gap: 0.6rem;
+    }
+
+    .hero-cta-buttons .btn-primary,
+    .hero-cta-buttons .btn-secondary {
+        padding: 0.6rem 1.1rem;
+        font-size: 0.88rem;
     }
 
     .section {
