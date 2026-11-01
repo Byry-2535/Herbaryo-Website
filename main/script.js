@@ -129,6 +129,14 @@ async function handleEmailSignup() {
     if (!email || !password || !confirmPassword) return showError('Please fill all fields');
     if (password.length < 8) return showError('Password must be 8+ characters');
     if (password !== confirmPassword) return showError('Passwords do not match');
+    const agreementsAccepted = [
+        'acceptPrivacyPolicy',
+        'acceptTermsOfService',
+        'acceptEula'
+    ].every(id => document.getElementById(id).checked);
+    if (!agreementsAccepted) {
+        return showError('Please accept the Privacy Policy, Terms of Service, and EULA to create an account.');
+    }
 
     showLoading();
     try {
@@ -156,8 +164,7 @@ if (document.getElementById('googleLogin')) document.getElementById('googleLogin
             showUsernameModal(result.user);
             return;
         }
-        showError('Google sign-in successful! Redirecting to your dashboard...', true);
-        window.setTimeout(() => window.location.replace('./dashboard/dashboard.html'), 1800);
+        window.location.replace('./dashboard/dashboard.html');
     } catch (error) {
         showError('Google login failed: ' + error.message);
     } finally { hideLoading(); }
@@ -165,6 +172,9 @@ if (document.getElementById('googleLogin')) document.getElementById('googleLogin
 
 async function ensureGoogleProfile(user) {
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
+    const usernameSnapshot = await userRef.child('username').once('value');
+    if (usernameSnapshot.val()) return false;
+
     const snapshot = await userRef.once('value');
 
     if (!snapshot.exists()) {
@@ -173,15 +183,14 @@ async function ensureGoogleProfile(user) {
         return true;
     }
 
-    await HerbaryoSchema.migrateUser(userRef, user);
     return false;
 }
 
 async function checkUserProfile(user) {
     if (!user) return;
     const userRef = db.ref(`herbaryo-users/${user.uid}`);
-    const snapshot = await userRef.once('value');
-    if (snapshot.exists() && snapshot.val().username) {
+    const usernameSnapshot = await userRef.child('username').once('value');
+    if (usernameSnapshot.val()) {
         window.location.replace('./dashboard/dashboard.html');
     } else {
         showUsernameModal(user);
@@ -304,6 +313,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTop = document.getElementById('backToTop');
     const specVersionButtons = document.querySelectorAll('[data-spec-version]');
     const specCards = document.querySelectorAll('[data-spec-card]');
+
+    const sectionLinks = navMenu
+        ? Array.from(navMenu.querySelectorAll('a')).map(link => ({
+            link,
+            section: document.getElementById(new URL(link.href).hash.slice(1))
+        })).filter(item => item.section)
+        : [];
+
+    if (sectionLinks.length) {
+        const updateActiveSection = () => {
+            const navBottom = document.querySelector('.navbar')?.getBoundingClientRect().bottom ?? 0;
+            let activeLink = sectionLinks[0];
+
+            sectionLinks.forEach(item => {
+                if (item.section.getBoundingClientRect().top <= navBottom + 24) {
+                    activeLink = item;
+                }
+            });
+
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2) {
+                activeLink = sectionLinks[sectionLinks.length - 1];
+            }
+
+            sectionLinks.forEach(item => {
+                const isActive = item === activeLink;
+                item.link.classList.toggle('active', isActive);
+                if (isActive) {
+                    item.link.setAttribute('aria-current', 'location');
+                } else {
+                    item.link.removeAttribute('aria-current');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', updateActiveSection, { passive: true });
+        window.addEventListener('resize', updateActiveSection);
+        updateActiveSection();
+    }
 
     specVersionButtons.forEach(button => {
         button.addEventListener('click', () => {

@@ -28,7 +28,7 @@
                 <span></span>
             </button>
             <ul class="nav-menu" id="navMenu">
-                <li><a href="#home">Home</a></li>
+                <li><a href="#home" aria-current="page">Home</a></li>
                 <li><a href="#features">Game</a></li>
                 <li><a href="#herbs">Herbs</a></li>
                 <li><a href="#screenshots">Screenshots</a></li>
@@ -62,6 +62,24 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </section>
+    <section class="game-highlights" aria-label="Game highlights">
+        <div class="container">
+            <ul class="game-highlights-grid">
+                <li class="game-highlight">
+                    <strong>3D</strong>
+                    <span>Explore Herbaryo in first- or third-person view</span>
+                </li>
+                <li class="game-highlight">
+                    <strong>Vulkan</strong>
+                    <span>Graphics API</span>
+                </li>
+                <li class="game-highlight">
+                    <strong>Multiplayer</strong>
+                    <span>Up to 4 players</span>
+                </li>
+            </ul>
         </div>
     </section>
     <section id="features" class="section">
@@ -365,6 +383,20 @@
                         </button>
                     </div>
                 </div>
+                <fieldset class="signup-agreements" aria-label="Required agreements">
+                    <label class="agreement-option" for="acceptPrivacyPolicy">
+                        <input type="checkbox" id="acceptPrivacyPolicy">
+                        <span>I have read and agree to the <a href="./policies/privacy-policy.html">Privacy Policy</a>.</span>
+                    </label>
+                    <label class="agreement-option" for="acceptTermsOfService">
+                        <input type="checkbox" id="acceptTermsOfService">
+                        <span>I agree to the <a href="./policies/terms-of-service.html">Terms of Service</a>.</span>
+                    </label>
+                    <label class="agreement-option" for="acceptEula">
+                        <input type="checkbox" id="acceptEula">
+                        <span>I agree to the <a href="./policies/eula.html">End User License Agreement (EULA)</a>.</span>
+                    </label>
+                </fieldset>
                 <button class="btn-primary full-width" id="emailSignupBtn">Create Account</button>
                 <button id="resendVerification" style="display:none;" class="btn-secondary full-width">Resend
                     Verification Email</button>

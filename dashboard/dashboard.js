@@ -173,149 +173,234 @@ document.addEventListener('keydown', event => {
     }
 });
 
-const profileModal = document.createElement('div');
-profileModal.className = 'profile-modal';
-profileModal.innerHTML = `
-    <form class="edit-form" id="editForm">
-        <h2>Edit Profile</h2>
-        <label class="edit-field">Edit username
-            <input type="text" id="editUsername" minlength="3" required>
+function createProfileModal(className, content) {
+    const modal = document.createElement('div');
+    modal.className = `profile-modal ${className}`;
+    modal.innerHTML = content;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', event => {
+        if (event.target === modal) closeProfileModal();
+    });
+    return modal;
+}
+
+const miniProfileModal = createProfileModal('mini-profile-modal', `
+    <section class="profile-dialog mini-profile-dialog" role="dialog" aria-modal="true"
+        aria-labelledby="miniProfileTitle">
+        <button class="edit-close" id="closeMiniProfileBtn" type="button" aria-label="Close profile">&times;</button>
+        <span class="edit-kicker">Player account</span>
+        <h2 id="miniProfileTitle">Profile</h2>
+        <img class="edit-profile-avatar" id="profileAvatarPreview"
+            src="${HerbaryoSchema.defaultAvatarPath}" alt="Profile avatar">
+        <strong class="edit-profile-username" id="profilePreviewUsername">Herbalist</strong>
+        <span class="edit-profile-plan" id="profilePlan">Free</span>
+        <span class="edit-profile-email" id="profilePreviewEmail"></span>
+        <div class="profile-dialog-actions">
+            <button class="btn-save" id="openEditProfileBtn" type="button">Edit username &amp; avatar</button>
+            <button class="btn-cancel" id="openChangePasswordBtn" type="button">Change password</button>
+        </div>
+        <p class="edit-google-note" id="googlePasswordNote" hidden>
+            Your password is managed by Google. Change it in your Google Account.
+        </p>
+    </section>
+`);
+
+const editProfileModal = createProfileModal('edit-profile-modal', `
+    <form class="edit-form profile-dialog" id="editForm" role="dialog" aria-modal="true"
+        aria-labelledby="editProfileTitle">
+        <header class="edit-header">
+            <div>
+                <span class="edit-kicker">Profile settings</span>
+                <h2 id="editProfileTitle">Edit username &amp; avatar</h2>
+            </div>
+            <button class="edit-close" id="closeEditBtn" type="button" aria-label="Close editor">&times;</button>
+        </header>
+        <label class="edit-field" for="editUsername">Username
+            <input type="text" id="editUsername" minlength="3" maxlength="20" autocomplete="username" required>
         </label>
-        <div id="currentPasswordField" hidden>
-            <label class="edit-field">Old password
-                <input type="password" id="editCurrentPassword" autocomplete="current-password" placeholder="Enter your old password">
-            </label>
-        </div>
-        <div id="passwordEditField">
-            <label class="edit-field">Change password
-                <input type="password" id="editPassword" minlength="8" autocomplete="new-password" placeholder="Enter a new password">
-            </label>
-            <p class="edit-note">Leave both password fields blank to keep your current password.</p>
-        </div>
         <div class="avatar-editor">
             <span class="edit-field">Profile avatar</span>
-            <button class="avatar-picker-toggle" id="avatarPickerToggle" type="button"
-                aria-expanded="false" aria-controls="avatarPicker">Edit avatar</button>
-            <div class="avatar-picker" id="avatarPicker" aria-label="Available avatars" hidden>
+            <div class="avatar-picker" id="avatarPicker" role="group" aria-label="Choose your profile avatar">
                 ${HerbaryoSchema.avatarPaths.map(avatarPath => {
                     const avatarName = avatarPath.split('/').pop().replace('.png', '').replace(/_/g, ' ');
                     return `<button class="avatar-option" type="button" data-avatar-path="${avatarPath}"
                         aria-label="Choose ${avatarName}" aria-pressed="false">
-                        <img src="${avatarPath}" alt="${avatarName}">
+                        <img src="${avatarPath}" alt="">
                     </button>`;
                 }).join('')}
             </div>
         </div>
         <p class="edit-error" id="editError" role="alert"></p>
         <div class="edit-buttons">
-            <button type="submit" class="btn-save">Save</button>
-            <button type="button" class="btn-cancel" id="cancelBtn">Cancel</button>
+            <button type="submit" class="btn-save">Save changes</button>
+            <button type="button" class="btn-cancel" id="cancelEditBtn">Back to profile</button>
         </div>
     </form>
-`;
-document.body.appendChild(profileModal);
+`);
 
-const currentPasswordField = document.getElementById('currentPasswordField');
+const changePasswordModal = createProfileModal('change-password-modal', `
+    <form class="edit-form profile-dialog" id="passwordForm" role="dialog" aria-modal="true"
+        aria-labelledby="changePasswordTitle">
+        <header class="edit-header">
+            <div>
+                <span class="edit-kicker">Security settings</span>
+                <h2 id="changePasswordTitle">Change password</h2>
+            </div>
+            <button class="edit-close" id="closePasswordBtn" type="button" aria-label="Close password form">
+                &times;
+            </button>
+        </header>
+        <label class="edit-field" for="editCurrentPassword">Old password
+            <input type="password" id="editCurrentPassword" autocomplete="current-password"
+                placeholder="Enter your old password" required>
+        </label>
+        <label class="edit-field" for="editPassword">New password
+            <input type="password" id="editPassword" minlength="8" autocomplete="new-password"
+                placeholder="At least 8 characters" required>
+        </label>
+        <p class="edit-note">Your new password must be at least 8 characters.</p>
+        <p class="edit-error" id="passwordError" role="alert"></p>
+        <div class="edit-buttons">
+            <button type="submit" class="btn-save">Update password</button>
+            <button type="button" class="btn-cancel" id="cancelPasswordBtn">Back to profile</button>
+        </div>
+    </form>
+`);
+
 const currentPasswordInput = document.getElementById('editCurrentPassword');
 const newPasswordInput = document.getElementById('editPassword');
+const editUsernameInput = document.getElementById('editUsername');
 const avatarPicker = document.getElementById('avatarPicker');
-const avatarPickerToggle = document.getElementById('avatarPickerToggle');
+const googlePasswordNote = document.getElementById('googlePasswordNote');
+let previousProfileModalOverflow = '';
+let previousEditTrigger = null;
+let activeProfileModal = null;
 
 function selectAvatar(avatarPath) {
     selectedAvatarPath = HerbaryoSchema.normalizeAvatar(avatarPath);
-    profileModal.querySelectorAll('.avatar-option').forEach(option => {
+    editProfileModal.querySelectorAll('.avatar-option').forEach(option => {
         const isSelected = option.dataset.avatarPath === selectedAvatarPath;
         option.classList.toggle('selected', isSelected);
         option.setAttribute('aria-pressed', String(isSelected));
     });
 }
 
-avatarPickerToggle.addEventListener('click', () => {
-    const isExpanded = avatarPickerToggle.getAttribute('aria-expanded') === 'true';
-    avatarPickerToggle.setAttribute('aria-expanded', String(!isExpanded));
-    avatarPicker.hidden = isExpanded;
-});
-
 avatarPicker.addEventListener('click', event => {
     const option = event.target.closest('.avatar-option');
     if (option) selectAvatar(option.dataset.avatarPath);
 });
 
-newPasswordInput.addEventListener('input', () => {
-    const requiresCurrentPassword = newPasswordInput.value.length > 0
-        && !document.getElementById('passwordEditField').hidden;
-    currentPasswordInput.required = requiresCurrentPassword;
-    if (!requiresCurrentPassword) currentPasswordInput.value = '';
-});
+function openProfileModal(modal, focusSelector) {
+    if (!activeProfileModal) previousProfileModalOverflow = document.body.style.overflow;
+    if (activeProfileModal) activeProfileModal.classList.remove('active');
+    activeProfileModal = modal;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    modal.querySelector(focusSelector)?.focus();
+}
 
-function closeEditModal() {
-    profileModal.classList.remove('active');
-    document.body.style.overflow = '';
-    document.getElementById('editError').textContent = '';
-    currentPasswordInput.value = '';
+function closeProfileModal() {
+    if (!activeProfileModal) return;
+    activeProfileModal.classList.remove('active');
+    activeProfileModal = null;
+    document.body.style.overflow = previousProfileModalOverflow;
+    if (previousEditTrigger?.isConnected) previousEditTrigger.focus();
+}
+
+function openMiniProfile(focusSelector = '#openEditProfileBtn') {
+    const user = auth.currentUser;
+    const hasPasswordProvider = user?.providerData.some(provider => provider.providerId === 'password');
+    document.getElementById('profilePreviewUsername').textContent = currentUserData.username || 'Herbalist';
+    document.getElementById('profilePreviewEmail').textContent =
+        currentUserData.email || user?.email || '';
+    document.getElementById('profileAvatarPreview').src =
+        HerbaryoSchema.normalizeAvatar(currentUserData.photoURL);
+    const isPremium = currentUserData.isPremium === true;
+    const planBadge = document.getElementById('profilePlan');
+    planBadge.textContent = isPremium ? 'Premium' : 'Free';
+    planBadge.classList.toggle('premium', isPremium);
+    document.getElementById('openChangePasswordBtn').hidden = !hasPasswordProvider;
+    googlePasswordNote.hidden = hasPasswordProvider;
+    openProfileModal(miniProfileModal, focusSelector);
 }
 
 editBtn.addEventListener('click', () => {
     setDashboardMenuOpen(false);
-    const hasPasswordProvider = auth.currentUser?.providerData.some(
-        provider => provider.providerId === 'password'
-    );
-
-    document.getElementById('editUsername').value = currentUserData.username || '';
+    previousEditTrigger = editBtn;
+    editUsernameInput.value = currentUserData.username || '';
     selectAvatar(currentUserData.photoURL);
-    avatarPicker.hidden = true;
-    avatarPickerToggle.setAttribute('aria-expanded', 'false');
-    newPasswordInput.value = '';
-    currentPasswordInput.value = '';
-    currentPasswordField.hidden = !hasPasswordProvider;
-    currentPasswordInput.required = false;
-    document.getElementById('passwordEditField').hidden = !hasPasswordProvider;
-    profileModal.classList.add('active');
-    document.body.style.overflow = 'hidden';
+    document.getElementById('editError').textContent = '';
+    openMiniProfile();
 });
 
-document.getElementById('cancelBtn').addEventListener('click', closeEditModal);
-profileModal.addEventListener('click', e => { if (e.target === profileModal) closeEditModal(); });
+document.getElementById('openEditProfileBtn').addEventListener('click', () => {
+    document.getElementById('editError').textContent = '';
+    openProfileModal(editProfileModal, '#editUsername');
+});
+
+document.getElementById('openChangePasswordBtn').addEventListener('click', () => {
+    document.getElementById('passwordError').textContent = '';
+    currentPasswordInput.value = '';
+    newPasswordInput.value = '';
+    openProfileModal(changePasswordModal, '#editCurrentPassword');
+});
+
+document.getElementById('closeMiniProfileBtn').addEventListener('click', closeProfileModal);
+document.getElementById('closeEditBtn').addEventListener('click', closeProfileModal);
+document.getElementById('closePasswordBtn').addEventListener('click', closeProfileModal);
+document.getElementById('cancelEditBtn').addEventListener('click', () => openMiniProfile('#openEditProfileBtn'));
+document.getElementById('cancelPasswordBtn').addEventListener('click', () => openMiniProfile('#openChangePasswordBtn'));
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && activeProfileModal) {
+        closeProfileModal();
+    }
+});
 
 document.getElementById('editForm').addEventListener('submit', async event => {
     event.preventDefault();
     const error = document.getElementById('editError');
     const username = document.getElementById('editUsername').value.trim();
-    const password = newPasswordInput.value;
-    const currentPassword = currentPasswordInput.value;
-    const hasPasswordProvider = auth.currentUser?.providerData.some(
-        provider => provider.providerId === 'password'
-    );
 
     if (username.length < 3) {
         error.textContent = 'Username must be at least 3 characters.';
         return;
     }
-    if (password && password.length < 8) {
-        error.textContent = 'Password must be at least 8 characters.';
-        return;
-    }
-    if (password && hasPasswordProvider && !currentPassword) {
-        error.textContent = 'Enter your current password to change it.';
-        currentPasswordInput.focus();
-        return;
-    }
 
     try {
-        if (password && hasPasswordProvider) {
-            const credential = firebase.auth.EmailAuthProvider.credential(
-                auth.currentUser.email,
-                currentPassword
-            );
-            await auth.currentUser.reauthenticateWithCredential(credential);
-        }
-
         await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({
             username,
             photoURL: selectedAvatarPath
         });
-        if (password && hasPasswordProvider) await auth.currentUser.updatePassword(password);
-        closeEditModal();
+        currentUserData = { ...currentUserData, username, photoURL: selectedAvatarPath };
+        updateUserUI(currentUserData);
+        openMiniProfile('#openEditProfileBtn');
+    } catch (updateError) {
+        console.error(updateError);
+        error.textContent = 'Unable to save your profile right now.';
+    }
+});
+
+document.getElementById('passwordForm').addEventListener('submit', async event => {
+    event.preventDefault();
+    const error = document.getElementById('passwordError');
+    const currentPassword = currentPasswordInput.value;
+    const password = newPasswordInput.value;
+
+    if (password.length < 8) {
+        error.textContent = 'New password must be at least 8 characters.';
+        return;
+    }
+
+    try {
+        const credential = firebase.auth.EmailAuthProvider.credential(
+            auth.currentUser.email,
+            currentPassword
+        );
+        await auth.currentUser.reauthenticateWithCredential(credential);
+        await auth.currentUser.updatePassword(password);
+        currentPasswordInput.value = '';
+        newPasswordInput.value = '';
+        openMiniProfile('#openChangePasswordBtn');
     } catch (updateError) {
         console.error(updateError);
         if (['auth/wrong-password', 'auth/invalid-credential'].includes(updateError.code)) {
@@ -323,7 +408,7 @@ document.getElementById('editForm').addEventListener('submit', async event => {
         } else if (updateError.code === 'auth/requires-recent-login') {
             error.textContent = 'Please sign in again before changing your password.';
         } else {
-            error.textContent = 'Unable to save your profile right now.';
+            error.textContent = 'Unable to change your password right now.';
         }
     }
 });
