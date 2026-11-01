@@ -2209,15 +2209,13 @@ main.container {
 }
 
 .mini-profile-dialog .edit-profile-plan {
+    padding: 0.25rem 0.65rem;
+    border: 0;
+    border-radius: 999px;
+    background: #e8f5e9;
     color: #2e7d32;
-    border-color: #c8e6c9;
-    background: #edf7ed;
-}
-
-.mini-profile-dialog .edit-profile-plan.premium {
-    border-color: #ffe082;
-    background: #ffe082;
-    color: #5d4037;
+    font-size: 0.76rem;
+    font-weight: 700;
 }
 
 .mini-profile-dialog .edit-profile-email {
@@ -2233,7 +2231,8 @@ main.container {
 }
 
 .profile-dialog-actions .btn-save,
-.profile-dialog-actions .btn-cancel {
+.profile-dialog-actions .btn-cancel,
+.profile-dialog-actions .btn-delete-account {
     width: 100%;
     min-height: 44px;
     flex: initial;
@@ -2312,7 +2311,8 @@ main.container {
 }
 
 .profile-dialog .btn-save,
-.profile-dialog .btn-cancel {
+.profile-dialog .btn-cancel,
+.profile-dialog .btn-delete-account {
     min-height: 42px;
     flex: 0 1 auto;
     padding: 0.65rem 1.1rem;
@@ -2334,9 +2334,30 @@ main.container {
     color: #52705a;
 }
 
+.profile-dialog .btn-delete-account {
+    border: 1px solid #c62828;
+    background: #ffffff;
+    color: #b3261e;
+}
+
+.profile-dialog .btn-delete-account:hover {
+    background: #fff5f4;
+}
+
+.delete-account-dialog > p {
+    margin-bottom: 1rem;
+    color: #526357;
+    font-size: 0.9rem;
+}
+
+.delete-account-dialog [hidden] {
+    display: none !important;
+}
+
 .profile-dialog .edit-close:focus-visible,
 .profile-dialog .btn-save:focus-visible,
 .profile-dialog .btn-cancel:focus-visible,
+.profile-dialog .btn-delete-account:focus-visible,
 .profile-dialog .avatar-option:focus-visible {
     outline: 3px solid rgba(46, 125, 50, 0.3);
     outline-offset: 2px;
@@ -2366,5 +2387,11 @@ main.container {
     .mini-profile-dialog > .edit-close {
         top: 0.75rem;
         right: 0.75rem;
+    }
+
+    .mini-profile-dialog .edit-profile-username {
+        align-self: center;
+        grid-column: auto;
+        text-align: center;
     }
 }

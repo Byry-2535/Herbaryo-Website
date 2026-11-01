@@ -169,14 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function normalizePlayer(uid, profile) {
         const saveData = profile.saves?.slot1 || HerbaryoSchema.createDefaultSave(undefined, profile);
-        const herbsMastered = HerbaryoSchema.createHerbMastery(saveData.herbsMastered || {});
-        const herbsMasteredCount = Object.values(herbsMastered)
-            .filter(herb => herb.mastered || herb.mastery >= HerbaryoSchema.maxHerbMastery).length;
-        const achievements = saveData.achievements || {};
-        const achievementsCount = [
-            ...Object.values(achievements.general || {}),
-            ...Object.values(achievements.herbs || {})
-        ].filter(unlocked => unlocked === true).length;
 
         return {
             ...profile,
@@ -186,10 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
             photoURL: HerbaryoSchema.normalizeAvatar(profile.photoURL),
             gender: saveData.gender || 'N/A',
             aurels: saveData.aurels || 0,
-            saveData,
-            herbsMastered,
-            herbsMasteredCount,
-            achievementsCount
+            saveData
         };
     }
 
@@ -225,7 +214,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (err) {
             console.error('Failed to load users:', err);
             const tbody = document.querySelector('#usersTable tbody');
-            if (tbody) tbody.innerHTML = '<tr><td colspan="5">Failed to load players</td></tr>';
+            if (tbody) tbody.innerHTML = '<tr><td colspan="3">Failed to load players</td></tr>';
         }
     }
 
@@ -234,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tbody) return;
 
         if (!filteredUsers.length) {
-            tbody.innerHTML = '<tr><td colspan="5">No players found</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3">No players found</td></tr>';
             return;
         }
 
@@ -247,8 +236,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     </span>
                 </td>
                 <td>${user.email}</td>
-                <td>${user.herbsMasteredCount}/${Object.keys(user.herbsMastered).length}</td>
-                <td>${user.achievementsCount}/${Object.keys(HerbaryoSchema.createDefaultSave().achievements.general).length + HerbaryoSchema.herbKeys.length}</td>
                 <td>
                     <button class="action-btn btn-view" data-uid="${user.uid}">View</button>
                     <button class="action-btn btn-edit" data-uid="${user.uid}">Edit</button>
