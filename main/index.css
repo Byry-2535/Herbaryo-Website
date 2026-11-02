@@ -417,8 +417,17 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
+#features,
+.screenshots-section {
+    background: rgba(46, 125, 50, 0.12);
+}
+
+.herbs-section,
+.specs-section {
+    background: rgba(255, 255, 255, 0.55);
+}
+
 .herbs-section {
-    background: rgba(255, 255, 255, 0.3);
     padding-top: 3rem;
 }
 
@@ -449,7 +458,7 @@ body {
     align-items: stretch;
     min-height: 280px;
     padding: 0;
-    border: 1px solid rgba(46, 125, 50, 0.16);
+    border: 2px solid #a5d6a7;
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.82);
     box-shadow: 0 10px 40px rgba(46, 125, 50, 0.15);
@@ -1010,15 +1019,23 @@ body {
     }
 
     .features-grid {
-        display: grid;
+        display: flex;
         gap: 1rem;
-        margin: 0;
-        padding: 0;
-        overflow: visible;
+        margin: -0.5rem -1rem 0;
+        padding: 0.5rem 1rem 1.25rem;
+        overflow-x: auto;
+        overscroll-behavior-x: contain;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(46, 125, 50, 0.45) transparent;
+        -webkit-overflow-scrolling: touch;
     }
 
     .feature-card {
+        flex: 0 0 min(88vw, 460px);
         min-height: 240px;
+        scroll-snap-align: start;
+        scroll-snap-stop: always;
     }
 
     .feature-card:hover {
@@ -1027,6 +1044,15 @@ body {
 
     .feature-image {
         min-height: 240px;
+    }
+
+    .features-grid::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .features-grid::-webkit-scrollbar-thumb {
+        background: rgba(46, 125, 50, 0.45);
+        border-radius: 4px;
     }
 
     .herbs-grid {
@@ -1190,10 +1216,6 @@ html {
     grid-column: 2;
     justify-self: center;
     width: min(100%, 360px);
-}
-
-.screenshots-section {
-    background: rgba(255, 255, 255, 0.3);
 }
 
 .screenshots-section .section-title {
@@ -1543,10 +1565,6 @@ html {
     padding-top: 80px;
 }
 
-.specs-section {
-    background: rgba(255, 255, 255, 0.4);
-}
-
 .spec-version-switch {
     display: none;
 }
@@ -1707,12 +1725,11 @@ html {
 
 .doh-reference {
     text-align: center;
-    margin-top: 4rem;
-    padding: 2.5rem;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 20px;
-    border-left: 6px solid #4caf50;
-    box-shadow: 0 10px 40px rgba(46, 125, 50, 0.15);
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba(76, 175, 80, 0.1);
+    border-radius: 16px;
+    border-left: 5px solid #4caf50;
 }
 
 .doh-reference p {
