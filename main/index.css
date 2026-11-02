@@ -369,7 +369,7 @@ body {
 
 .game-highlights-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     list-style: none;
 }
 
@@ -395,6 +395,16 @@ body {
 .game-highlight span {
     color: #426b45;
     font-size: 0.9rem;
+}
+
+@media (max-width: 1000px) and (min-width: 769px) {
+    .game-highlights-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .game-highlight:nth-child(3n + 1) {
+        border-left: 0;
+    }
 }
 
 .section-title {
@@ -430,74 +440,62 @@ body {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
 }
 
 .feature-card {
-    background-color: #2e7d32;
-    background-position: center;
-    background-size: cover;
-    padding: 2.5rem;
-    border-radius: 20px;
-    text-align: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: stretch;
+    min-height: 280px;
+    padding: 0;
+    border: 1px solid rgba(46, 125, 50, 0.16);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.82);
     box-shadow: 0 10px 40px rgba(46, 125, 50, 0.15);
-    transition: all 0.3s;
-    border-top: 4px solid #a5d6a7;
-    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
     overflow: hidden;
 }
 
-.gameplay-card {
-    background-image: none;
+.feature-card.herbs-card .feature-image {
+    grid-column: 1;
+    grid-row: 1;
 }
 
-.herbs-card {
-    background-image: none;
-}
-
-.learning-card {
-    background-image: none;
-}
-
-.feature-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background: rgba(12, 43, 22, 0.58);
+.feature-card.herbs-card .feature-copy {
+    grid-column: 2;
+    grid-row: 1;
 }
 
 .feature-image {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
+    display: block;
     width: 100%;
     height: 100%;
+    min-height: 280px;
     object-fit: cover;
 }
 
-.feature-card>* {
-    position: relative;
-    z-index: 2;
-}
-
-.feature-card > .feature-image {
-    position: absolute;
-    z-index: 0;
+.feature-copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: clamp(1.5rem, 5vw, 3.5rem);
 }
 
 .feature-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 20px 60px rgba(46, 125, 50, 0.25);
-    border-top-color: #4caf50;
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(46, 125, 50, 0.2);
 }
 
 .feature-card h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
-    color: white;
+    color: #1b5e20;
     font-weight: 600;
+}
+
+#features .feature-card p {
+    color: #526357;
 }
 
 .stats-section {
@@ -626,6 +624,10 @@ body {
 
 .download-modal {
     width: min(100%, 460px);
+}
+
+#downloadModal .download-modal {
+    border: 3px solid #81c784;
 }
 
 .download-modal .modal-header {
@@ -851,6 +853,29 @@ body {
 }
 
 @media (max-width: 768px) {
+    .feature-card {
+        grid-template-columns: 1fr;
+    }
+
+    .feature-card.herbs-card .feature-image {
+        grid-column: auto;
+        grid-row: 2;
+    }
+
+    .feature-card.herbs-card .feature-copy {
+        grid-column: auto;
+        grid-row: 1;
+    }
+
+    .feature-copy {
+        padding: 1.5rem;
+    }
+
+    .feature-image {
+        height: 220px;
+        min-height: 220px;
+    }
+
     .game-highlights {
         padding: 0.75rem 0;
     }
@@ -985,36 +1010,23 @@ body {
     }
 
     .features-grid {
-        display: flex;
+        display: grid;
         gap: 1rem;
-        margin: -0.5rem -1rem 0;
-        padding: 0.5rem 1rem 1.25rem;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(46, 125, 50, 0.45) transparent;
-        -webkit-overflow-scrolling: touch;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
     }
 
     .feature-card {
-        flex: 0 0 min(82vw, 340px);
         min-height: 240px;
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
     }
 
     .feature-card:hover {
         transform: none;
     }
 
-    .features-grid::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .features-grid::-webkit-scrollbar-thumb {
-        background: rgba(46, 125, 50, 0.45);
-        border-radius: 4px;
+    .feature-image {
+        min-height: 240px;
     }
 
     .herbs-grid {
@@ -1118,10 +1130,6 @@ body {
     .section-title {
         font-size: clamp(2rem, 10vw, 2.5rem);
         margin-bottom: 2.25rem;
-    }
-
-    .feature-card {
-        grid-template-columns: 1fr;
     }
 
     .nav-menu {

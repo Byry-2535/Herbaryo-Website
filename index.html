@@ -51,9 +51,8 @@
                         <div class="game-genre">
                             <span class="genre-label">Genre:</span>
                             <span class="genre-tag">Adventure</span>
-                            <span class="genre-tag">Multiplayer</span>
-                            <span class="genre-tag">Simulation</span>
                             <span class="genre-tag">Educational</span>
+                            <span class="genre-tag">Simulation</span>
                         </div>
                         <div class="hero-cta-buttons">
                             <button class="btn-primary hero-download-btn" id="openDownloadModal" type="button">
@@ -70,8 +69,12 @@
         <div class="container">
             <ul class="game-highlights-grid">
                 <li class="game-highlight">
-                    <strong>3D</strong>
-                    <span>Explore Herbaryo in first- or third-person view</span>
+                    <strong>Android</strong>
+                    <span>Platform</span>
+                </li>
+                <li class="game-highlight">
+                    <strong>Unity</strong>
+                    <span>Game Engine</span>
                 </li>
                 <li class="game-highlight">
                     <strong>Vulkan</strong>
@@ -81,31 +84,45 @@
                     <strong>Multiplayer</strong>
                     <span>Up to 4 players</span>
                 </li>
+                <li class="game-highlight">
+                    <strong>3D</strong>
+                    <span>Explore Herbaryo in first- or third-person view</span>
+                </li>
             </ul>
         </div>
     </section>
     <section id="features" class="section">
         <div class="container">
-            <h2 class="section-title">The Herbaryo Experience</h2>
-            <p class="section-subtitle">Explore a world where learning about Philippine herbs meets adventure.</p>
-            <div class="features-grid" role="region" aria-label="Herbaryo game features" tabindex="0">
+            <h2 class="section-title" id="whatIsHerbaryoTitle">What is Herbaryo?</h2>
+            <p class="section-subtitle">Herbaryo is an interactive 3D mobile educational game designed to teach
+                phytomedicine concepts through exploration, preparation mechanics, and step-by-step progression. The
+                game aims to teach pharmaceutical students herbal medicine using an interactive and engaging gameplay
+                experiences.</p>
+            <div class="features-grid" role="region" aria-labelledby="whatIsHerbaryoTitle">
                 <div class="feature-card gameplay-card">
-                    <img class="feature-image" src="./img/screenshots/Baryo.webp" alt="" aria-hidden="true"
+                    <div class="feature-copy">
+                        <h3>Interactive Gameplay</h3>
+                        <p>Harvest, identify and learn through engaging mechanics designed for effective learning</p>
+                    </div>
+                    <img class="feature-image" src="./img/screenshots/Baryo.webp" alt="A view of Herbaryo's village"
                         loading="lazy" decoding="async">
-                    <h3>Interactive Gameplay</h3>
-                    <p>Harvest, identify and learn through engaging mechanics designed for effective learning</p>
                 </div>
                 <div class="feature-card herbs-card">
-                    <img class="feature-image" src="./img/screenshots/Scarecrow.webp" alt="" aria-hidden="true"
-                        loading="lazy" decoding="async">
-                    <h3>10 Native Herbs</h3>
-                    <p>Complete database of DOH approved medicinal plants with traditional and scientific info</p>
+                    <img class="feature-image" src="./img/screenshots/Scarecrow.webp"
+                        alt="A character exploring the Herbaryo world" loading="lazy" decoding="async">
+                    <div class="feature-copy">
+                        <h3>10 Native Herbs</h3>
+                        <p>Complete database of DOH approved medicinal plants with traditional and scientific info</p>
+                    </div>
                 </div>
                 <div class="feature-card learning-card">
-                    <img class="feature-image" src="./img/screenshots/Multi.webp" alt="" aria-hidden="true"
-                        loading="lazy" decoding="async">
-                    <h3>Learn while Playing</h3>
-                    <p>Progress through levels while mastering real-world herbal knowledge in a fun and engaging way</p>
+                    <div class="feature-copy">
+                        <h3>Learn while Playing</h3>
+                        <p>Progress through levels while mastering real-world herbal knowledge in a fun and engaging
+                            way</p>
+                    </div>
+                    <img class="feature-image" src="./img/screenshots/Multi.webp"
+                        alt="Players enjoying Herbaryo together" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>
@@ -315,6 +332,7 @@
                 <h2 id="downloadModalTitle">Download Herbaryo</h2>
             </div>
             <ul class="download-version-list">
+                <li><span>Tutorial</span><strong>Free Version</strong></li>
                 <li><span>Chapter 1</span><strong>Free Version</strong></li>
                 <li><span>Chapter 2</span><strong>Full Version</strong></li>
                 <li><span>Chapter 3</span><strong>Full Version</strong></li>

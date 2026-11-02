@@ -179,7 +179,7 @@ function createProfileModal(className, content) {
     modal.innerHTML = content;
     document.body.appendChild(modal);
     modal.addEventListener('click', event => {
-        if (event.target === modal && modal.dataset.busy !== 'true') closeProfileModal();
+        if (event.target === modal) closeProfileModal();
     });
     return modal;
 }
@@ -198,7 +198,6 @@ const miniProfileModal = createProfileModal('mini-profile-modal', `
         <div class="profile-dialog-actions">
             <button class="btn-save" id="openEditProfileBtn" type="button">Edit username &amp; avatar</button>
             <button class="btn-cancel" id="openChangePasswordBtn" type="button">Change password</button>
-            <button class="btn-delete-account" id="openDeleteAccountBtn" type="button">Delete Account</button>
         </div>
         <p class="edit-google-note" id="googlePasswordNote" hidden>
             Your password is managed by Google. Change it in your Google Account.
@@ -268,47 +267,11 @@ const changePasswordModal = createProfileModal('change-password-modal', `
     </form>
 `);
 
-const deleteAccountModal = createProfileModal('delete-account-modal', `
-    <form class="profile-dialog delete-account-dialog" id="deleteAccountForm" role="alertdialog"
-        aria-modal="true" aria-labelledby="deleteAccountTitle" aria-describedby="deleteAccountDescription">
-        <header class="edit-header">
-            <div>
-                <span class="edit-kicker">Permanent action</span>
-                <h2 id="deleteAccountTitle">Delete your account?</h2>
-            </div>
-            <button class="edit-close" id="closeDeleteAccountBtn" type="button" aria-label="Close account deletion">
-                &times;
-            </button>
-        </header>
-        <p id="deleteAccountDescription">
-            This permanently removes your player profile, saves, and any admin access from the database, then deletes
-            your sign-in account. This cannot be undone.
-        </p>
-        <label class="edit-field" id="deleteAccountPasswordField" for="deleteAccountPassword">
-            Confirm your password
-            <input type="password" id="deleteAccountPassword" autocomplete="current-password">
-        </label>
-        <p class="edit-note" id="deleteGoogleReauthNote" hidden>
-            Continue with Google when prompted to verify your identity.
-        </p>
-        <label class="edit-field" for="confirmDeleteAccount">
-            Type DELETE to confirm
-            <input type="text" id="confirmDeleteAccount" autocomplete="off" required>
-        </label>
-        <p class="edit-error" id="deleteAccountError" role="alert"></p>
-        <div class="edit-buttons">
-            <button type="submit" class="btn-delete-account">Delete permanently</button>
-            <button type="button" class="btn-cancel" id="cancelDeleteAccountBtn">Cancel</button>
-        </div>
-    </form>
-`);
-
 const currentPasswordInput = document.getElementById('editCurrentPassword');
 const newPasswordInput = document.getElementById('editPassword');
 const editUsernameInput = document.getElementById('editUsername');
 const avatarPicker = document.getElementById('avatarPicker');
 const googlePasswordNote = document.getElementById('googlePasswordNote');
-const deleteAccountPasswordInput = document.getElementById('deleteAccountPassword');
 let previousProfileModalOverflow = '';
 let previousEditTrigger = null;
 let activeProfileModal = null;
@@ -382,37 +345,13 @@ document.getElementById('openChangePasswordBtn').addEventListener('click', () =>
     openProfileModal(changePasswordModal, '#editCurrentPassword');
 });
 
-document.getElementById('openDeleteAccountBtn').addEventListener('click', () => {
-    const user = auth.currentUser;
-    const hasPasswordProvider = user?.providerData.some(provider => provider.providerId === 'password');
-    const hasGoogleProvider = user?.providerData.some(provider => provider.providerId === 'google.com');
-    const passwordField = document.getElementById('deleteAccountPasswordField');
-    const googleNote = document.getElementById('deleteGoogleReauthNote');
-    const submitButton = deleteAccountModal.querySelector('[type="submit"]');
-
-    deleteAccountPasswordInput.value = '';
-    document.getElementById('confirmDeleteAccount').value = '';
-    document.getElementById('deleteAccountError').textContent = '';
-    passwordField.hidden = !hasPasswordProvider;
-    deleteAccountPasswordInput.required = Boolean(hasPasswordProvider);
-    googleNote.hidden = hasPasswordProvider || !hasGoogleProvider;
-    submitButton.textContent = hasPasswordProvider
-        ? 'Delete permanently'
-        : hasGoogleProvider ? 'Continue with Google & delete' : 'Delete permanently';
-    openProfileModal(deleteAccountModal, hasPasswordProvider
-        ? '#deleteAccountPassword'
-        : '#confirmDeleteAccount');
-});
-
 document.getElementById('closeMiniProfileBtn').addEventListener('click', closeProfileModal);
 document.getElementById('closeEditBtn').addEventListener('click', closeProfileModal);
 document.getElementById('closePasswordBtn').addEventListener('click', closeProfileModal);
-document.getElementById('closeDeleteAccountBtn').addEventListener('click', closeProfileModal);
 document.getElementById('cancelEditBtn').addEventListener('click', () => openMiniProfile('#openEditProfileBtn'));
 document.getElementById('cancelPasswordBtn').addEventListener('click', () => openMiniProfile('#openChangePasswordBtn'));
-document.getElementById('cancelDeleteAccountBtn').addEventListener('click', () => openMiniProfile('#openDeleteAccountBtn'));
 document.addEventListener('keydown', event => {
-    if (event.key === 'Escape' && activeProfileModal?.dataset.busy !== 'true') {
+    if (event.key === 'Escape' && activeProfileModal) {
         closeProfileModal();
     }
 });
@@ -471,84 +410,6 @@ document.getElementById('passwordForm').addEventListener('submit', async event =
         } else {
             error.textContent = 'Unable to change your password right now.';
         }
-    }
-});
-
-document.getElementById('deleteAccountForm').addEventListener('submit', async event => {
-    event.preventDefault();
-    const error = document.getElementById('deleteAccountError');
-    const confirmInput = document.getElementById('confirmDeleteAccount');
-    const user = auth.currentUser;
-
-    error.textContent = '';
-    if (confirmInput.value.trim() !== 'DELETE') {
-        error.textContent = 'Type DELETE exactly to confirm account removal.';
-        confirmInput.focus();
-        return;
-    }
-
-    if (!user) {
-        error.textContent = 'You are no longer signed in. Please sign in again before deleting your account.';
-        return;
-    }
-
-    const hasPasswordProvider = user.providerData.some(provider => provider.providerId === 'password');
-    const hasGoogleProvider = user.providerData.some(provider => provider.providerId === 'google.com');
-    if (!hasPasswordProvider && !hasGoogleProvider) {
-        error.textContent = 'Please sign out and sign back in with your account provider before deleting your account.';
-        return;
-    }
-
-    const formControls = deleteAccountModal.querySelectorAll('button, input');
-    const submitButton = deleteAccountModal.querySelector('[type="submit"]');
-    let profileDeleted = false;
-    deleteAccountModal.dataset.busy = 'true';
-    formControls.forEach(control => { control.disabled = true; });
-    submitButton.textContent = 'Deleting account...';
-
-    try {
-        if (hasPasswordProvider) {
-            const credential = firebase.auth.EmailAuthProvider.credential(
-                user.email,
-                deleteAccountPasswordInput.value
-            );
-            await user.reauthenticateWithCredential(credential);
-        } else {
-            await user.reauthenticateWithPopup(new firebase.auth.GoogleAuthProvider());
-        }
-
-        const adminRef = db.ref(`admins/${user.uid}`);
-        const adminSnapshot = await adminRef.once('value');
-        if (adminSnapshot.exists()) {
-            await db.ref().update({
-                [`herbaryo-users/${user.uid}`]: null,
-                [`admins/${user.uid}`]: null
-            });
-        } else {
-            await db.ref(`herbaryo-users/${user.uid}`).remove();
-        }
-        profileDeleted = true;
-        await user.delete();
-        closeProfileModal();
-        window.location.replace('../index.html');
-    } catch (deleteError) {
-        console.error('Failed to delete account:', deleteError);
-        if (profileDeleted) {
-            error.textContent = 'Your database profile was removed, but Firebase could not delete your sign-in account. Please try again.';
-        } else if (['auth/wrong-password', 'auth/invalid-credential'].includes(deleteError.code)) {
-            error.textContent = 'The password you entered is incorrect.';
-        } else if (deleteError.code === 'auth/popup-closed-by-user') {
-            error.textContent = 'Google verification was canceled. Your account was not deleted.';
-        } else if (deleteError.code === 'auth/requires-recent-login') {
-            error.textContent = 'Please sign out, sign in again, and retry account deletion.';
-        } else {
-            error.textContent = 'Unable to delete your account. Your account was not deleted; please try again.';
-        }
-        deleteAccountModal.dataset.busy = 'false';
-        formControls.forEach(control => { control.disabled = false; });
-        submitButton.textContent = hasPasswordProvider
-            ? 'Delete permanently'
-            : 'Continue with Google & delete';
     }
 });
 

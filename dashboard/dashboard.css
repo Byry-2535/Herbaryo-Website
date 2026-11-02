@@ -2231,8 +2231,7 @@ main.container {
 }
 
 .profile-dialog-actions .btn-save,
-.profile-dialog-actions .btn-cancel,
-.profile-dialog-actions .btn-delete-account {
+.profile-dialog-actions .btn-cancel {
     width: 100%;
     min-height: 44px;
     flex: initial;
@@ -2311,8 +2310,7 @@ main.container {
 }
 
 .profile-dialog .btn-save,
-.profile-dialog .btn-cancel,
-.profile-dialog .btn-delete-account {
+.profile-dialog .btn-cancel {
     min-height: 42px;
     flex: 0 1 auto;
     padding: 0.65rem 1.1rem;
@@ -2334,30 +2332,9 @@ main.container {
     color: #52705a;
 }
 
-.profile-dialog .btn-delete-account {
-    border: 1px solid #c62828;
-    background: #ffffff;
-    color: #b3261e;
-}
-
-.profile-dialog .btn-delete-account:hover {
-    background: #fff5f4;
-}
-
-.delete-account-dialog > p {
-    margin-bottom: 1rem;
-    color: #526357;
-    font-size: 0.9rem;
-}
-
-.delete-account-dialog [hidden] {
-    display: none !important;
-}
-
 .profile-dialog .edit-close:focus-visible,
 .profile-dialog .btn-save:focus-visible,
 .profile-dialog .btn-cancel:focus-visible,
-.profile-dialog .btn-delete-account:focus-visible,
 .profile-dialog .avatar-option:focus-visible {
     outline: 3px solid rgba(46, 125, 50, 0.3);
     outline-offset: 2px;
