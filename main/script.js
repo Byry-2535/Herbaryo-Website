@@ -198,7 +198,9 @@ async function checkUserProfile(user) {
 }
 
 function showUsernameModal(user) {
-    const activeTab = document.querySelector('.tab-content.active');
+    const activeTab = document.getElementById('loginTab');
+    loginModal.classList.add('profile-setup-active');
+    document.getElementById('loginModalTitle').textContent = 'Complete Your Profile';
     selectedProfileAvatar = HerbaryoSchema.defaultAvatarPath;
     activeTab.innerHTML = `
         <div class="profile-setup">
@@ -298,12 +300,16 @@ if (document.getElementById('showSignupTab')) document.getElementById('showSignu
     event.preventDefault();
     document.getElementById('loginTab').classList.remove('active');
     document.getElementById('signupTab').classList.add('active');
+    loginModal.classList.remove('profile-setup-active');
+    document.getElementById('loginModalTitle').textContent = 'Create Account';
 });
 
 if (document.getElementById('showLoginTab')) document.getElementById('showLoginTab').addEventListener('click', event => {
     event.preventDefault();
     document.getElementById('signupTab').classList.remove('active');
     document.getElementById('loginTab').classList.add('active');
+    loginModal.classList.remove('profile-setup-active');
+    document.getElementById('loginModalTitle').textContent = 'Login';
 });
 
 document.addEventListener('DOMContentLoaded', () => {

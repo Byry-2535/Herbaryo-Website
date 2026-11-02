@@ -582,6 +582,10 @@ body {
     overscroll-behavior: contain;
 }
 
+#loginModal .login-modal {
+    border: 3px solid #81c784;
+}
+
 .login-modal::-webkit-scrollbar {
     display: none;
 }
@@ -600,6 +604,24 @@ body {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
+}
+
+#loginModal .modal-header {
+    margin-bottom: 1.5rem;
+}
+
+#loginModal .form-group input {
+    border-color: #c8e6c9;
+    background: #fbfefb;
+}
+
+#loginModal .form-group input:hover {
+    border-color: #81c784;
+}
+
+#loginModal.profile-setup-active .divider,
+#loginModal.profile-setup-active #googleLogin {
+    display: none;
 }
 
 .download-modal {
@@ -1894,20 +1916,21 @@ input[type="radio"]:hover {
 
 .profile-avatar-picker {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+    grid-template-columns: repeat(auto-fit, 72px);
+    justify-content: center;
     gap: 0.55rem;
 }
 
 .profile-avatar-option {
-    min-width: 0;
-    padding: 0.35rem;
+    width: 72px;
+    aspect-ratio: 1;
+    padding: 3px;
+    overflow: hidden;
     border: 2px solid #e0e9e0;
-    border-radius: 12px;
+    border-radius: 50%;
     background: #ffffff;
     color: #52705a;
     font: inherit;
-    font-size: 0.68rem;
-    font-weight: 600;
     cursor: pointer;
     transition: border-color 0.18s, transform 0.18s, box-shadow 0.18s;
 }
@@ -1931,17 +1954,17 @@ input[type="radio"]:hover {
 .profile-avatar-option img {
     display: block;
     width: 100%;
-    aspect-ratio: 1;
-    margin-bottom: 0.35rem;
-    border-radius: 8px;
+    height: 100%;
+    border-radius: 50%;
     object-fit: cover;
 }
 
 .profile-avatar-option span {
-    display: block;
+    position: absolute;
+    width: 1px;
+    height: 1px;
     overflow: hidden;
-    text-align: center;
-    text-overflow: ellipsis;
+    clip-path: inset(50%);
     white-space: nowrap;
 }
 
@@ -2171,8 +2194,9 @@ input[type="radio"]:hover {
 .game-genre {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.55rem;
     flex-wrap: wrap;
+    max-width: 100%;
 }
 
 .genre-label {
@@ -2182,14 +2206,18 @@ input[type="radio"]:hover {
 }
 
 .genre-tag {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
     background: linear-gradient(45deg, #4caf50, #66bb6a);
     color: white;
-    padding: 0.3rem 0.9rem;
+    padding: 0.3rem 0.75rem;
     border-radius: 20px;
     font-size: 0.85rem;
     font-weight: 500;
     box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
     transition: 0.3s;
+    white-space: nowrap;
 }
 
 .genre-tag:hover {
