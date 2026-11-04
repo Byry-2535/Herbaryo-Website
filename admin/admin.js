@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             modal.innerHTML = `
                 <section class="logout-confirm-dialog" role="alertdialog" aria-modal="true"
                     aria-labelledby="logoutDialogTitle" aria-describedby="logoutDialogDescription">
-                    <button class="logout-dialog-close" type="button" aria-label="Cancel logout">&times;</button>
                     <span class="logout-dialog-kicker">Admin</span>
                     <h2 id="logoutDialogTitle">Log out?</h2>
                     <p id="logoutDialogDescription">Are you sure you want to log out of your account?</p>
@@ -79,9 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (event.key === 'Escape') closeModal();
             };
 
-            const closeButton = modal.querySelector('.logout-dialog-close');
             const cancelButton = modal.querySelector('.logout-cancel-btn');
-            closeButton.addEventListener('click', closeModal);
             cancelButton.addEventListener('click', closeModal);
             modal.addEventListener('click', event => {
                 if (event.target === modal) closeModal();
@@ -94,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const error = modal.querySelector('.logout-dialog-error');
                 isSigningOut = true;
                 confirmButton.disabled = true;
-                closeButton.disabled = true;
                 cancelButton.disabled = true;
                 confirmButton.textContent = 'Logging out...';
 
@@ -109,7 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     error.hidden = false;
                     isSigningOut = false;
                     confirmButton.disabled = false;
-                    closeButton.disabled = false;
                     cancelButton.disabled = false;
                     confirmButton.textContent = 'Log out';
                 }
@@ -264,7 +259,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.className = 'user-modal delete-modal';
         modal.innerHTML = `
             <section class="delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="deleteDialogTitle" aria-describedby="deleteDialogDescription">
-                <button class="delete-dialog-close" type="button" aria-label="Cancel delete">&times;</button>
                 <span class="delete-dialog-kicker">Manage Players</span>
                 <h2 id="deleteDialogTitle">Delete ${player?.username || 'this player'}?</h2>
                 <p id="deleteDialogDescription">This permanently removes the player's profile and all three save slots.</p>
@@ -282,7 +276,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (trigger?.isConnected) trigger.focus();
         };
 
-        modal.querySelector('.delete-dialog-close').onclick = closeModal;
         modal.querySelector('#cancelDeleteBtn').onclick = closeModal;
         modal.onclick = event => {
             if (event.target === modal) closeModal();

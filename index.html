@@ -232,28 +232,47 @@
             <p class="section-subtitle">Take a look at the world and gameplay of Herbaryo</p>
             <div class="screenshots-grid">
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Herb%20Picking.webp" alt="Picking medicinal herbs in Herbaryo"
-                        loading="lazy" decoding="async">
+                    <a class="screenshot-trigger" href="./img/screenshots/Herb%20Picking.webp"
+                        aria-label="View: Picking medicinal herbs in Herbaryo">
+                        <img src="./img/screenshots/Herb%20Picking.webp" alt="Picking medicinal herbs in Herbaryo"
+                            loading="lazy" decoding="async">
+                    </a>
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Herbarium.webp" alt="Herbarium collection in Herbaryo" loading="lazy"
-                        decoding="async">
+                    <a class="screenshot-trigger" href="./img/screenshots/Herbarium.webp"
+                        aria-label="View: Herbarium collection in Herbaryo">
+                        <img src="./img/screenshots/Herbarium.webp" alt="Herbarium collection in Herbaryo" loading="lazy"
+                            decoding="async">
+                    </a>
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Shop.webp" alt="In-game shop in Herbaryo" loading="lazy"
-                        decoding="async">
+                    <a class="screenshot-trigger" href="./img/screenshots/Shop.webp"
+                        aria-label="View: In-game shop in Herbaryo">
+                        <img src="./img/screenshots/Shop.webp" alt="In-game shop in Herbaryo" loading="lazy"
+                            decoding="async">
+                    </a>
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Skill%20Tree.webp" alt="Player skill tree in Herbaryo" loading="lazy"
-                        decoding="async">
+                    <a class="screenshot-trigger" href="./img/screenshots/Skill%20Tree.webp"
+                        aria-label="View: Player skill tree in Herbaryo">
+                        <img src="./img/screenshots/Skill%20Tree.webp" alt="Player skill tree in Herbaryo" loading="lazy"
+                            decoding="async">
+                    </a>
                 </figure>
                 <figure class="screenshot-card">
-                    <img src="./img/screenshots/Waving.webp" alt="Characters waving in Herbaryo" loading="lazy"
-                        decoding="async">
+                    <a class="screenshot-trigger" href="./img/screenshots/Waving.webp"
+                        aria-label="View: Characters waving in Herbaryo">
+                        <img src="./img/screenshots/Waving.webp" alt="Characters waving in Herbaryo" loading="lazy"
+                            decoding="async">
+                    </a>
                 </figure>
             </div>
         </div>
     </section>
+    <dialog class="screenshot-preview" id="screenshotPreview" aria-label="Screenshot preview">
+        <button class="screenshot-preview-close" type="button" aria-label="Close screenshot preview">&times;</button>
+        <img id="screenshotPreviewImage" alt="">
+    </dialog>
     <section id="specs" class="section specs-section">
         <div class="container">
             <h2 class="section-title">Device Requirements</h2>
@@ -364,6 +383,11 @@
                         </button>
                     </div>
                 </div>
+                <div class="auth-error-container">
+                    <div class="loading" id="loading" style="display: none;">
+                        <div class="spinner"></div> Signing you in...
+                    </div>
+                </div>
                 <div class="form-row">
                     <a href="#" class="forgot-password" id="forgotPasswordBtn">
                         Forgot Password?
@@ -418,6 +442,11 @@
                                 (EULA)</a>.</span>
                     </label>
                 </fieldset>
+                <div class="auth-error-container">
+                    <div class="loading" style="display: none;">
+                        <div class="spinner"></div> Signing you in...
+                    </div>
+                </div>
                 <button class="btn-primary full-width" id="emailSignupBtn">Create Account</button>
                 <button id="resendVerification" style="display:none;" class="btn-secondary full-width">Resend
                     Verification Email</button>
@@ -437,10 +466,6 @@
                 </svg>
                 Continue with Google
             </button>
-            <div class="loading" id="loading" style="display: none;">
-                <div class="spinner"></div> Signing you in...
-            </div>
-            <div id="errorContainer"></div>
         </div>
     </div>
     <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top" hidden>

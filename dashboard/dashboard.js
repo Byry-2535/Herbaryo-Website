@@ -129,6 +129,24 @@ function renderSaveSlot(saveData = {}) {
     renderAchievements(saveData.achievements || {});
 }
 
+document.querySelectorAll('[data-section-toggle]').forEach(toggle => {
+    toggle.addEventListener('click', () => {
+        const content = document.getElementById(toggle.dataset.sectionToggle);
+        if (!content) {
+            console.error('Unable to toggle dashboard section:', toggle.dataset.sectionToggle);
+            return;
+        }
+
+        const nextExpanded = content.hidden;
+        const sectionName = toggle.dataset.sectionName;
+
+        content.toggleAttribute('hidden', !nextExpanded);
+        toggle.setAttribute('aria-expanded', String(nextExpanded));
+        toggle.setAttribute('aria-label', `${nextExpanded ? 'Hide' : 'Show'} ${sectionName}`);
+        toggle.title = `${nextExpanded ? 'Hide' : 'Show'} ${sectionName}`;
+    });
+});
+
 document.querySelectorAll('.save-tab').forEach(tab => {
     tab.addEventListener('click', () => {
         selectedSaveSlot = tab.dataset.slot;
@@ -456,7 +474,6 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
     modal.innerHTML = `
         <section class="logout-confirm-dialog" role="alertdialog" aria-modal="true"
             aria-labelledby="logoutDialogTitle" aria-describedby="logoutDialogDescription">
-            <button class="logout-dialog-close" type="button" aria-label="Cancel logout">&times;</button>
             <span class="logout-dialog-kicker">Dashboard</span>
             <h2 id="logoutDialogTitle">Log out?</h2>
             <p id="logoutDialogDescription">Are you sure you want to log out of your account?</p>
@@ -482,9 +499,7 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
         if (event.key === 'Escape') closeModal();
     };
 
-    const closeButton = modal.querySelector('.logout-dialog-close');
     const cancelButton = modal.querySelector('.logout-cancel-btn');
-    closeButton.addEventListener('click', closeModal);
     cancelButton.addEventListener('click', closeModal);
     modal.addEventListener('click', event => {
         if (event.target === modal) closeModal();
@@ -497,7 +512,6 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
         const error = modal.querySelector('.logout-dialog-error');
         isSigningOut = true;
         confirmButton.disabled = true;
-        closeButton.disabled = true;
         cancelButton.disabled = true;
         confirmButton.textContent = 'Logging out...';
 
@@ -512,7 +526,6 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
             error.hidden = false;
             isSigningOut = false;
             confirmButton.disabled = false;
-            closeButton.disabled = false;
             cancelButton.disabled = false;
             confirmButton.textContent = 'Log out';
         }

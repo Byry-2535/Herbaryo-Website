@@ -14,7 +14,6 @@ const db = firebase.database();
 
 const loginModal = document.getElementById('loginModal');
 const closeModal = document.getElementById('closeModal');
-const errorContainer = document.getElementById('errorContainer');
 const downloadModal = document.getElementById('downloadModal');
 const openDownloadModalButton = document.getElementById('openDownloadModal');
 const closeDownloadModalButton = document.getElementById('closeDownloadModal');
@@ -26,13 +25,33 @@ function showError(message, isSuccess = false) {
     const errorEl = document.createElement('div');
     errorEl.className = isSuccess ? 'success-message' : 'error-message';
     errorEl.textContent = message;
-    errorContainer.appendChild(errorEl);
+    const activeTab = document.querySelector('.tab-content.active');
+    const targetContainer = activeTab?.querySelector('.auth-error-container')
+        || loginModal?.querySelector('.auth-error-container');
+    if (!targetContainer) {
+        console.error('Unable to display authentication message:', message);
+        return;
+    }
+    targetContainer.appendChild(errorEl);
     setTimeout(() => errorEl.remove(), 5000);
 }
 
-function clearError() { if (errorContainer) errorContainer.innerHTML = ''; }
-function showLoading() { document.getElementById('loading').style.display = 'flex'; }
-function hideLoading() { document.getElementById('loading').style.display = 'none'; }
+function clearError() {
+    document.querySelectorAll('.auth-error-container').forEach(container => {
+        container.querySelectorAll('.error-message, .success-message').forEach(message => message.remove());
+    });
+}
+function showLoading() {
+    const activeTab = document.querySelector('.tab-content.active');
+    const loading = activeTab?.querySelector('.loading')
+        || loginModal?.querySelector('.loading');
+    if (loading) loading.style.display = 'flex';
+}
+function hideLoading() {
+    document.querySelectorAll('.loading').forEach(loading => {
+        loading.style.display = 'none';
+    });
+}
 
 if (closeModal && loginModal) closeModal.addEventListener('click', () => closeLoginModal());
 if (loginModal) loginModal.addEventListener('click', e => { if (e.target === loginModal) closeLoginModal(); });
@@ -160,8 +179,8 @@ if (document.getElementById('googleLogin')) document.getElementById('googleLogin
         const result = await auth.signInWithPopup(provider);
         const needsProfileSetup = await ensureGoogleProfile(result.user);
         if (needsProfileSetup) {
-            showError('Google sign-in successful! Choose your username and avatar to finish setup.', true);
             showUsernameModal(result.user);
+            showError('Google sign-in successful! Choose your username and avatar to finish setup.', true);
             return;
         }
         window.location.replace('./dashboard/dashboard.html');
@@ -199,6 +218,8 @@ async function checkUserProfile(user) {
 
 function showUsernameModal(user) {
     const activeTab = document.getElementById('loginTab');
+    document.getElementById('signupTab').classList.remove('active');
+    activeTab.classList.add('active');
     loginModal.classList.add('profile-setup-active');
     document.getElementById('loginModalTitle').textContent = 'Complete Your Profile';
     selectedProfileAvatar = HerbaryoSchema.defaultAvatarPath;
@@ -221,6 +242,11 @@ function showUsernameModal(user) {
                             <span>${avatarName}</span>
                         </button>`;
                     }).join('')}
+                </div>
+            </div>
+            <div class="auth-error-container">
+                <div class="loading" style="display: none;">
+                    <div class="spinner"></div> Signing you in...
                 </div>
             </div>
             <button id="createProfileBtn" class="btn-primary profile-create-btn" type="button">Create Profile</button>
@@ -319,6 +345,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTop = document.getElementById('backToTop');
     const specVersionButtons = document.querySelectorAll('[data-spec-version]');
     const specCards = document.querySelectorAll('[data-spec-card]');
+    const screenshotPreview = document.getElementById('screenshotPreview');
+    const screenshotPreviewImage = document.getElementById('screenshotPreviewImage');
+    const screenshotPreviewClose = document.querySelector('.screenshot-preview-close');
+
+    if (screenshotPreview && screenshotPreviewImage && screenshotPreviewClose) {
+        let screenshotCloseTimer;
+        const closeScreenshotPreview = () => {
+            if (!screenshotPreview.open || screenshotPreview.classList.contains('closing')) return;
+            screenshotPreview.classList.add('closing');
+            screenshotCloseTimer = window.setTimeout(() => {
+                screenshotPreview.close();
+                screenshotPreview.classList.remove('closing');
+            }, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 160);
+        };
+
+        document.querySelectorAll('.screenshot-trigger').forEach(trigger => {
+            trigger.addEventListener('click', event => {
+                const image = trigger.querySelector('img');
+                if (!image) return;
+
+                event.preventDefault();
+                window.clearTimeout(screenshotCloseTimer);
+                screenshotPreview.classList.remove('closing');
+                screenshotPreviewImage.src = image.currentSrc || image.src;
+                screenshotPreviewImage.alt = image.alt;
+                screenshotPreview.showModal();
+                screenshotPreviewClose.focus();
+            });
+        });
+
+        screenshotPreviewClose.addEventListener('click', closeScreenshotPreview);
+        screenshotPreview.addEventListener('click', event => {
+            if (event.target === screenshotPreview) closeScreenshotPreview();
+        });
+        screenshotPreview.addEventListener('cancel', event => {
+            event.preventDefault();
+            closeScreenshotPreview();
+        });
+    }
 
     const sectionLinks = navMenu
         ? Array.from(navMenu.querySelectorAll('a')).map(link => ({

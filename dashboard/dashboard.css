@@ -472,21 +472,6 @@ main {
     box-shadow: 0 24px 64px rgba(31, 41, 33, 0.24);
 }
 
-.logout-dialog-close {
-    position: absolute;
-    top: 0.85rem;
-    right: 0.85rem;
-    width: 36px;
-    height: 36px;
-    border: 1px solid #e7e9e5;
-    border-radius: 8px;
-    background: #ffffff;
-    color: #647067;
-    font-size: 1.4rem;
-    line-height: 1;
-    cursor: pointer;
-}
-
 .logout-dialog-kicker {
     color: #a4423b;
     font-size: 0.72rem;
@@ -1391,6 +1376,60 @@ main.container {
     align-items: center;
 }
 
+.section-heading-title {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.section-toggle {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--dashboard-line);
+    border-radius: 7px;
+    background: var(--dashboard-surface);
+    color: var(--dashboard-green);
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.section-toggle:hover {
+    border-color: var(--dashboard-green);
+    background: #edf6ed;
+    transform: translateY(-1px);
+}
+
+.section-toggle:focus-visible {
+    outline: 2px solid var(--dashboard-green);
+    outline-offset: 2px;
+}
+
+.section-toggle svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.section-toggle[aria-expanded="false"] .toggle-eye-slash {
+    display: block;
+}
+
+.section-toggle[aria-expanded="true"] .toggle-eye-slash {
+    display: none;
+}
+
+.section-content[hidden] {
+    display: none !important;
+}
+
 .personal-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 0.75rem;
@@ -2166,6 +2205,10 @@ main.container {
     transition: transform 0.2s ease;
 }
 
+.profile-modal .profile-dialog:not(.mini-profile-dialog) {
+    border: 2px solid #a5d6a7;
+}
+
 .profile-modal.active .profile-dialog {
     transform: translateY(0);
 }
@@ -2182,6 +2225,7 @@ main.container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border: 2px solid #a5d6a7;
     text-align: center;
 }
 
@@ -2192,11 +2236,11 @@ main.container {
 }
 
 .mini-profile-dialog .edit-kicker {
-    align-self: flex-start;
+    align-self: center;
 }
 
 .mini-profile-dialog h2 {
-    align-self: flex-start;
+    align-self: center;
     margin: 0.2rem 0 0;
     color: #244b2c;
     font-size: 1.65rem;
@@ -2206,11 +2250,12 @@ main.container {
     width: 112px;
     height: 112px;
     margin: 1.25rem 0 0.75rem;
+    border: 3px solid #a5d6a7;
 }
 
 .mini-profile-dialog .edit-profile-plan {
     padding: 0.25rem 0.65rem;
-    border: 0;
+    border: 1px solid #c8e6c9;
     border-radius: 999px;
     background: #e8f5e9;
     color: #2e7d32;
@@ -2219,8 +2264,13 @@ main.container {
 }
 
 .mini-profile-dialog .edit-profile-email {
+    max-width: 100%;
     margin-top: 0.65rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid #dcebdc;
+    border-radius: 8px;
     color: #6b806e;
+    overflow-wrap: anywhere;
 }
 
 .profile-dialog-actions {
@@ -2228,14 +2278,6 @@ main.container {
     gap: 0.7rem;
     width: 100%;
     margin-top: 1.5rem;
-}
-
-.profile-dialog-actions .btn-save,
-.profile-dialog-actions .btn-cancel {
-    width: 100%;
-    min-height: 44px;
-    flex: initial;
-    padding: 0.7rem 1rem;
 }
 
 .profile-dialog .edit-header {

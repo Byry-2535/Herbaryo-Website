@@ -787,13 +787,13 @@ body {
 }
 
 .error-message {
-    background: #ffebee;
     color: #d32f2f;
-    padding: 1rem;
-    border-radius: 10px;
-    margin: 1rem 0;
+    margin: 0.5rem 0;
+    padding: 0.25rem 0;
+    border: 0;
+    background: transparent;
     font-size: 0.9rem;
-    border-left: 4px solid #f44336;
+    text-align: center;
     animation: slideDown 0.3s ease;
 }
 
@@ -922,11 +922,12 @@ body {
 
     .hero-container,
     .hero-content {
-        text-align: left;
+        text-align: center;
     }
 
     .hero-content {
         max-width: 600px;
+        margin: 0 auto;
     }
 
     .hero-content h1,
@@ -948,8 +949,8 @@ body {
     .hero-desc {
         font-size: 0.95rem;
         margin-bottom: 1.5rem;
-        margin-left: 0;
-        margin-right: 0;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .genre-label {
@@ -967,13 +968,24 @@ body {
 
     .hero-cta-buttons .btn-primary,
     .hero-cta-buttons .btn-secondary {
+        justify-content: center;
+        width: 100%;
         min-height: 44px;
         padding: 0.7rem 1.5rem;
         font-size: 0.95rem;
     }
 
     .game-genre {
-        justify-content: flex-start;
+        justify-content: center;
+    }
+
+    .hero-buttons {
+        align-items: center;
+    }
+
+    .hero-cta-buttons {
+        flex-direction: column;
+        width: min(100%, 300px);
     }
 
     .download-version-switch {
@@ -1060,32 +1072,29 @@ body {
         gap: 0.75rem;
     }
 
+    .screenshots-section {
+        padding: 2.25rem 0;
+    }
+
+    .screenshots-section .section-subtitle {
+        margin-bottom: 1rem;
+    }
+
     .screenshots-section .screenshots-grid {
-        display: flex;
-        gap: 1rem;
-        margin: -0.5rem -1rem 0;
-        padding: 0.5rem 1rem 1.25rem;
-        overflow-x: auto;
-        overscroll-behavior-x: contain;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(46, 125, 50, 0.45) transparent;
-        -webkit-overflow-scrolling: touch;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.6rem;
+        margin: 0;
+        padding: 0;
+        overflow: visible;
     }
 
     .screenshots-section .screenshot-card {
-        flex: 0 0 min(82vw, 340px);
-        scroll-snap-align: start;
-        scroll-snap-stop: always;
+        min-width: 0;
     }
 
-    .screenshots-grid::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .screenshots-grid::-webkit-scrollbar-thumb {
-        background: rgba(46, 125, 50, 0.45);
-        border-radius: 4px;
+    .screenshots-section .screenshot-card img {
+        aspect-ratio: 16 / 9;
     }
 
     .herb-image {
@@ -1251,6 +1260,111 @@ html {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
+}
+
+.screenshot-trigger {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: zoom-in;
+}
+
+.screenshot-trigger:focus-visible {
+    outline: 3px solid #2e7d32;
+    outline-offset: -3px;
+}
+
+.screenshot-preview {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 4rem 1rem 1rem;
+    overflow: auto;
+    border: 0;
+    background: transparent;
+}
+
+.screenshot-preview:not([open]) {
+    display: none;
+}
+
+.screenshot-preview::backdrop {
+    background: rgba(8, 24, 12, 0.88);
+    backdrop-filter: blur(4px);
+}
+
+.screenshot-preview img {
+    display: block;
+    max-width: min(1100px, 100%);
+    max-height: calc(100dvh - 5rem);
+    margin: 0;
+    border-radius: 12px;
+    object-fit: contain;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+    animation: screenshot-preview-open 180ms ease-out both;
+}
+
+.screenshot-preview.closing img {
+    animation: screenshot-preview-close 160ms ease-in both;
+}
+
+@keyframes screenshot-preview-open {
+    from {
+        opacity: 0;
+        transform: scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes screenshot-preview-close {
+    from {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: scale(0.96);
+    }
+}
+
+.screenshot-preview-close {
+    position: fixed;
+    top: 1rem;
+    right: 1.25rem;
+    width: 44px;
+    height: 44px;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    font: inherit;
+    font-size: 1.8rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.screenshot-preview-close:hover {
+    background: rgba(255, 255, 255, 0.26);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .screenshot-preview img,
+    .screenshot-preview.closing img {
+        animation-duration: 0.01ms;
+    }
 }
 
 .herb-card:hover {
@@ -2206,13 +2320,13 @@ input[type="radio"]:hover {
 }
 
 .success-message {
-    background: #e8f5e9 !important;
-    color: #2e7d32 !important;
-    padding: 1rem;
-    border-radius: 10px;
-    margin: 1rem 0;
+    color: #2e7d32;
+    margin: 0.5rem 0;
+    padding: 0.25rem 0;
+    border: 0;
+    background: transparent;
     font-size: 0.9rem;
-    border-left: 4px solid #4caf50 !important;
+    text-align: center;
     animation: slideDown 0.3s ease;
 }
 

@@ -47,10 +47,21 @@
         </section>
 
         <section class="dashboard-section personal-section">
-            <div class="section-heading">
-                <h2>Personal Info</h2>
+            <div class="section-heading section-heading-row">
+                <div class="section-heading-title">
+                    <h2>Personal Info</h2>
+                    <button class="section-toggle" type="button" data-section-toggle="personalInfoContent"
+                        data-section-name="Personal Info" aria-expanded="true" aria-label="Hide Personal Info"
+                        aria-controls="personalInfoContent" title="Hide Personal Info">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                            <circle cx="12" cy="12" r="3" />
+                            <path class="toggle-eye-slash" d="m4 4 16 16" />
+                        </svg>
+                    </button>
+                </div>
             </div>
-            <div class="personal-grid">
+            <div class="personal-grid section-content" id="personalInfoContent">
                 <div class="info-item">
                     <span>Username</span>
                     <strong id="usernameValue">Herbalist</strong>
@@ -67,56 +78,97 @@
         </section>
 
         <section class="dashboard-section saves-section">
-            <div class="section-heading">
-                <h2>Saves</h2>
-            </div>
-            <div class="save-tabs" role="tablist" aria-label="Save slots">
-                <button class="save-tab active" id="slot1Tab" type="button" role="tab" aria-selected="true"
-                    aria-controls="saveSlotPanel" data-slot="slot1">Slot 1</button>
-                <button class="save-tab" id="slot2Tab" type="button" role="tab" aria-selected="false"
-                    aria-controls="saveSlotPanel" data-slot="slot2">Slot 2</button>
-                <button class="save-tab" id="slot3Tab" type="button" role="tab" aria-selected="false"
-                    aria-controls="saveSlotPanel" data-slot="slot3">Slot 3</button>
-            </div>
-            <div class="save-panel" id="saveSlotPanel" role="tabpanel" aria-labelledby="slot1Tab">
-                <div class="save-stats" id="saveStats">
-                    <article class="stat-card">
-                        <span>Gender</span>
-                        <strong id="genderValue">N/A</strong>
-                    </article>
-                    <article class="stat-card aurels-stat">
-                        <span>Aurels</span>
-                        <strong id="aurelsValue">0</strong>
-                    </article>
-                    <article class="stat-card reputation-stat">
-                        <span>Reputation</span>
-                        <strong id="reputationValue">0</strong>
-                    </article>
-                    <article class="stat-card level-stat">
-                        <span>Chapter</span>
-                        <strong id="chapterValue">1</strong>
-                    </article>
-                    <article class="stat-card day-stat">
-                        <span>Day</span>
-                        <strong id="dayValue">1</strong>
-                    </article>
+            <div class="section-heading section-heading-row">
+                <div class="section-heading-title">
+                    <h2>Saves</h2>
+                    <button class="section-toggle" type="button" data-section-toggle="savesContent"
+                        data-section-name="Saves" aria-expanded="true" aria-label="Hide Saves"
+                        aria-controls="savesContent" title="Hide Saves">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                            <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                            <circle cx="12" cy="12" r="3" />
+                            <path class="toggle-eye-slash" d="m4 4 16 16" />
+                        </svg>
+                    </button>
                 </div>
-
-                <section class="dashboard-section nested-section">
-                    <div class="section-heading section-heading-row">
-                        <h2>Herbs Mastered</h2>
-                        <strong class="mastery-total" id="herbsMasteredCount">0/10</strong>
+            </div>
+            <div class="section-content" id="savesContent">
+                <div class="save-tabs" role="tablist" aria-label="Save slots">
+                    <button class="save-tab active" id="slot1Tab" type="button" role="tab" aria-selected="true"
+                        aria-controls="saveSlotPanel" data-slot="slot1">Slot 1</button>
+                    <button class="save-tab" id="slot2Tab" type="button" role="tab" aria-selected="false"
+                        aria-controls="saveSlotPanel" data-slot="slot2">Slot 2</button>
+                    <button class="save-tab" id="slot3Tab" type="button" role="tab" aria-selected="false"
+                        aria-controls="saveSlotPanel" data-slot="slot3">Slot 3</button>
+                </div>
+                <div class="save-panel" id="saveSlotPanel" role="tabpanel" aria-labelledby="slot1Tab">
+                    <div class="save-stats" id="saveStats">
+                        <article class="stat-card">
+                            <span>Gender</span>
+                            <strong id="genderValue">N/A</strong>
+                        </article>
+                        <article class="stat-card aurels-stat">
+                            <span>Aurels</span>
+                            <strong id="aurelsValue">0</strong>
+                        </article>
+                        <article class="stat-card reputation-stat">
+                            <span>Reputation</span>
+                            <strong id="reputationValue">0</strong>
+                        </article>
+                        <article class="stat-card level-stat">
+                            <span>Chapter</span>
+                            <strong id="chapterValue">1</strong>
+                        </article>
+                        <article class="stat-card day-stat">
+                            <span>Day</span>
+                            <strong id="dayValue">1</strong>
+                        </article>
                     </div>
-                    <div class="herbs-list" id="herbsList"></div>
-                </section>
 
-                <section class="dashboard-section nested-section achievements-section">
-                    <div class="section-heading section-heading-row">
-                        <h2>Achievements</h2>
-                        <strong class="mastery-total" id="achievementCount">0/16</strong>
-                    </div>
-                    <div class="achievement-grid" id="achievementList"></div>
-                </section>
+                    <section class="dashboard-section nested-section">
+                        <div class="section-heading section-heading-row">
+                            <div class="section-heading-title">
+                                <h2>Herbs Mastered</h2>
+                                <button class="section-toggle" type="button" data-section-toggle="herbsContent"
+                                    data-section-name="Herbs Mastered" aria-expanded="true"
+                                    aria-label="Hide Herbs Mastered" aria-controls="herbsContent"
+                                    title="Hide Herbs Mastered">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path class="toggle-eye-slash" d="m4 4 16 16" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <strong class="mastery-total" id="herbsMasteredCount">0/10</strong>
+                        </div>
+                        <div class="section-content" id="herbsContent">
+                            <div class="herbs-list" id="herbsList"></div>
+                        </div>
+                    </section>
+
+                    <section class="dashboard-section nested-section achievements-section">
+                        <div class="section-heading section-heading-row">
+                            <div class="section-heading-title">
+                                <h2>Achievements</h2>
+                                <button class="section-toggle" type="button" data-section-toggle="achievementsContent"
+                                    data-section-name="Achievements" aria-expanded="true"
+                                    aria-label="Hide Achievements" aria-controls="achievementsContent"
+                                    title="Hide Achievements">
+                                    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                        <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z" />
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path class="toggle-eye-slash" d="m4 4 16 16" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <strong class="mastery-total" id="achievementCount">0/16</strong>
+                        </div>
+                        <div class="section-content" id="achievementsContent">
+                            <div class="achievement-grid" id="achievementList"></div>
+                        </div>
+                    </section>
+                </div>
             </div>
         </section>
     </main>
