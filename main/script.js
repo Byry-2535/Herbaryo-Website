@@ -14,10 +14,6 @@ const db = firebase.database();
 
 const loginModal = document.getElementById('loginModal');
 const closeModal = document.getElementById('closeModal');
-const downloadModal = document.getElementById('downloadModal');
-const openDownloadModalButton = document.getElementById('openDownloadModal');
-const closeDownloadModalButton = document.getElementById('closeDownloadModal');
-let previousDownloadModalOverflow = '';
 let selectedProfileAvatar = HerbaryoSchema.defaultAvatarPath;
 
 function showError(message, isSuccess = false) {
@@ -59,31 +55,6 @@ function closeLoginModal() {
     loginModal.classList.remove('active');
     document.body.style.overflow = '';
     clearError();
-}
-
-function closeDownloadModal() {
-    downloadModal.classList.remove('active');
-    document.body.style.overflow = previousDownloadModalOverflow;
-    openDownloadModalButton.focus();
-}
-
-if (downloadModal && openDownloadModalButton && closeDownloadModalButton) {
-    openDownloadModalButton.addEventListener('click', () => {
-        previousDownloadModalOverflow = document.body.style.overflow;
-        downloadModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-        closeDownloadModalButton.focus();
-    });
-
-    closeDownloadModalButton.addEventListener('click', closeDownloadModal);
-    downloadModal.addEventListener('click', event => {
-        if (event.target === downloadModal) closeDownloadModal();
-    });
-    document.addEventListener('keydown', event => {
-        if (event.key === 'Escape' && downloadModal.classList.contains('active')) {
-            closeDownloadModal();
-        }
-    });
 }
 
 if (document.getElementById('emailLoginBtn')) document.getElementById('emailLoginBtn').addEventListener('click', handleEmailLogin);

@@ -1362,6 +1362,16 @@ main.container {
     margin-bottom: 2rem;
 }
 
+.profile-migration-error {
+    padding: 0.9rem 1rem;
+    margin-bottom: 1.25rem;
+    border: 1px solid #e5bbb7;
+    border-radius: 8px;
+    background: #fff6f5;
+    color: #922f29;
+    font-weight: 600;
+}
+
 .section-heading {
     margin-bottom: 0.85rem;
 }

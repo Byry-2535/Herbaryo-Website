@@ -1,19 +1,17 @@
 (function () {
-    const herbKeys = [
-        'akapulko', 'ampalaya', 'bawang', 'bayabas', 'lagundi',
-        'niyog_niyogan', 'sambong', 'tsaang_gubat', 'ulasimang_bato', 'yerba_buena'
-    ];
-
     const generalAchievementKeys = [
-        'hello_world', 'no_more_limits', 'serious_dedication',
-        'good_neighbour', 'a_whole_new_world', 'master_herbalist',
-        'becoming_an_apprentice', 'ohhh_kawaaiii', 'press_b_button',
-        'brochure_expert'
+        'a_whole_new_world',
+        'becoming_an_apprentice',
+        'brochure_expert',
+        'good_neighbour',
+        'hello_world',
+        'master_herbalist',
+        'no_more_limits',
+        'ohhh_kawaiii',
+        'press_b_button',
+        'serious_dedication',
+        'we_need_to_cook'
     ];
-
-    const herbAchievementKeys = herbKeys.map(key => `master_${key}`);
-    const maxHerbMastery = 300;
-    const maxReputation = 100;
     const avatarPaths = [
         'Chieftain_VillageElder.png',
         'Kael_MaleMC.png',
@@ -23,142 +21,90 @@
     ].map(filename => `../img/avatars/${filename}`);
     const defaultAvatarPath = '../img/avatars/Researcher.png';
 
-    function boundedInteger(value, fallback, minimum, maximum) {
-        if (value === undefined || value === null || value === '') return fallback;
-        const parsed = Number(value);
-        if (!Number.isFinite(parsed)) return fallback;
-        return Math.min(maximum, Math.max(minimum, Math.trunc(parsed)));
-    }
-
-    function createHerbMastery(source = {}) {
-        return Object.fromEntries(herbKeys.map(key => {
-            const state = source[key] ?? (key === 'ulasimang_bato' ? source.ulamisang_bato : undefined);
-            let mastery;
-
-            if (typeof state === 'object' && state !== null) {
-                mastery = boundedInteger(
-                    state.mastery,
-                    state.mastered === true ? maxHerbMastery : state.discovered === true ? 1 : 0,
-                    0,
-                    maxHerbMastery
-                );
-            } else {
-                mastery = state === true ? maxHerbMastery : boundedInteger(state, 0, 0, maxHerbMastery);
-            }
-
-            return [key, { mastery, mastered: state?.mastered === true || mastery >= maxHerbMastery }];
-        }));
-    }
-
-    function createAchievementMap(source = {}, keys, defaults = {}) {
-        return Object.fromEntries(keys.map(key => [
-            key,
-            typeof source[key] === 'boolean' ? source[key] : defaults[key] === true
-        ]));
-    }
-
-    function withoutStarterHerbCounts(herbs = {}) {
-        const inventoryHerbs = { ...herbs };
-        delete inventoryHerbs.garlic_unknown;
-        delete inventoryHerbs.garlic;
-        return inventoryHerbs;
-    }
-
-    function normalizeGender(gender) {
-        return ['male', 'female'].includes(gender) ? gender : 'N/A';
-    }
-
     function normalizeAvatar(avatarPath) {
         return avatarPaths.includes(avatarPath) ? avatarPath : defaultAvatarPath;
     }
 
-    function createDefaultSave(gender, previous = {}) {
-        const inventory = previous.inventory || {};
-        const achievementSource = previous.achievements || {};
-
-        return {
-            gender: normalizeGender(previous.gender ?? gender),
-            aurels: boundedInteger(previous.aurels, 0, 0, 9999),
-            reputation: boundedInteger(previous.reputation, 0, 0, maxReputation),
-            chapter: boundedInteger(previous.chapter ?? previous.level, 1, 1, 3),
-            day: boundedInteger(previous.day, 1, 1, 60),
-            inventory: {
-                Items: { ...(inventory.items || {}), ...(inventory.Items || {}) },
-                Herbs: withoutStarterHerbCounts({ ...(inventory.herbs || {}), ...(inventory.Herbs || {}) })
-            },
-            herbsMastered: createHerbMastery(previous.herbsMastered || {}),
-            achievements: {
-                general: createAchievementMap(
-                    achievementSource.general || {},
-                    generalAchievementKeys,
-                    { no_more_limits: previous.isPremium === true }
-                ),
-                herbs: createAchievementMap(achievementSource.herbs || {}, herbAchievementKeys)
-            }
-        };
+    function createAchievementMap(source = {}) {
+        const achievements = Object.fromEntries(generalAchievementKeys.map(key => [
+            key,
+            source[key] === true
+        ]));
+        if (source.ohhh_kawaiii === true || source.ohhh_kawaaiii === true) {
+            achievements.ohhh_kawaiii = true;
+        }
+        return achievements;
     }
 
-    function createDefaultProfile(user, username, gender = 'N/A') {
-        const saveGender = normalizeGender(gender);
+    function getLegacyAchievementSources(profile) {
+        const sources = [];
+        const profileAchievements = profile.achievements || {};
+        sources.push(profileAchievements.general || profileAchievements);
+
+        for (const save of Object.values(profile.saves || {})) {
+            if (save && typeof save === 'object') {
+                sources.push(save.achievements?.general || {});
+            }
+        }
+
+        if (profile.saveData?.achievements?.general) {
+            sources.push(profile.saveData.achievements.general);
+        }
+        return sources;
+    }
+
+    function createDefaultProfile(user, username) {
         return {
-            username: username || user.email?.split('@')[0] || user.displayName || 'Herbalist',
             email: user.email || '',
+            account_type: 'free',
             photoURL: defaultAvatarPath,
-            isPremium: false,
-            saves: {
-                slot1: createDefaultSave(saveGender),
-                slot2: createDefaultSave(saveGender),
-                slot3: createDefaultSave(saveGender)
-            }
+            username: username || user.email?.split('@')[0] || user.displayName || 'Herbalist',
+            achievements: createAchievementMap()
         };
     }
 
-    async function migrateUser(userRef, authUser) {
+    async function migrateUser(userRef, authUser = {}) {
         const snapshot = await userRef.once('value');
         const profile = snapshot.val() || {};
-        const saves = profile.saves || {};
-        const legacyGender = normalizeGender(profile.gender);
-        const updates = {};
+        const achievementSources = getLegacyAchievementSources(profile);
+        const achievements = Object.fromEntries(generalAchievementKeys.map(key => [
+            key,
+            achievementSources.some(source =>
+                source[key] === true
+                || (key === 'ohhh_kawaiii' && (source.ohhh_kawaiii === true || source.ohhh_kawaaiii === true))
+            )
+            || (key === 'no_more_limits' && (profile.account_type === 'premium' || profile.isPremium === true))
+        ]));
+        const accountType = profile.account_type === 'premium' || profile.account_type === 'free'
+            ? profile.account_type
+            : profile.isPremium === true ? 'premium' : 'free';
+        const username = profile.username
+            || authUser.email?.split('@')[0]
+            || authUser.displayName
+            || 'Herbalist';
+        const updates = {
+            email: profile.email || authUser.email || '',
+            account_type: accountType,
+            photoURL: normalizeAvatar(profile.photoURL),
+            username,
+            achievements
+        };
 
-        if (profile.username === undefined) {
-            updates.username = authUser.email?.split('@')[0] || authUser.displayName || 'Herbalist';
+        const accountFields = new Set(['email', 'account_type', 'photoURL', 'username', 'achievements']);
+        for (const existingField of Object.keys(profile)) {
+            if (!accountFields.has(existingField)) updates[existingField] = null;
         }
-        if (profile.email === undefined) updates.email = authUser.email || '';
-        const avatarPath = normalizeAvatar(profile.photoURL);
-        if (profile.photoURL !== avatarPath) updates.photoURL = avatarPath;
-        if (profile.isPremium === undefined) updates.isPremium = false;
-        if (profile.friends !== undefined) updates.friends = null;
-        if (profile.friend_request !== undefined) updates.friend_request = null;
-
-        for (const slotName of ['slot1', 'slot2', 'slot3']) {
-            const slot = saves[slotName];
-            const previousSave = slot || {};
-            const legacyValues = slot || (slotName === 'slot1' ? profile : {});
-            const migratedSave = {
-                ...previousSave,
-                ...createDefaultSave(previousSave.gender || legacyGender, legacyValues)
-            };
-            delete migratedSave.level;
-            updates[`saves/${slotName}`] = migratedSave;
-        }
-
-        for (const legacyField of ['gender', 'aurels', 'herbsMastered', 'level']) {
-            if (profile[legacyField] !== undefined) updates[legacyField] = null;
-        }
-
-        if (Object.keys(updates).length) await userRef.update(updates);
+        await userRef.update(updates);
+        return { ...updates };
     }
 
     window.HerbaryoSchema = {
-        herbKeys,
-        maxHerbMastery,
-        maxReputation,
+        generalAchievementKeys,
         avatarPaths,
         defaultAvatarPath,
         normalizeAvatar,
+        createAchievementMap,
         createDefaultProfile,
-        createDefaultSave,
-        createHerbMastery,
         migrateUser
     };
 })();

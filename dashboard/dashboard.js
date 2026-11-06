@@ -12,43 +12,22 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.database();
 
-const herbCatalog = [
-    ['bawang', 'Bawang'],
-    ['sambong', 'Sambong'],
-    ['tsaang_gubat', 'Tsaang Gubat'],
-    ['ampalaya', 'Ampalaya'],
-    ['yerba_buena', 'Yerba Buena'],
-    ['ulasimang_bato', 'Ulasimang Bato'],
-    ['bayabas', 'Bayabas'],
-    ['akapulko', 'Akapulko'],
-    ['lagundi', 'Lagundi'],
-    ['niyog_niyogan', 'Niyog-niyogan']
-];
-
 const generalAchievementCatalog = [
     ['hello_world', 'Hello, World!', 'First login into the game'],
+    ['we_need_to_cook', 'We need to Cook', 'Make your first remedy'],
     ['no_more_limits', 'No More Limits', 'Buy the full version of the game'],
     ['serious_dedication', 'Serious Dedication', 'Survive 20 days'],
     ['good_neighbour', 'Good Neighbour', 'Keep 100 reputation for at least 5 days'],
     ['a_whole_new_world', 'A Whole New World', "Join another player's world"],
     ['master_herbalist', 'Master Herbalist', 'Master all 10 herbs'],
     ['becoming_an_apprentice', 'Becoming an Apprentice', 'Complete the tutorial'],
-    ['ohhh_kawaaiii', 'Ohhh Kawaaiii', 'Use your first emote'],
+    ['ohhh_kawaiii', 'Ohhh Kawaaiii', 'Use your first emote'],
     ['press_b_button', 'Press B Button', 'Purchase a boots upgrade'],
     ['brochure_expert', 'Brochure Expert', 'Purchase all upgrades']
 ];
 
 let currentUserData = {};
-let currentSaveData = {};
-let selectedSaveSlot = 'slot1';
 let selectedAvatarPath = HerbaryoSchema.defaultAvatarPath;
-
-function getHerbsCount(herbsObj = {}) {
-    return herbCatalog.filter(([key]) => {
-        const herb = herbsObj[key];
-        return herb === true || herb?.mastered === true || herb?.mastery >= HerbaryoSchema.maxHerbMastery;
-    }).length;
-}
 
 function getInitials(username = 'Herbalist') {
     return username.trim().charAt(0).toUpperCase() || 'H';
@@ -63,48 +42,20 @@ function updateUserUI(userData) {
     document.getElementById('welcomeText').textContent = `${greeting}, ${displayName}`;
     document.getElementById('usernameValue').textContent = displayName;
     document.getElementById('userEmail').textContent = userData.email || auth.currentUser?.email || '-';
-    document.getElementById('accountTypeValue').textContent = userData.isPremium === true ? 'Premium' : 'Free';
+    document.getElementById('accountTypeValue').textContent =
+        userData.account_type === 'premium' ? 'Premium' : 'Free';
 
     avatar.textContent = getInitials(displayName);
     avatar.style.backgroundImage = `url("${HerbaryoSchema.normalizeAvatar(userData.photoURL)}")`;
     avatar.textContent = '';
 }
 
-function renderHerbs(herbsObj = {}) {
-    const masteredCount = getHerbsCount(herbsObj);
-    document.getElementById('herbsMasteredCount').textContent = `${masteredCount}/10`;
-    document.getElementById('herbsList').innerHTML = herbCatalog.map(([key, label]) => {
-        const herb = herbsObj[key];
-        const mastery = herb === true
-            ? HerbaryoSchema.maxHerbMastery
-            : Math.min(HerbaryoSchema.maxHerbMastery, Math.max(0, Number(herb?.mastery) || 0));
-        const mastered = herb === true
-            || herb?.mastered === true
-            || mastery >= HerbaryoSchema.maxHerbMastery;
-        return `<article class="herb-card ${mastered ? 'mastered' : 'locked'}">
-            <strong>${label}</strong>
-            <span>${mastered ? 'Mastered' : `${mastery}/${HerbaryoSchema.maxHerbMastery} mastery`}</span>
-        </article>`;
-    }).join('');
-}
-
 function renderAchievements(achievementData = {}) {
-    const general = achievementData.general || {};
-    const herbs = achievementData.herbs || {};
-    const achievements = [
-        ...generalAchievementCatalog.map(([key, title, description]) => ({
-            key,
-            title,
-            description,
-            unlocked: general[key] === true
-        })),
-        ...herbCatalog.map(([key, title]) => ({
-            key: `master_${key}`,
-            title: `Master ${title}`,
-            description: `Master ${title}`,
-            unlocked: herbs[`master_${key}`] === true
-        }))
-    ];
+    const achievements = generalAchievementCatalog.map(([key, title, description]) => ({
+        title,
+        description,
+        unlocked: achievementData[key] === true
+    }));
 
     const unlockedCount = achievements.filter(achievement => achievement.unlocked).length;
     document.getElementById('achievementCount').textContent = `${unlockedCount}/${achievements.length}`;
@@ -114,19 +65,6 @@ function renderAchievements(achievementData = {}) {
             <span>${achievement.unlocked ? 'Unlocked' : achievement.description}</span>
         </article>
     `).join('');
-}
-
-function renderSaveSlot(saveData = {}) {
-    const gender = saveData.gender === 'female'
-        ? 'Female'
-        : saveData.gender === 'male' ? 'Male' : 'N/A';
-    document.getElementById('genderValue').textContent = gender;
-    document.getElementById('aurelsValue').textContent = saveData.aurels ?? 0;
-    document.getElementById('reputationValue').textContent = saveData.reputation ?? 0;
-    document.getElementById('chapterValue').textContent = saveData.chapter ?? 1;
-    document.getElementById('dayValue').textContent = saveData.day ?? 1;
-    renderHerbs(saveData.herbsMastered || {});
-    renderAchievements(saveData.achievements || {});
 }
 
 document.querySelectorAll('[data-section-toggle]').forEach(toggle => {
@@ -144,22 +82,6 @@ document.querySelectorAll('[data-section-toggle]').forEach(toggle => {
         toggle.setAttribute('aria-expanded', String(nextExpanded));
         toggle.setAttribute('aria-label', `${nextExpanded ? 'Hide' : 'Show'} ${sectionName}`);
         toggle.title = `${nextExpanded ? 'Hide' : 'Show'} ${sectionName}`;
-    });
-});
-
-document.querySelectorAll('.save-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-        selectedSaveSlot = tab.dataset.slot;
-        document.querySelectorAll('.save-tab').forEach(saveTab => {
-            const isSelected = saveTab === tab;
-            saveTab.classList.toggle('active', isSelected);
-            saveTab.setAttribute('aria-selected', String(isSelected));
-        });
-
-        document.getElementById('saveSlotPanel').setAttribute('aria-labelledby', tab.id);
-        currentSaveData = currentUserData.saves?.[selectedSaveSlot]
-            || HerbaryoSchema.createDefaultSave();
-        renderSaveSlot(currentSaveData);
     });
 });
 
@@ -333,7 +255,7 @@ function openMiniProfile(focusSelector = '#openEditProfileBtn') {
         currentUserData.email || user?.email || '';
     document.getElementById('profileAvatarPreview').src =
         HerbaryoSchema.normalizeAvatar(currentUserData.photoURL);
-    const isPremium = currentUserData.isPremium === true;
+    const isPremium = currentUserData.account_type === 'premium';
     const planBadge = document.getElementById('profilePlan');
     planBadge.textContent = isPremium ? 'Premium' : 'Free';
     planBadge.classList.toggle('premium', isPremium);
@@ -443,26 +365,32 @@ auth.onAuthStateChanged(async user => {
         await HerbaryoSchema.migrateUser(userRef, user);
     } catch (error) {
         console.error('Failed to migrate player profile:', error);
+        const notice = document.createElement('p');
+        notice.className = 'profile-migration-error';
+        notice.setAttribute('role', 'alert');
+        notice.textContent =
+            'Your account data could not be updated. Please ask an administrator to run the database migration.';
+        document.querySelector('main')?.prepend(notice);
+        return;
     }
 
     userRef.on('value', snapshot => {
         const data = snapshot.val() || {};
         currentUserData = data;
-        currentSaveData = data.saves?.slot1 || HerbaryoSchema.createDefaultSave(undefined, data);
 
         const adminBtn = document.getElementById('adminBtn');
-        db.ref(`admins/${user.uid}`).get().then(adminSnap => {
-            adminBtn.style.display = adminSnap.exists() && adminSnap.val() === true ? 'inline-block' : 'none';
-        });
+        db.ref(`admin/${user.uid}`).get()
+            .then(adminSnap => {
+                adminBtn.style.display = adminSnap.val() === true ? 'inline-block' : 'none';
+            })
+            .catch(error => console.error('Failed to check admin status:', error));
         adminBtn.onclick = () => {
             setDashboardMenuOpen(false);
             window.location.href = '../admin/admin.html';
         };
 
         updateUserUI(data);
-        currentSaveData = data.saves?.[selectedSaveSlot]
-            || HerbaryoSchema.createDefaultSave();
-        renderSaveSlot(currentSaveData);
+        renderAchievements(data.achievements || {});
     });
 });
 
