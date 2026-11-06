@@ -445,11 +445,23 @@ auth.onAuthStateChanged(async user => {
         currentUserData = data;
 
         const adminBtn = document.getElementById('adminBtn');
-        db.ref(`admin/${user.uid}`).get()
+        db.ref(`admins/${user.uid}`).get()
             .then(adminSnap => {
                 adminBtn.style.display = adminSnap.val() === true ? 'inline-block' : 'none';
             })
-            .catch(error => console.error('Failed to check admin status:', error));
+            .catch(error => {
+                console.error('Failed to check admin status:', error);
+                let status = document.getElementById('adminAccessError');
+                if (!status) {
+                    status = document.createElement('p');
+                    status.id = 'adminAccessError';
+                    status.className = 'profile-migration-error';
+                    status.setAttribute('role', 'alert');
+                    document.querySelector('main')?.prepend(status);
+                }
+                status.textContent =
+                    'Could not check admin access. Verify Firebase rules allow reading /admins/{your-auth-uid}.';
+            });
         adminBtn.onclick = () => {
             setDashboardMenuOpen(false);
             window.location.href = '../admin/admin.html';

@@ -1698,38 +1698,6 @@ button:focus-visible {
     }
 }
 
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        transition-duration: .01ms !important;
-        animation-duration: .01ms !important;
-    }
-
-    html {
-        scroll-behavior: auto;
-    }
-}
-
-.legal-links {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: .75rem 1.5rem;
-    margin-top: 1rem;
-}
-
-.legal-links a {
-    font-weight: 700;
-    text-underline-offset: 3px;
-    color: var(--vanilla);
-}
-
-.legal-links a:hover {
-    color: var(--sage);
-}
-
 .legal-dialog {
     width: min(920px, calc(100vw - 2rem));
     max-height: calc(100dvh - 2rem);

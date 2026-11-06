@@ -14,25 +14,35 @@ const db = firebase.database();
 
 let allUsers = [];
 
+function showAdminAccessStatus(message) {
+    const status = document.getElementById('adminAccessStatus');
+    status.textContent = message;
+    status.hidden = false;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     auth.onAuthStateChanged(user => {
         if (!user) {
-            window.location.replace('../index.html');
+            window.location.replace('../index.html#login');
             return;
         }
 
-        db.ref(`admin/${user.uid}`).get().then(snapshot => {
+        db.ref(`admins/${user.uid}`).get().then(snapshot => {
             if (snapshot.val() === true) {
                 console.log('Admin verified ✅');
                 initAdminUI(user);
                 loadUsers();
             } else {
                 console.log('Not admin ❌');
-                window.location.replace('../index.html');
+                showAdminAccessStatus(
+                    `No admin role found for this account. In Realtime Database, set /admins/${user.uid} to the boolean true.`
+                );
             }
         }).catch(err => {
             console.error('Error checking admin status:', err);
-            window.location.replace('../index.html');
+            showAdminAccessStatus(
+                'Could not verify admin access. Check that you are signed in and Firebase rules allow reading /admins/{your-auth-uid}.'
+            );
         });
     });
 
@@ -43,9 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             displayUsers(allUsers.filter(u => u.username.toLowerCase().includes(query) || u.email.toLowerCase().includes(query)));
         });
     }
-
-    const migrateDatabaseBtn = document.getElementById('migrateDatabaseBtn');
-    migrateDatabaseBtn?.addEventListener('click', migrateDatabase);
 
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
@@ -176,48 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
-    async function migrateDatabase() {
-        const confirmed = window.confirm(
-            'This will merge each player’s general achievements, change account records to the compact schema, remove legacy cloud save data, and copy your admin role to /admin. Back up first and ensure your Firebase rules permit writes to /admin. Other admin roles stay in /admins for now. Proceed?'
-        );
-        if (!confirmed) return;
-
-        const button = document.getElementById('migrateDatabaseBtn');
-        button.disabled = true;
-        button.textContent = 'Migrating...';
-        try {
-            const usersSnapshot = await db.ref('herbaryo-users').once('value');
-            const userEntries = [];
-            usersSnapshot.forEach(child => {
-                userEntries.push([child.key, child.val() || {}]);
-            });
-            let migratedCount = 0;
-            for (const [uid, profile] of userEntries) {
-                await HerbaryoSchema.migrateUser(
-                    db.ref(`herbaryo-users/${uid}`),
-                    { email: profile.email, displayName: profile.username }
-                );
-                migratedCount += 1;
-                button.textContent = `Migrating ${migratedCount}/${userEntries.length}...`;
-            }
-
-            const currentUid = auth.currentUser?.uid;
-            if (!currentUid) throw new Error('No authenticated admin is available for role migration.');
-            await db.ref(`admin/${currentUid}`).set(true);
-            showAdminToast(
-                `Migration complete. Updated ${migratedCount} player accounts and copied your admin role. Other admins must migrate their roles separately; keep /admins until Firebase rules are updated.`,
-                'success'
-            );
-            await loadUsers();
-        } catch (error) {
-            console.error('Failed to migrate the database:', error);
-            showAdminToast('Migration failed. Check database permissions and data, then retry.', 'error');
-        } finally {
-            button.disabled = false;
-            button.textContent = 'Migrate Database';
-        }
-    }
-
     async function loadUsers() {
         try {
             const snapshot = await db.ref('herbaryo-users').once('value');
@@ -251,6 +216,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to load users:', err);
             const tbody = document.querySelector('#usersTable tbody');
             if (tbody) tbody.innerHTML = '<tr><td colspan="3">Failed to load players</td></tr>';
+            showAdminAccessStatus(
+                'Admin role verified, but player records could not be loaded. Check Firebase rules for admin read access to /herbaryo-users.'
+            );
         }
     }
 
@@ -406,7 +374,6 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.className = 'user-modal';
         modal.innerHTML = `
             <div class="user-modal-content user-edit-content">
-                <button class="modal-close" type="button" aria-label="Close">&times;</button>
                 <h2>Edit Player</h2>
                 <div class="edit-form">
                     <label class="field-group">
@@ -446,7 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const accountTypeInput = modal.querySelector('#editAccountType');
         usernameInput.value = userData.username || '';
         accountTypeInput.value = userData.account_type === 'premium' ? 'premium' : 'free';
-        modal.querySelector('.modal-close').onclick = () => modal.remove();
         modal.querySelector('#cancelEditBtn').onclick = () => modal.remove();
         modal.onclick = event => { if (event.target === modal) modal.remove(); };
         modal.querySelector('.admin-avatar-picker').addEventListener('click', event => {
