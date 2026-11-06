@@ -20,9 +20,24 @@
         'Researcher.png'
     ].map(filename => `../img/avatars/${filename}`);
     const defaultAvatarPath = '../img/avatars/Researcher.png';
+    const profileColors = [
+        { value: '#8DC46E', label: 'Fresh Leaf Green' },
+        { value: '#D9A24C', label: 'Golden Mustard' },
+        { value: '#739ECC', label: 'Dusty Blue' },
+        { value: '#C7738C', label: 'Dusty Rose' },
+        { value: '#CC784C', label: 'Burnt Orange' },
+        { value: '#9478B8', label: 'Muted Lavender' }
+    ];
+    const defaultProfileColor = profileColors[0].value;
 
     function normalizeAvatar(avatarPath) {
         return avatarPaths.includes(avatarPath) ? avatarPath : defaultAvatarPath;
+    }
+
+    function normalizeColor(color) {
+        return profileColors.find(option =>
+            option.value.toLowerCase() === String(color).toLowerCase()
+        )?.value || defaultProfileColor;
     }
 
     function createAchievementMap(source = {}) {
@@ -58,6 +73,7 @@
             email: user.email || '',
             account_type: 'free',
             photoURL: defaultAvatarPath,
+            color: defaultProfileColor,
             username: username || user.email?.split('@')[0] || user.displayName || 'Herbalist',
             achievements: createAchievementMap()
         };
@@ -86,11 +102,12 @@
             email: profile.email || authUser.email || '',
             account_type: accountType,
             photoURL: normalizeAvatar(profile.photoURL),
+            color: normalizeColor(profile.color),
             username,
             achievements
         };
 
-        const accountFields = new Set(['email', 'account_type', 'photoURL', 'username', 'achievements']);
+        const accountFields = new Set(['email', 'account_type', 'photoURL', 'color', 'username', 'achievements']);
         for (const existingField of Object.keys(profile)) {
             if (!accountFields.has(existingField)) updates[existingField] = null;
         }
@@ -103,6 +120,9 @@
         avatarPaths,
         defaultAvatarPath,
         normalizeAvatar,
+        profileColors,
+        defaultProfileColor,
+        normalizeColor,
         createAchievementMap,
         createDefaultProfile,
         migrateUser

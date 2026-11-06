@@ -47,11 +47,13 @@ function updateUserUI(userData) {
 
     avatar.textContent = getInitials(displayName);
     avatar.style.backgroundImage = `url("${HerbaryoSchema.normalizeAvatar(userData.photoURL)}")`;
+    avatar.style.setProperty('--profile-color', HerbaryoSchema.normalizeColor(userData.color));
     avatar.textContent = '';
 }
 
 function renderAchievements(achievementData = {}) {
     const achievements = generalAchievementCatalog.map(([key, title, description]) => ({
+        key,
         title,
         description,
         unlocked: achievementData[key] === true
@@ -60,12 +62,35 @@ function renderAchievements(achievementData = {}) {
     const unlockedCount = achievements.filter(achievement => achievement.unlocked).length;
     document.getElementById('achievementCount').textContent = `${unlockedCount}/${achievements.length}`;
     document.getElementById('achievementList').innerHTML = achievements.map(achievement => `
-        <article class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}">
+        <button class="achievement-card ${achievement.unlocked ? 'unlocked' : 'locked'}"
+            type="button" data-achievement-key="${achievement.key}"
+            aria-label="View ${achievement.title} achievement details">
             <strong>${achievement.title}</strong>
             <span>${achievement.unlocked ? 'Unlocked' : achievement.description}</span>
-        </article>
+        </button>
     `).join('');
 }
+
+const achievementDialog = document.getElementById('achievementDialog');
+document.getElementById('achievementList').addEventListener('click', event => {
+    const card = event.target.closest('[data-achievement-key]');
+    if (!card) return;
+
+    const achievement = generalAchievementCatalog.find(([key]) =>
+        key === card.dataset.achievementKey
+    );
+    if (!achievement) {
+        console.error('Unable to find achievement details:', card.dataset.achievementKey);
+        return;
+    }
+
+    document.getElementById('achievementDialogTitle').textContent = achievement[1];
+    document.getElementById('achievementDialogDescription').textContent = achievement[2];
+    achievementDialog.showModal();
+});
+document.getElementById('closeAchievementDialog').addEventListener('click', () => {
+    achievementDialog.close();
+});
 
 document.querySelectorAll('[data-section-toggle]').forEach(toggle => {
     toggle.addEventListener('click', () => {
@@ -158,6 +183,20 @@ const editProfileModal = createProfileModal('edit-profile-modal', `
         <label class="edit-field" for="editUsername">Username
             <input type="text" id="editUsername" minlength="3" maxlength="20" autocomplete="username" required>
         </label>
+        <fieldset class="profile-color-field">
+            <legend class="edit-field">Profile color</legend>
+            <div class="profile-color-options" id="profileColorOptions" role="group"
+                aria-label="Choose a profile color">
+                ${HerbaryoSchema.profileColors.map(option => `
+                    <button class="profile-color-option" type="button" data-color="${option.value}"
+                        aria-label="${option.label}" aria-pressed="false">
+                        <span class="profile-color-swatch" style="--swatch-color: ${option.value}"
+                            aria-hidden="true"></span>
+                        <span>${option.label}</span>
+                    </button>
+                `).join('')}
+            </div>
+        </fieldset>
         <div class="avatar-editor">
             <span class="edit-field">Profile avatar</span>
             <div class="avatar-picker" id="avatarPicker" role="group" aria-label="Choose your profile avatar">
@@ -212,9 +251,11 @@ const newPasswordInput = document.getElementById('editPassword');
 const editUsernameInput = document.getElementById('editUsername');
 const avatarPicker = document.getElementById('avatarPicker');
 const googlePasswordNote = document.getElementById('googlePasswordNote');
+const profileColorOptions = document.getElementById('profileColorOptions');
 let previousProfileModalOverflow = '';
 let previousEditTrigger = null;
 let activeProfileModal = null;
+let selectedProfileColor = HerbaryoSchema.defaultProfileColor;
 
 function selectAvatar(avatarPath) {
     selectedAvatarPath = HerbaryoSchema.normalizeAvatar(avatarPath);
@@ -228,6 +269,20 @@ function selectAvatar(avatarPath) {
 avatarPicker.addEventListener('click', event => {
     const option = event.target.closest('.avatar-option');
     if (option) selectAvatar(option.dataset.avatarPath);
+});
+
+function selectProfileColor(color) {
+    selectedProfileColor = HerbaryoSchema.normalizeColor(color);
+    profileColorOptions.querySelectorAll('.profile-color-option').forEach(option => {
+        const isSelected = option.dataset.color === selectedProfileColor;
+        option.classList.toggle('selected', isSelected);
+        option.setAttribute('aria-pressed', String(isSelected));
+    });
+}
+
+profileColorOptions.addEventListener('click', event => {
+    const option = event.target.closest('.profile-color-option');
+    if (option) selectProfileColor(option.dataset.color);
 });
 
 function openProfileModal(modal, focusSelector) {
@@ -255,6 +310,10 @@ function openMiniProfile(focusSelector = '#openEditProfileBtn') {
         currentUserData.email || user?.email || '';
     document.getElementById('profileAvatarPreview').src =
         HerbaryoSchema.normalizeAvatar(currentUserData.photoURL);
+    document.getElementById('profileAvatarPreview').style.setProperty(
+        '--profile-color',
+        HerbaryoSchema.normalizeColor(currentUserData.color)
+    );
     const isPremium = currentUserData.account_type === 'premium';
     const planBadge = document.getElementById('profilePlan');
     planBadge.textContent = isPremium ? 'Premium' : 'Free';
@@ -268,6 +327,7 @@ editBtn.addEventListener('click', () => {
     setDashboardMenuOpen(false);
     previousEditTrigger = editBtn;
     editUsernameInput.value = currentUserData.username || '';
+    selectProfileColor(currentUserData.color);
     selectAvatar(currentUserData.photoURL);
     document.getElementById('editError').textContent = '';
     openMiniProfile();
@@ -309,9 +369,15 @@ document.getElementById('editForm').addEventListener('submit', async event => {
     try {
         await db.ref(`herbaryo-users/${auth.currentUser.uid}`).update({
             username,
-            photoURL: selectedAvatarPath
+            photoURL: selectedAvatarPath,
+            color: selectedProfileColor
         });
-        currentUserData = { ...currentUserData, username, photoURL: selectedAvatarPath };
+        currentUserData = {
+            ...currentUserData,
+            username,
+            photoURL: selectedAvatarPath,
+            color: selectedProfileColor
+        };
         updateUserUI(currentUserData);
         openMiniProfile('#openEditProfileBtn');
     } catch (updateError) {

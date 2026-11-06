@@ -319,6 +319,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const screenshotPreview = document.getElementById('screenshotPreview');
     const screenshotPreviewImage = document.getElementById('screenshotPreviewImage');
     const screenshotPreviewClose = document.querySelector('.screenshot-preview-close');
+    const legalDialogs = document.querySelectorAll('.legal-dialog');
+
+    document.querySelectorAll('[data-legal-dialog]').forEach(link => {
+        link.addEventListener('click', event => {
+            const dialog = document.getElementById(link.dataset.legalDialog);
+            if (!(dialog instanceof HTMLDialogElement)) {
+                console.error('Unable to open legal document:', link.dataset.legalDialog);
+                return;
+            }
+
+            event.preventDefault();
+            if (!dialog.open) dialog.showModal();
+        });
+    });
+
+    legalDialogs.forEach(dialog => {
+        dialog.querySelector('[data-close-legal]')?.addEventListener('click', () => dialog.close());
+        dialog.addEventListener('click', event => {
+            if (event.target === dialog) dialog.close();
+        });
+    });
 
     if (screenshotPreview && screenshotPreviewImage && screenshotPreviewClose) {
         let screenshotCloseTimer;
